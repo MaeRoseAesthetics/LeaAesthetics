@@ -18,8 +18,12 @@ const handler = async (req: VercelRequest, res: VercelResponse) => {
         VERCEL_ENV: process.env.VERCEL_ENV,
         NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL ? 'SET' : 'NOT SET',
         NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'SET' : 'NOT SET',
+        SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY ? 'SET' : 'NOT SET',
         DATABASE_URL: process.env.DATABASE_URL ? 'SET' : 'NOT SET'
-      }
+      },
+      allSupabaseVars: Object.keys(process.env)
+        .filter(key => key.includes('SUPABASE'))
+        .map(key => ({ name: key, isSet: !!process.env[key] }))
     };
 
     res.json(debug);

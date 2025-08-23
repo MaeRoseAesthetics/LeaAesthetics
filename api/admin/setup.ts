@@ -31,7 +31,15 @@ const handler = async (req: VercelRequest, res: VercelResponse) => {
 
     // Check if Supabase is configured
     const supabaseUrl = process.env.DATABASE_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseKey = process.env.DATABASE_SUPABASE_SERVICE_ROLE_KEY || process.env.DATABASE_SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.DATABASE_SUPABASE_SERVICE_ROLE_KEY || process.env.DATABASE_SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    
+    console.log('Supabase configuration check:', {
+      hasUrl: !!supabaseUrl,
+      hasKey: !!supabaseKey,
+      urlPrefix: supabaseUrl?.substring(0, 20) + '...',
+      keyPrefix: supabaseKey?.substring(0, 20) + '...',
+      isMock: supabaseUrl?.includes('mock-project')
+    });
     
     if (!supabaseUrl || !supabaseKey || supabaseUrl.includes('mock-project')) {
       return res.status(500).json({ 
@@ -39,7 +47,8 @@ const handler = async (req: VercelRequest, res: VercelResponse) => {
         debug: {
           hasUrl: !!supabaseUrl,
           hasKey: !!supabaseKey,
-          isMock: supabaseUrl?.includes('mock-project') 
+          isMock: supabaseUrl?.includes('mock-project'),
+          availableEnvVars: Object.keys(process.env).filter(key => key.includes('SUPABASE')).join(', ')
         }
       });
     }
