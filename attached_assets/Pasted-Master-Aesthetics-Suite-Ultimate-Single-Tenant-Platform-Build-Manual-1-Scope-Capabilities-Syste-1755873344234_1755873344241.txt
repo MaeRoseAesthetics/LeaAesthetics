@@ -1,0 +1,34 @@
+Master Aesthetics Suite — Ultimate Single-Tenant Platform Build Manual
+1. Scope & Capabilities
+System Type: Single-tenant application optimized for dual-role aesthetic practitioners/tutors in the UK, integrating clinical practice management, regulated LMS for Ofqual/JCCP-aligned training, and business operations under the 2025 licensing scheme.
+Target User: Solo or small aesthetic businesses offering treatments (e.g., injectables, skin therapies) and training (e.g., Level 4-7 diplomas), ensuring compliance with JCCP, Ofqual, CQC, VTCT, and Health and Care Act 2022.
+Core Capabilities:
+
+Customizable brand website with ASA-compliant themes.
+Booking/availability for treatments/courses, with licensing tier checks (Green/Amber/Red).
+Payments/deposits compliant with age verification and face-to-face mandates.
+Unified client/student profiles with medical histories, progress tracking, CPD logging.
+Consent/e-signing using JCCP/CPSA templates, including psychological screening.
+Aftercare/policies automation, complication protocols.
+CRM/notifications with GDPR-opt-ins, segmented for clients/students.
+LMS for course creation/delivery: Ofqual curricula, assessments (OSCEs, portfolios), RPL/APEL support, CPD verification (10-20 verifiable hours/year).
+Role-based portals: admin (owner/tutor), client, student.
+Analytics/reporting for CQC audits, procedure volumes, CPD metrics.
+AI for personalization (e.g., risk assessments, course suggestions), evidence-based and ASA-compliant.
+Audit/compliance: DBS integrations, equality assessments, 2025 tier reporting.
+Trend predictions: AI-driven insights on market growth (e.g., 15% rise in non-surgicals post-2025), regulatory harmonization by 2026.
+
+2. Technology Baseline
+Languages: TypeScript (strict), SQL.
+Frontend: Next.js 14 (App Router, RSC), React 18, TailwindCSS, Radix UI, Framer Motion, React Hook Form, Zod, React Query, Zustand, react-day-picker, Stripe Elements, Video.js (LMS), React PDF (previews), Quizlet-like for assessments.
+Backend: NestJS + Fastify, Prisma (PostgreSQL + pgvector), BullMQ (Redis), OpenAPI + GraphQL, tRPC, Meilisearch.
+Infra: AWS ECS Fargate, RDS Postgres, ElastiCache Redis, S3 + CloudFront, ACM, WAF, Route53, KMS, SSM, ALB. Optional Supabase for dev.
+Observability: Datadog (APM, Logs, RUM), Sentry, OpenTelemetry.
+CI/CD: GitHub Actions → ECR → ECS (blue/green).
+Auth: OIDC (Clerk/Auth0), JWT sessions.
+Payments: Stripe (Elements + Webhooks).
+Comms: SendGrid, Twilio (GDPR-compliant).
+AI: OpenAI with guards for ethical, evidence-based outputs.
+LMS Add-ons: Moodle-inspired: curriculum builder, interactive quizzes, CPD tracker.
+3. Monorepo Layout
+text

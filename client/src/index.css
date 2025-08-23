@@ -1,0 +1,944 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Maerose Brand Colors */
+  --maerose-forest-green: #1E3A24;
+  --maerose-burgundy: #7C283C;
+  --maerose-cream: #F9F4E5;
+  --maerose-gold: #A18A49;
+  
+  /* Updated color scheme with Maerose branding */
+  --background: var(--maerose-cream);
+  --foreground: var(--maerose-forest-green);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: var(--maerose-forest-green);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: var(--maerose-forest-green);
+  --primary: var(--maerose-forest-green);
+  --primary-foreground: var(--maerose-cream);
+  --secondary: var(--maerose-burgundy);
+  --secondary-foreground: var(--maerose-cream);
+  --muted: hsl(47, 27%, 95%);
+  --muted-foreground: hsl(129, 29%, 35%);
+  --accent: var(--maerose-gold);
+  --accent-foreground: var(--maerose-cream);
+  --destructive: hsl(356.3033, 90.5579%, 54.3137%);
+  --destructive-foreground: hsl(0, 0%, 100%);
+  --border: hsl(47, 20%, 88%);
+  --input: hsl(0, 0%, 100%);
+  --ring: var(--maerose-forest-green);
+  --chart-1: var(--maerose-forest-green);
+  --chart-2: var(--maerose-burgundy);
+  --chart-3: var(--maerose-gold);
+  --chart-4: hsl(147.1429, 78.5047%, 41.9608%);
+  --chart-5: hsl(341.4894, 75.2000%, 50.9804%);
+  --sidebar: hsl(0, 0%, 100%);
+  --sidebar-foreground: var(--maerose-forest-green);
+  --sidebar-primary: var(--maerose-forest-green);
+  --sidebar-primary-foreground: var(--maerose-cream);
+  --sidebar-accent: var(--maerose-gold);
+  --sidebar-accent-foreground: var(--maerose-cream);
+  --sidebar-border: hsl(47, 20%, 88%);
+  --sidebar-ring: var(--maerose-forest-green);
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-serif: 'Libre Baskerville', 'Playfair Display', Georgia, serif;
+  --font-mono: 'Menlo', 'Monaco', 'Consolas', monospace;
+  --radius: 0.5rem;
+  --shadow-2xs: 0px 1px 2px 0px rgba(30, 58, 36, 0.05);
+  --shadow-xs: 0px 1px 2px 0px rgba(30, 58, 36, 0.05);
+  --shadow-sm: 0px 1px 2px 0px rgba(30, 58, 36, 0.05), 0px 1px 3px 0px rgba(30, 58, 36, 0.1);
+  --shadow: 0px 1px 3px 0px rgba(30, 58, 36, 0.1), 0px 1px 2px 0px rgba(30, 58, 36, 0.06);
+  --shadow-md: 0px 4px 6px -1px rgba(30, 58, 36, 0.1), 0px 2px 4px -1px rgba(30, 58, 36, 0.06);
+  --shadow-lg: 0px 10px 15px -3px rgba(30, 58, 36, 0.1), 0px 4px 6px -2px rgba(30, 58, 36, 0.05);
+  --shadow-xl: 0px 20px 25px -5px rgba(30, 58, 36, 0.1), 0px 10px 10px -5px rgba(30, 58, 36, 0.04);
+  --shadow-2xl: 0px 25px 50px -12px rgba(30, 58, 36, 0.25);
+  --tracking-normal: 0em;
+  --spacing: 0.25rem;
+  
+  /* Maerose Brand Color Variables for Compatibility */
+  --medical-blue: var(--maerose-forest-green);
+  --clinical-grey: var(--maerose-cream);
+  --success: hsl(159, 78%, 42%);
+  --warning: var(--maerose-gold);
+  --error: hsl(356, 91%, 54%);
+}
+
+.dark {
+  --background: hsl(0, 0%, 0%);
+  --foreground: hsl(200, 6.6667%, 91.1765%);
+  --card: hsl(228, 9.8039%, 10%);
+  --card-foreground: hsl(0, 0%, 85.0980%);
+  --popover: hsl(0, 0%, 0%);
+  --popover-foreground: hsl(200, 6.6667%, 91.1765%);
+  --primary: hsl(210, 100%, 50%);
+  --primary-foreground: hsl(0, 0%, 100%);
+  --secondary: hsl(195.0000, 15.3846%, 94.9020%);
+  --secondary-foreground: hsl(210, 25%, 7.8431%);
+  --muted: hsl(0, 0%, 9.4118%);
+  --muted-foreground: hsl(210, 3.3898%, 46.2745%);
+  --accent: hsl(205.7143, 70%, 7.8431%);
+  --accent-foreground: hsl(210, 100%, 50%);
+  --destructive: hsl(356.3033, 90.5579%, 54.3137%);
+  --destructive-foreground: hsl(0, 0%, 100%);
+  --border: hsl(210, 5.2632%, 14.9020%);
+  --input: hsl(207.6923, 27.6596%, 18.4314%);
+  --ring: hsl(210, 100%, 50%);
+  --chart-1: hsl(210, 100%, 50%);
+  --chart-2: hsl(159.7826, 100%, 36.0784%);
+  --chart-3: hsl(42.0290, 92.8251%, 56.2745%);
+  --chart-4: hsl(147.1429, 78.5047%, 41.9608%);
+  --chart-5: hsl(341.4894, 75.2000%, 50.9804%);
+  --sidebar: hsl(228, 9.8039%, 10%);
+  --sidebar-foreground: hsl(0, 0%, 85.0980%);
+  --sidebar-primary: hsl(210, 100%, 50%);
+  --sidebar-primary-foreground: hsl(0, 0%, 100%);
+  --sidebar-accent: hsl(205.7143, 70%, 7.8431%);
+  --sidebar-accent-foreground: hsl(210, 100%, 50%);
+  --sidebar-border: hsl(205.7143, 15.7895%, 26.0784%);
+  --sidebar-ring: hsl(210, 100%, 50%);
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-serif: 'Georgia', serif;
+  --font-mono: 'Menlo', 'Monaco', 'Consolas', monospace;
+  --radius: 0.5rem;
+  --shadow-2xs: 0px 1px 2px 0px hsl(210, 100%, 50%, 0.05);
+  --shadow-xs: 0px 1px 2px 0px hsl(210, 100%, 50%, 0.05);
+  --shadow-sm: 0px 1px 2px 0px hsl(210, 100%, 50%, 0.05), 0px 1px 3px 0px hsl(210, 100%, 50%, 0.1);
+  --shadow: 0px 1px 3px 0px hsl(210, 100%, 50%, 0.1), 0px 1px 2px 0px hsl(210, 100%, 50%, 0.06);
+  --shadow-md: 0px 4px 6px -1px hsl(210, 100%, 50%, 0.1), 0px 2px 4px -1px hsl(210, 100%, 50%, 0.06);
+  --shadow-lg: 0px 10px 15px -3px hsl(210, 100%, 50%, 0.1), 0px 4px 6px -2px hsl(210, 100%, 50%, 0.05);
+  --shadow-xl: 0px 20px 25px -5px hsl(210, 100%, 50%, 0.1), 0px 10px 10px -5px hsl(210, 100%, 50%, 0.04);
+  --shadow-2xl: 0px 25px 50px -12px hsl(210, 100%, 50%, 0.25);
+
+  /* Medical Blue Color Scheme - Dark Mode */
+  --medical-blue: hsl(210, 100%, 50%);
+  --clinical-grey: hsl(228, 10%, 10%);
+  --success: hsl(159, 78%, 42%);
+  --warning: hsl(42, 93%, 56%);
+  --error: hsl(356, 91%, 54%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  }
+
+  /* Maerose Typography */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
+    color: var(--maerose-forest-green);
+  }
+
+  /* Maerose Brand Utility Classes */
+  .bg-maerose-forest {
+    background-color: var(--maerose-forest-green);
+  }
+
+  .text-maerose-forest {
+    color: var(--maerose-forest-green);
+  }
+
+  .border-maerose-forest {
+    border-color: var(--maerose-forest-green);
+  }
+
+  .bg-maerose-burgundy {
+    background-color: var(--maerose-burgundy);
+  }
+
+  .text-maerose-burgundy {
+    color: var(--maerose-burgundy);
+  }
+
+  .border-maerose-burgundy {
+    border-color: var(--maerose-burgundy);
+  }
+
+  .bg-maerose-cream {
+    background-color: var(--maerose-cream);
+  }
+
+  .text-maerose-cream {
+    color: var(--maerose-cream);
+  }
+
+  .bg-maerose-gold {
+    background-color: var(--maerose-gold);
+  }
+
+  .text-maerose-gold {
+    color: var(--maerose-gold);
+  }
+
+  .border-maerose-gold {
+    border-color: var(--maerose-gold);
+  }
+
+  /* Medical Blue Utility Classes */
+  .bg-medical-blue {
+    background-color: var(--medical-blue);
+  }
+
+  .text-medical-blue {
+    color: var(--medical-blue);
+  }
+
+  .border-medical-blue {
+    border-color: var(--medical-blue);
+  }
+
+  .bg-clinical-grey {
+    background-color: var(--clinical-grey);
+  }
+
+  .text-clinical-grey {
+    color: var(--clinical-grey);
+  }
+
+  .bg-success {
+    background-color: var(--success);
+  }
+
+  .text-success {
+    color: var(--success);
+  }
+
+  .bg-warning {
+    background-color: var(--warning);
+  }
+
+  .text-warning {
+    color: var(--warning);
+  }
+
+  .bg-error {
+    background-color: var(--error);
+  }
+
+  .text-error {
+    color: var(--error);
+  }
+
+  /* Professional Medical Styling */
+  .clinical-card {
+    @apply bg-white rounded-lg border border-gray-200 shadow-sm;
+  }
+
+  .medical-button {
+    @apply bg-medical-blue text-white px-4 py-2 rounded-md font-medium hover:opacity-90 transition-opacity;
+  }
+
+  .compliance-badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .compliance-badge.active {
+    @apply bg-green-100 text-green-800;
+  }
+
+  .compliance-badge.warning {
+    @apply bg-yellow-100 text-yellow-800;
+  }
+
+  .compliance-badge.error {
+    @apply bg-red-100 text-red-800;
+  }
+
+  /* Typography for Medical Content */
+  .medical-text {
+    line-height: 1.6;
+    color: hsl(210, 25%, 7.8431%);
+  }
+
+  .medical-heading {
+    font-weight: 600;
+    color: hsl(210, 25%, 7.8431%);
+    letter-spacing: -0.025em;
+  }
+
+  /* Animation for Loading States */
+  .pulse-medical {
+    animation: pulse-medical 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes pulse-medical {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
+  }
+
+  /* Focus States for Accessibility */
+  .focus-medical:focus {
+    outline: 2px solid var(--medical-blue);
+    outline-offset: 2px;
+  }
+
+  /* Medical Form Styling */
+  .medical-form-section {
+    @apply space-y-4 p-4 bg-gray-50 rounded-lg border border-gray-200;
+  }
+
+  .medical-form-section h3 {
+    @apply text-sm font-medium text-gray-900 mb-3;
+  }
+
+  /* Treatment Card Styling */
+  .treatment-card {
+    @apply clinical-card p-4 hover:shadow-md transition-shadow;
+  }
+
+  .treatment-card:hover {
+    border-color: var(--medical-blue);
+  }
+
+  /* Status Indicators */
+  .status-indicator {
+    @apply w-2 h-2 rounded-full;
+  }
+
+  .status-indicator.success {
+    @apply bg-success;
+  }
+
+  .status-indicator.warning {
+    @apply bg-warning;
+  }
+
+  .status-indicator.error {
+    @apply bg-error;
+  }
+
+  /* Compliance Progress Bars */
+  .compliance-progress {
+    @apply w-full bg-gray-200 rounded-full h-2;
+  }
+
+  .compliance-progress-bar {
+    @apply h-2 rounded-full transition-all duration-300;
+  }
+
+  .compliance-progress-bar.success {
+    @apply bg-success;
+  }
+
+  .compliance-progress-bar.warning {
+    @apply bg-warning;
+  }
+
+  .compliance-progress-bar.error {
+    @apply bg-error;
+  }
+
+  /* Custom Scrollbar for Medical Interface */
+  .medical-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .medical-scrollbar::-webkit-scrollbar-track {
+    background: hsl(240, 6%, 97%);
+  }
+
+  .medical-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--medical-blue);
+    border-radius: 3px;
+  }
+
+  .medical-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: hsl(210, 100%, 35%);
+  }
+
+  /* Print Styles for Medical Records */
+  @media print {
+    .no-print {
+      display: none !important;
+    }
+
+    .medical-print {
+      background: white !important;
+      color: black !important;
+      font-size: 12pt;
+      line-height: 1.4;
+    }
+
+    .page-break {
+      page-break-before: always;
+    }
+  }
+
+  /* High Contrast Mode for Accessibility */
+  @media (prefers-contrast: high) {
+    :root {
+      --medical-blue: hsl(210, 100%, 30%);
+      --border: hsl(0, 0%, 60%);
+    }
+  }
+
+  /* Reduced Motion for Accessibility */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* Medical Icon Styles */
+  .medical-icon {
+    @apply w-5 h-5 text-medical-blue;
+  }
+
+  .medical-icon-lg {
+    @apply w-8 h-8 text-medical-blue;
+  }
+
+  /* Medical Navigation */
+  .medical-nav-item {
+    @apply flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors;
+  }
+
+  .medical-nav-item.active {
+    @apply bg-medical-blue text-white;
+  }
+
+  .medical-nav-item:not(.active) {
+    @apply text-gray-700 hover:bg-gray-50 hover:text-gray-900;
+  }
+
+  /* Medical Sidebar */
+  .medical-sidebar {
+    @apply bg-white border-r border-gray-200 medical-scrollbar overflow-y-auto;
+  }
+
+  /* Medical Content Area */
+  .medical-content {
+    @apply flex-1 bg-clinical-grey medical-scrollbar overflow-y-auto;
+  }
+
+  /* Medical Dashboard Grid */
+  .medical-dashboard-grid {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6;
+  }
+
+  /* Medical Stats Card */
+  .medical-stats-card {
+    @apply clinical-card p-6;
+  }
+
+  .medical-stats-icon {
+    @apply w-8 h-8 rounded-md flex items-center justify-center text-white text-sm;
+  }
+
+  /* Medical Table */
+  .medical-table {
+    @apply min-w-full divide-y divide-gray-300 bg-white shadow ring-1 ring-black ring-opacity-5 md:rounded-lg overflow-hidden;
+  }
+
+  .medical-table thead {
+    @apply bg-gray-50;
+  }
+
+  .medical-table th {
+    @apply px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider;
+  }
+
+  .medical-table td {
+    @apply px-6 py-4 whitespace-nowrap text-sm;
+  }
+
+  .medical-table tbody {
+    @apply bg-white divide-y divide-gray-200;
+  }
+
+  /* Medical Form Elements */
+  .medical-input {
+    @apply block w-full rounded-md border-gray-300 shadow-sm focus:border-medical-blue focus:ring-medical-blue sm:text-sm;
+  }
+
+  .medical-select {
+    @apply block w-full rounded-md border-gray-300 shadow-sm focus:border-medical-blue focus:ring-medical-blue sm:text-sm;
+  }
+
+  .medical-textarea {
+    @apply block w-full rounded-md border-gray-300 shadow-sm focus:border-medical-blue focus:ring-medical-blue sm:text-sm;
+  }
+
+  /* Medical Notification Styles */
+  .medical-notification {
+    @apply rounded-md p-4 mb-4;
+  }
+
+  .medical-notification.success {
+    @apply bg-green-50 border border-green-200 text-green-800;
+  }
+
+  .medical-notification.warning {
+    @apply bg-yellow-50 border border-yellow-200 text-yellow-800;
+  }
+
+  .medical-notification.error {
+    @apply bg-red-50 border border-red-200 text-red-800;
+  }
+
+  .medical-notification.info {
+    @apply bg-blue-50 border border-blue-200 text-blue-800;
+  }
+
+  /* Header Styling from Design Reference */
+  .medical-header {
+    @apply bg-white border-b border-gray-200 sticky top-0 z-50;
+  }
+
+  .medical-header-content {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16;
+  }
+
+  .medical-logo {
+    @apply text-xl font-bold text-medical-blue;
+  }
+
+  .mode-toggle {
+    @apply bg-gray-100 rounded-lg p-1 flex items-baseline space-x-4;
+  }
+
+  .mode-toggle-button {
+    @apply px-3 py-1 rounded-md text-sm font-medium transition-all;
+  }
+
+  .mode-toggle-button.active {
+    @apply bg-medical-blue text-white;
+  }
+
+  .mode-toggle-button:not(.active) {
+    @apply text-gray-500 hover:text-gray-700;
+  }
+
+  /* Schedule Card Styling from Design Reference */
+  .schedule-card {
+    @apply flex items-center justify-between p-4 rounded-lg border;
+  }
+
+  .schedule-card.new-patient {
+    @apply bg-blue-50 border-blue-200;
+  }
+
+  .schedule-card.returning-patient {
+    @apply bg-green-50 border-green-200;
+  }
+
+  .schedule-card.training-session {
+    @apply bg-yellow-50 border-yellow-200;
+  }
+
+  .schedule-time-badge {
+    @apply w-12 h-12 rounded-full flex items-center justify-center text-white font-medium;
+  }
+
+  .schedule-time-badge.medical-blue {
+    @apply bg-medical-blue;
+  }
+
+  .schedule-time-badge.success {
+    @apply bg-success;
+  }
+
+  .schedule-time-badge.warning {
+    @apply bg-warning;
+  }
+
+  /* Compliance Widget Styling from Design Reference */
+  .compliance-item {
+    @apply flex items-center justify-between;
+  }
+
+  .compliance-icon {
+    @apply w-8 h-8 rounded-full flex items-center justify-center mr-3;
+  }
+
+  .compliance-icon.success {
+    @apply bg-success;
+  }
+
+  .compliance-icon.warning {
+    @apply bg-warning;
+  }
+
+  .compliance-icon.error {
+    @apply bg-error;
+  }
+
+  .compliance-text {
+    @apply text-sm font-medium text-gray-900;
+  }
+
+  .compliance-subtext {
+    @apply text-xs text-gray-500;
+  }
+
+  /* Quick Actions Button Styling */
+  .quick-action-button {
+    @apply w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors;
+  }
+
+  .quick-action-icon {
+    @apply mr-3 text-medical-blue;
+  }
+
+  /* Booking System Styling from Design Reference */
+  .booking-grid {
+    @apply grid grid-cols-1 lg:grid-cols-2 gap-8;
+  }
+
+  .treatment-booking-item {
+    @apply flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors;
+  }
+
+  .treatment-booking-icon {
+    @apply w-12 h-12 rounded-md object-cover;
+  }
+
+  .treatment-booking-details {
+    @apply flex items-center space-x-4;
+  }
+
+  .treatment-booking-info {
+    @apply space-y-1;
+  }
+
+  .treatment-name {
+    @apply font-medium text-gray-900;
+  }
+
+  .treatment-duration {
+    @apply text-sm text-gray-500;
+  }
+
+  .treatment-price {
+    @apply text-sm text-medical-blue font-medium;
+  }
+
+  .treatment-book-button {
+    @apply bg-medical-blue text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors;
+  }
+
+  /* Course Styling */
+  .course-book-button {
+    @apply bg-warning text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-yellow-600 transition-colors;
+  }
+
+  /* Payment Table Styling from Design Reference */
+  .payment-table {
+    @apply overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg;
+  }
+
+  .payment-table table {
+    @apply min-w-full divide-y divide-gray-300;
+  }
+
+  .payment-table thead {
+    @apply bg-gray-50;
+  }
+
+  .payment-table th {
+    @apply px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider;
+  }
+
+  .payment-table td {
+    @apply px-6 py-4 whitespace-nowrap text-sm;
+  }
+
+  .payment-table tbody {
+    @apply bg-white divide-y divide-gray-200;
+  }
+
+  /* Age Verification Styling */
+  .age-verification-workflow {
+    @apply p-4 bg-blue-50 rounded-lg;
+  }
+
+  .age-verification-title {
+    @apply font-medium text-gray-900 mb-2;
+  }
+
+  .age-verification-text {
+    @apply text-sm text-gray-600 mb-3;
+  }
+
+  .age-verification-button {
+    @apply w-full bg-medical-blue text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors;
+  }
+
+  /* LMS Preview Styling from Design Reference */
+  .lms-course-card {
+    @apply p-4 border border-gray-200 rounded-lg;
+  }
+
+  .lms-course-header {
+    @apply flex items-center justify-between mb-3;
+  }
+
+  .lms-course-title {
+    @apply font-medium text-gray-900;
+  }
+
+  .lms-course-status {
+    @apply text-xs px-2 py-1 rounded-full;
+  }
+
+  .lms-course-status.active {
+    @apply bg-blue-100 text-blue-800;
+  }
+
+  .lms-course-status.starting-soon {
+    @apply bg-green-100 text-green-800;
+  }
+
+  .lms-course-progress {
+    @apply space-y-2;
+  }
+
+  .lms-course-stats {
+    @apply flex justify-between text-sm text-gray-600 mb-2;
+  }
+
+  .lms-progress-bar {
+    @apply w-full bg-gray-200 rounded-full h-2;
+  }
+
+  .lms-progress-fill {
+    @apply h-2 rounded-full;
+  }
+
+  .lms-progress-fill.success {
+    @apply bg-success;
+  }
+
+  .lms-progress-fill.warning {
+    @apply bg-warning;
+  }
+
+  .lms-progress-fill.medical-blue {
+    @apply bg-medical-blue;
+  }
+
+  .lms-course-actions {
+    @apply flex justify-between mt-3;
+  }
+
+  .lms-action-link {
+    @apply text-medical-blue text-sm hover:text-blue-700;
+  }
+
+  /* Assessment Management Styling */
+  .assessment-card {
+    @apply p-4 rounded-lg;
+  }
+
+  .assessment-card.osce {
+    @apply bg-blue-50;
+  }
+
+  .assessment-card.portfolio {
+    @apply bg-green-50;
+  }
+
+  .assessment-card.rpl {
+    @apply bg-yellow-50;
+  }
+
+  .assessment-title {
+    @apply font-medium text-gray-900 mb-2;
+  }
+
+  .assessment-stats {
+    @apply space-y-2;
+  }
+
+  .assessment-stat-row {
+    @apply flex justify-between text-sm;
+  }
+
+  .assessment-button {
+    @apply mt-3 w-full px-4 py-2 rounded-md text-sm font-medium transition-colors;
+  }
+
+  .assessment-button.medical-blue {
+    @apply bg-medical-blue text-white hover:bg-blue-700;
+  }
+
+  .assessment-button.success {
+    @apply bg-success text-white hover:bg-green-700;
+  }
+
+  .assessment-button.warning {
+    @apply bg-warning text-white hover:bg-yellow-600;
+  }
+
+  /* Content Management Styling */
+  .content-management-grid {
+    @apply grid grid-cols-1 md:grid-cols-3 gap-4;
+  }
+
+  .content-management-item {
+    @apply text-center;
+  }
+
+  .content-management-icon {
+    @apply w-12 h-12 rounded-lg mx-auto mb-3 flex items-center justify-center;
+  }
+
+  .content-management-icon.medical-blue {
+    @apply bg-medical-blue;
+  }
+
+  .content-management-icon.success {
+    @apply bg-success;
+  }
+
+  .content-management-icon.warning {
+    @apply bg-warning;
+  }
+
+  .content-management-title {
+    @apply font-medium text-gray-900 mb-1;
+  }
+
+  .content-management-description {
+    @apply text-sm text-gray-500 mb-3;
+  }
+
+  .content-management-button {
+    @apply px-3 py-2 rounded-md text-sm font-medium transition-colors;
+  }
+
+  .content-management-button.medical-blue {
+    @apply bg-white text-medical-blue border border-medical-blue hover:bg-blue-50;
+  }
+
+  .content-management-button.success {
+    @apply bg-white text-success border border-success hover:bg-green-50;
+  }
+
+  .content-management-button.warning {
+    @apply bg-white text-warning border border-warning hover:bg-yellow-50;
+  }
+}
+
+@layer utilities {
+  /* Text Utilities */
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Layout Utilities */
+  .container-medical {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Spacing Utilities */
+  .space-medical {
+    @apply space-y-6;
+  }
+
+  /* Animation Utilities */
+  .animate-fade-in {
+    animation: fade-in 0.3s ease-in-out;
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-slide-in {
+    animation: slide-in 0.3s ease-out;
+  }
+
+  @keyframes slide-in {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+
+  /* Line Clamp Utilities */
+  .line-clamp-1 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+  }
+
+  .line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .line-clamp-3 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+
+  /* Glass Morphism Effect for Medical Cards */
+  .glass-medical {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  /* Medical Shadow Utilities */
+  .shadow-medical {
+    box-shadow: 0 4px 6px -1px rgba(0, 102, 204, 0.1), 0 2px 4px -1px rgba(0, 102, 204, 0.06);
+  }
+
+  .shadow-medical-lg {
+    box-shadow: 0 10px 15px -3px rgba(0, 102, 204, 0.1), 0 4px 6px -2px rgba(0, 102, 204, 0.05);
+  }
+
+  /* Scrollbar Utilities */
+  .scrollbar-medical {
+    scrollbar-width: thin;
+    scrollbar-color: var(--medical-blue) var(--clinical-grey);
+  }
+
+  .scrollbar-medical::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .scrollbar-medical::-webkit-scrollbar-track {
+    background: var(--clinical-grey);
+  }
+
+  .scrollbar-medical::-webkit-scrollbar-thumb {
+    background: var(--medical-blue);
+    border-radius: 3px;
+  }
+
+  .scrollbar-medical::-webkit-scrollbar-thumb:hover {
+    background: hsl(210, 100%, 35%);
+  }
+}
