@@ -16,13 +16,20 @@ const handler = async (req: VercelRequest, res: VercelResponse) => {
       environmentVariables: {
         NODE_ENV: process.env.NODE_ENV,
         VERCEL_ENV: process.env.VERCEL_ENV,
+        // Legacy variables
         NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL ? 'SET' : 'NOT SET',
         NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'SET' : 'NOT SET',
         SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY ? 'SET' : 'NOT SET',
+        // DATABASE_ prefixed variables
+        DATABASE_SUPABASE_URL: process.env.DATABASE_SUPABASE_URL ? 'SET' : 'NOT SET',
+        DATABASE_NEXT_PUBLIC_SUPABASE_URL: process.env.DATABASE_NEXT_PUBLIC_SUPABASE_URL ? 'SET' : 'NOT SET',
+        DATABASE_NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.DATABASE_NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'SET' : 'NOT SET',
+        DATABASE_SUPABASE_SERVICE_ROLE_KEY: process.env.DATABASE_SUPABASE_SERVICE_ROLE_KEY ? 'SET' : 'NOT SET',
+        DATABASE_POSTGRES_URL: process.env.DATABASE_POSTGRES_URL ? 'SET' : 'NOT SET',
         DATABASE_URL: process.env.DATABASE_URL ? 'SET' : 'NOT SET'
       },
       allSupabaseVars: Object.keys(process.env)
-        .filter(key => key.includes('SUPABASE'))
+        .filter(key => key.includes('SUPABASE') || key.includes('DATABASE'))
         .map(key => ({ name: key, isSet: !!process.env[key] }))
     };
 
