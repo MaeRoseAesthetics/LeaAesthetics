@@ -3,18 +3,58 @@ import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import * as schema from '../shared/schema';
 
-// Supabase configuration
-// Check for placeholder values and provide helpful error messages
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://mock-project.supabase.co';
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'mock-key';
+// Supabase configuration - prioritize DATABASE_ prefixed variables
+const supabaseUrl = process.env.DATABASE_SUPABASE_URL || 
+                   process.env.DATABASE_NEXT_PUBLIC_SUPABASE_URL ||
+                   process.env.NEXT_PUBLIC_SUPABASE_URL || 
+                   'https://mock-project.supabase.co';
+                   
+const supabaseKey = process.env.DATABASE_NEXT_PUBLIC_SUPABASE_ANON_KEY ||
+                   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 
+                   'mock-key';
 
-if (supabaseUrl.includes('mock-project') || supabaseKey.includes('mockkey')) {
-  console.warn('🛠️  Using mock Supabase configuration for local development');
-  console.warn('   Set up real Supabase project for production use');
+let supabase: any = null;
+
+try {
+  if (supabaseUrl.includes('mock-project') || supabaseKey.includes('mock')) {
+    console.warn('🛠️  Using mock Supabase configuration for local development');
+    console.warn('   Set up real Supabase project for production use');
+    // Create a mock client that won't fail on import
+    supabase = {
+      auth: {
+        getUser: () => Promise.resolve({ data: { user: null }, error: new Error('Mock client') }),
+        signInWithPassword: () => Promise.resolve({ data: { user: null, session: null }, error: new Error('Mock client') }),
+        signUp: () => Promise.resolve({ data: { user: null, session: null }, error: new Error('Mock client') }),
+        signOut: () => Promise.resolve({ error: null }),
+        resetPasswordForEmail: () => Promise.resolve({ error: null })
+      },
+      from: () => ({
+        select: () => ({ eq: () => ({ single: () => Promise.resolve({ data: null, error: new Error('Mock client') }) }) }),
+        upsert: () => ({ select: () => ({ single: () => Promise.resolve({ data: null, error: new Error('Mock client') }) }) })
+      })
+    };
+  } else {
+    supabase = createClient(supabaseUrl, supabaseKey);
+  }
+} catch (error) {
+  console.warn('⚠️  Supabase client creation failed, using mock client');
+  // Create mock client as fallback
+  supabase = {
+    auth: {
+      getUser: () => Promise.resolve({ data: { user: null }, error: new Error('Failed to create client') }),
+      signInWithPassword: () => Promise.resolve({ data: { user: null, session: null }, error: new Error('Failed to create client') }),
+      signUp: () => Promise.resolve({ data: { user: null, session: null }, error: new Error('Failed to create client') }),
+      signOut: () => Promise.resolve({ error: null }),
+      resetPasswordForEmail: () => Promise.resolve({ error: null })
+    },
+    from: () => ({
+      select: () => ({ eq: () => ({ single: () => Promise.resolve({ data: null, error: new Error('Failed to create client') }) }) }),
+      upsert: () => ({ select: () => ({ single: () => Promise.resolve({ data: null, error: new Error('Failed to create client') }) }) })
+    })
+  };
 }
 
-// Create Supabase client for authentication and real-time features
-export const supabase = createClient(supabaseUrl, supabaseKey);
+export { supabase };
 
 // Create Drizzle client for database operations
 let db: any;
