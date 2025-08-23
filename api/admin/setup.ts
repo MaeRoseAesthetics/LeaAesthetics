@@ -2,6 +2,7 @@ import { VercelRequest, VercelResponse } from '@vercel/node';
 import { withErrorHandling, withCors } from '../_middleware';
 import { supabase } from '../../lib/supabase';
 import { storage } from '../../lib/storage';
+import { handleAPIError } from '../../lib/monitoring';
 
 const handler = async (req: VercelRequest, res: VercelResponse) => {
   if (req.method !== 'POST') {
@@ -9,12 +10,26 @@ const handler = async (req: VercelRequest, res: VercelResponse) => {
   }
 
   try {
+    // Basic input validation and sanitization
     const { email, password, firstName, lastName } = req.body;
-
-    if (!email || !password || !firstName || !lastName) {
-      return res.status(400).json({ 
-        message: 'Missing required fields: email, password, firstName, lastName' 
-      });
+    
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ message: 'Invalid email format' });
+    }
+    
+    // Validate password strength (minimum requirements)
+    if (password.length < 8) {
+      return res.status(400).json({ message: 'Password must be at least 8 characters long' });
+    }
+    
+    // Sanitize name inputs
+    const sanitizedFirstName = firstName.trim().replace(/[<>"']/g, '');
+    const sanitizedLastName = lastName.trim().replace(/[<>"']/g, '');
+    
+    if (!sanitizedFirstName || !sanitizedLastName) {
+      return res.status(400).json({ message: 'First name and last name are required' });
     }
 
     // Check if any users already exist (prevent multiple admin creation)
@@ -37,8 +52,8 @@ const handler = async (req: VercelRequest, res: VercelResponse) => {
       password,
       email_confirm: true, // Auto-confirm email for admin setup
       user_metadata: {
-        first_name: firstName,
-        last_name: lastName,
+        first_name: sanitizedFirstName,
+        last_name: sanitizedLastName,
         role: 'admin'
       }
     });
@@ -60,8 +75,8 @@ const handler = async (req: VercelRequest, res: VercelResponse) => {
       await storage.upsertUser({
         id: authData.user.id,
         email: authData.user.email!,
-        firstName,
-        lastName,
+        firstName: sanitizedFirstName,
+        lastName: sanitizedLastName,
         role: 'admin',
         profileImageUrl: null
       });
@@ -80,8 +95,8 @@ const handler = async (req: VercelRequest, res: VercelResponse) => {
       user: {
         id: authData.user.id,
         email: authData.user.email,
-        firstName,
-        lastName,
+        firstName: sanitizedFirstName,
+        lastName: sanitizedLastName,
         role: 'admin'
       }
     });

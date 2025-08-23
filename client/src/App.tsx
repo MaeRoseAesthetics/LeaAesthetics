@@ -4,6 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useAuth } from "@/hooks/useAuth";
+import { setupGlobalErrorHandling } from "../../lib/monitoring";
 import NotFound from "@/pages/not-found";
 import Landing from "@/pages/landing";
 import LandingMultiUser from "@/pages/landing-multi-user";
@@ -57,6 +58,11 @@ function Router() {
 }
 
 function App() {
+  // Initialize error monitoring in production
+  if (process.env.NODE_ENV === 'production') {
+    setupGlobalErrorHandling();
+  }
+  
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
