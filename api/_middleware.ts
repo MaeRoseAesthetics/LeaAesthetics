@@ -14,7 +14,7 @@ export const withAuth = (handler: (req: AuthenticatedRequest, res: VercelRespons
   return async (req: VercelRequest, res: VercelResponse) => {
     try {
       // CORS headers
-      res.setHeader('Access-Control-Allow-Credentials', true);
+      res.setHeader('Access-Control-Allow-Credentials', 'true');
       res.setHeader('Access-Control-Allow-Origin', '*');
       res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
       res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization');
@@ -58,7 +58,7 @@ export const withAuth = (handler: (req: AuthenticatedRequest, res: VercelRespons
 export const withCors = (handler: (req: VercelRequest, res: VercelResponse) => Promise<void | VercelResponse>) => {
   return async (req: VercelRequest, res: VercelResponse) => {
     // CORS headers
-    res.setHeader('Access-Control-Allow-Credentials', true);
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
     res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization');

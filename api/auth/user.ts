@@ -43,7 +43,7 @@ const handler = async (req: VercelRequest, res: VercelResponse) => {
     res.json(user);
   } catch (error) {
     console.error("Error fetching user:", error);
-    res.status(500).json({ message: "Failed to fetch user", error: error.message });
+    res.status(500).json({ message: "Failed to fetch user", error: error instanceof Error ? error.message : String(error) });
   }
 };
 
