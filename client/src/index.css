@@ -1414,4 +1414,49 @@
       opacity: 1;
     }
   }
+  
+  /* Portal-specific mobile optimizations */
+  .portal-mobile-nav {
+    @apply sticky top-0 z-10 bg-white/95 backdrop-blur-sm border-b;
+  }
+  
+  .portal-mobile-card {
+    @apply p-3 sm:p-4 md:p-6;
+  }
+  
+  .portal-touch-target {
+    @apply min-h-[44px] min-w-[44px] flex items-center justify-center;
+  }
+  
+  /* Improved tap targets for mobile */
+  @media (max-width: 640px) {
+    .mobile-tap-friendly {
+      min-height: 48px;
+      min-width: 48px;
+    }
+    
+    .mobile-text-readable {
+      font-size: 16px;
+      line-height: 1.5;
+    }
+    
+    /* Prevent zoom on input focus */
+    input, select, textarea {
+      font-size: 16px;
+    }
+  }
+  
+  /* Portal grid improvements for mobile */
+  .portal-grid-mobile {
+    @apply grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4;
+  }
+  
+  .portal-sidebar-mobile {
+    @apply order-first lg:order-last;
+  }
+  
+  /* Mobile-friendly dialog improvements */
+  .dialog-mobile {
+    @apply max-h-[90vh] overflow-y-auto;
+  }
 }

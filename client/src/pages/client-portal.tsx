@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calendar } from "@/components/ui/calendar";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 
 export default function ClientPortal() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
@@ -41,6 +41,18 @@ export default function ClientPortal() {
     // Handle booking logic here
   };
 
+  // Handle button clicks to prevent navigation
+  const handleTreatmentBooking = useCallback((treatmentId: string) => {
+    console.log('Book treatment:', treatmentId);
+    setSelectedTreatment(treatmentId);
+    setShowBookingDialog(true);
+  }, []);
+
+  const handleQuickAction = useCallback((action: string) => {
+    console.log('Quick action:', action);
+    // Add your quick action logic here
+  }, []);
+
   return (
     <div className="min-h-screen bg-lea-pearl-white">
       {/* Header */}
@@ -73,10 +85,10 @@ export default function ClientPortal() {
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid lg:grid-cols-3 gap-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-8">
+        <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 md:gap-8">
           {/* Main Content */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="lg:col-span-2 space-y-6 md:space-y-8 order-2 lg:order-1">
             {/* Welcome Section */}
             <Card className="border border-lea-silver-grey shadow-lea-card hover:shadow-lea-card-hover transition-all duration-300 bg-lea-platinum-white">
               <CardHeader className="pb-4">
@@ -94,14 +106,14 @@ export default function ClientPortal() {
                 <p className="text-lea-charcoal-grey mb-6 leading-relaxed">
                   Experience seamless treatment booking and personalized care management. Your journey to aesthetic excellence begins here.
                 </p>
-                <div className="grid md:grid-cols-2 gap-4">
-                  <Button onClick={() => setShowBookingDialog(true)} className="h-14 bg-lea-elegant-silver text-lea-deep-charcoal hover:bg-opacity-90 transition-all duration-300 font-medium">
-                    <i className="fas fa-calendar-plus mr-3"></i>
-                    Schedule Treatment
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <Button onClick={() => setShowBookingDialog(true)} className="h-12 md:h-14 bg-lea-elegant-silver text-lea-deep-charcoal hover:bg-opacity-90 transition-all duration-300 font-medium">
+                    <i className="fas fa-calendar-plus mr-2 md:mr-3"></i>
+                    <span className="text-sm md:text-base">Schedule Treatment</span>
                   </Button>
-                  <Button variant="outline" className="h-14 border-lea-silver-grey text-lea-charcoal-grey hover:bg-lea-pearl-white transition-all duration-300">
-                    <i className="fas fa-history mr-3"></i>
-                    Treatment History
+                  <Button variant="outline" className="h-12 md:h-14 border-lea-silver-grey text-lea-charcoal-grey hover:bg-lea-pearl-white transition-all duration-300">
+                    <i className="fas fa-history mr-2 md:mr-3"></i>
+                    <span className="text-sm md:text-base">Treatment History</span>
                   </Button>
                 </div>
               </CardContent>
@@ -121,25 +133,22 @@ export default function ClientPortal() {
                 <div className="h-px bg-gradient-to-r from-lea-clinical-blue/30 to-transparent w-32"></div>
               </CardHeader>
               <CardContent>
-                <div className="grid md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                   {treatments.map((treatment: any) => (
                     <Card key={treatment.id} className="border border-lea-silver-grey hover:shadow-lea-card-hover transition-all duration-300 bg-lea-platinum-white">
                       <CardHeader className="pb-3">
-                        <CardTitle className="text-lg text-lea-deep-charcoal font-serif">{treatment.name}</CardTitle>
+                        <CardTitle className="text-base md:text-lg text-lea-deep-charcoal font-serif">{treatment.name}</CardTitle>
                       </CardHeader>
                       <CardContent>
                         <p className="text-sm text-lea-charcoal-grey mb-4 leading-relaxed">{treatment.description}</p>
                         <div className="flex justify-between items-center mb-4">
-                          <span className="text-2xl font-bold text-lea-elegant-silver">£{treatment.price}</span>
-                          <span className="text-sm text-lea-slate-grey bg-lea-pearl-white px-3 py-1 rounded-full">{treatment.duration} mins</span>
+                          <span className="text-xl md:text-2xl font-bold text-lea-elegant-silver">£{treatment.price}</span>
+                          <span className="text-xs md:text-sm text-lea-slate-grey bg-lea-pearl-white px-2 md:px-3 py-1 rounded-full">{treatment.duration} mins</span>
                         </div>
                         <Button 
                           size="sm" 
                           className="w-full bg-lea-deep-charcoal text-lea-platinum-white hover:bg-lea-elegant-charcoal transition-all duration-300 font-medium"
-                          onClick={() => {
-                            setSelectedTreatment(treatment.id);
-                            setShowBookingDialog(true);
-                          }}
+                          onClick={() => handleTreatmentBooking(treatment.id)}
                         >
                           Reserve Treatment
                         </Button>
@@ -166,7 +175,7 @@ export default function ClientPortal() {
               <CardContent>
                 <div className="space-y-4">
                   {bookings.slice(0, 3).map((booking: any) => (
-                    <div key={booking.id} className="flex items-center justify-between p-4 bg-lea-pearl-white rounded-xl border border-lea-silver-grey hover:shadow-lea-subtle transition-all duration-300">
+                    <div key={booking.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-lea-pearl-white rounded-xl border border-lea-silver-grey hover:shadow-lea-subtle transition-all duration-300 gap-3 sm:gap-0">
                       <div>
                         <p className="font-medium text-lea-deep-charcoal">Treatment #{booking.treatmentId}</p>
                         <p className="text-sm text-lea-charcoal-grey">
@@ -179,7 +188,7 @@ export default function ClientPortal() {
                       </div>
                       <Badge 
                         variant={booking.status === 'completed' ? 'default' : 'secondary'}
-                        className={booking.status === 'completed' ? 'bg-lea-elegant-silver text-lea-deep-charcoal' : 'bg-lea-silver-grey text-lea-charcoal-grey'}
+                        className={`${booking.status === 'completed' ? 'bg-lea-elegant-silver text-lea-deep-charcoal' : 'bg-lea-silver-grey text-lea-charcoal-grey'} sm:flex-shrink-0`}
                       >
                         {booking.status}
                       </Badge>
@@ -191,7 +200,7 @@ export default function ClientPortal() {
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-8">
+          <div className="space-y-6 md:space-y-8 order-1 lg:order-2">
             {/* Profile Card */}
             <Card className="border border-lea-silver-grey shadow-lea-card hover:shadow-lea-card-hover transition-all duration-300 bg-lea-platinum-white">
               <CardHeader>
@@ -217,7 +226,12 @@ export default function ClientPortal() {
                     </Badge>
                   </div>
                 </div>
-                <Button variant="outline" size="sm" className="mt-6 w-full border-lea-silver-grey text-lea-charcoal-grey hover:bg-lea-pearl-white transition-all duration-300">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="mt-6 w-full border-lea-silver-grey text-lea-charcoal-grey hover:bg-lea-pearl-white transition-all duration-300"
+                  onClick={() => handleQuickAction('update-profile')}
+                >
                   Update Profile
                 </Button>
               </CardContent>
@@ -244,10 +258,20 @@ export default function ClientPortal() {
                       })}
                     </p>
                     <div className="mt-6 space-y-3">
-                      <Button variant="outline" size="sm" className="w-full border-lea-silver-grey text-lea-charcoal-grey hover:bg-lea-pearl-white transition-all duration-300">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="w-full border-lea-silver-grey text-lea-charcoal-grey hover:bg-lea-pearl-white transition-all duration-300"
+                        onClick={() => handleQuickAction('reschedule-appointment')}
+                      >
                         Reschedule
                       </Button>
-                      <Button variant="ghost" size="sm" className="w-full text-lea-error-red hover:bg-lea-error-red/10 transition-all duration-300">
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="w-full text-lea-error-red hover:bg-lea-error-red/10 transition-all duration-300"
+                        onClick={() => handleQuickAction('cancel-appointment')}
+                      >
                         Cancel Appointment
                       </Button>
                     </div>
@@ -262,19 +286,39 @@ export default function ClientPortal() {
                 <CardTitle className="text-lea-deep-charcoal font-serif">Quick Actions</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Button variant="ghost" size="sm" className="w-full justify-start text-lea-charcoal-grey hover:bg-lea-pearl-white hover:text-lea-deep-charcoal transition-all duration-300">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="w-full justify-start text-lea-charcoal-grey hover:bg-lea-pearl-white hover:text-lea-deep-charcoal transition-all duration-300"
+                  onClick={() => handleQuickAction('medical-history')}
+                >
                   <i className="fas fa-file-medical mr-3 text-lea-clinical-blue"></i>
                   Medical History
                 </Button>
-                <Button variant="ghost" size="sm" className="w-full justify-start text-lea-charcoal-grey hover:bg-lea-pearl-white hover:text-lea-deep-charcoal transition-all duration-300">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="w-full justify-start text-lea-charcoal-grey hover:bg-lea-pearl-white hover:text-lea-deep-charcoal transition-all duration-300"
+                  onClick={() => handleQuickAction('consent-forms')}
+                >
                   <i className="fas fa-file-signature mr-3 text-lea-elegant-silver"></i>
                   Consent Forms
                 </Button>
-                <Button variant="ghost" size="sm" className="w-full justify-start text-lea-charcoal-grey hover:bg-lea-pearl-white hover:text-lea-deep-charcoal transition-all duration-300">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="w-full justify-start text-lea-charcoal-grey hover:bg-lea-pearl-white hover:text-lea-deep-charcoal transition-all duration-300"
+                  onClick={() => handleQuickAction('payment-methods')}
+                >
                   <i className="fas fa-credit-card mr-3 text-lea-deep-charcoal"></i>
                   Payment Methods
                 </Button>
-                <Button variant="ghost" size="sm" className="w-full justify-start text-lea-charcoal-grey hover:bg-lea-pearl-white hover:text-lea-deep-charcoal transition-all duration-300">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="w-full justify-start text-lea-charcoal-grey hover:bg-lea-pearl-white hover:text-lea-deep-charcoal transition-all duration-300"
+                  onClick={() => handleQuickAction('messages')}
+                >
                   <i className="fas fa-envelope mr-3 text-lea-clinical-blue"></i>
                   Messages
                 </Button>
@@ -286,13 +330,13 @@ export default function ClientPortal() {
 
       {/* Booking Dialog */}
       <Dialog open={showBookingDialog} onOpenChange={setShowBookingDialog}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-2xl mx-4 md:mx-auto">
           <DialogHeader>
-            <DialogTitle>Book Your Treatment</DialogTitle>
+            <DialogTitle className="text-lea-deep-charcoal font-serif">Book Your Treatment</DialogTitle>
           </DialogHeader>
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="flex flex-col md:grid md:grid-cols-2 gap-6">
             <div>
-              <h4 className="font-medium mb-3">Select Treatment</h4>
+              <h4 className="font-medium mb-3 text-lea-deep-charcoal">Select Treatment</h4>
               <Select value={selectedTreatment} onValueChange={setSelectedTreatment}>
                 <SelectTrigger>
                   <SelectValue placeholder="Choose a treatment" />
@@ -306,7 +350,7 @@ export default function ClientPortal() {
                 </SelectContent>
               </Select>
 
-              <h4 className="font-medium mb-3 mt-6">Select Time</h4>
+              <h4 className="font-medium mb-3 mt-6 text-lea-deep-charcoal">Select Time</h4>
               <Select value={selectedTime} onValueChange={setSelectedTime}>
                 <SelectTrigger>
                   <SelectValue placeholder="Choose a time" />
@@ -322,24 +366,29 @@ export default function ClientPortal() {
             </div>
 
             <div>
-              <h4 className="font-medium mb-3">Select Date</h4>
+              <h4 className="font-medium mb-3 text-lea-deep-charcoal">Select Date</h4>
               <Calendar
                 mode="single"
                 selected={selectedDate}
                 onSelect={setSelectedDate}
                 disabled={(date) => date < new Date()}
-                className="rounded-md border"
+                className="rounded-md border border-lea-silver-grey"
               />
             </div>
           </div>
 
-          <div className="flex justify-end space-x-2 mt-6">
-            <Button variant="outline" onClick={() => setShowBookingDialog(false)}>
+          <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-2 mt-6">
+            <Button 
+              variant="outline" 
+              onClick={() => setShowBookingDialog(false)}
+              className="order-2 sm:order-1"
+            >
               Cancel
             </Button>
             <Button 
               onClick={handleBooking}
               disabled={!selectedTreatment || !selectedDate || !selectedTime}
+              className="order-1 sm:order-2 bg-lea-deep-charcoal text-lea-platinum-white hover:bg-lea-elegant-charcoal"
             >
               Book Appointment
             </Button>

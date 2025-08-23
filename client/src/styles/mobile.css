@@ -1,0 +1,277 @@
+/* Mobile-first responsive CSS optimizations for LEA Aesthetics */
+
+/* Touch target enhancements */
+.touch-manipulation {
+  touch-action: manipulation;
+}
+
+/* Minimum touch target sizes for mobile devices */
+@media (max-width: 767px) {
+  /* Ensure all interactive elements meet minimum touch target size (44x44px) */
+  button, 
+  [role="button"], 
+  input[type="submit"], 
+  input[type="button"], 
+  input[type="checkbox"], 
+  input[type="radio"],
+  select,
+  a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Exception for inline text links */
+  p a, 
+  span a, 
+  li a:not(.nav-link) {
+    min-height: auto;
+    min-width: auto;
+  }
+
+  /* Improved tap targets for mobile */
+  .mobile-nav-item {
+    min-height: 48px;
+    touch-action: manipulation;
+  }
+
+  /* Mobile-specific spacing */
+  .mobile-padding {
+    padding: 1rem;
+  }
+
+  .mobile-margin {
+    margin: 0.75rem;
+  }
+
+  /* Improved scrolling for mobile */
+  .mobile-scroll {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
+  /* Prevent zoom on input focus (iOS Safari) */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="tel"],
+  input[type="url"],
+  input[type="search"],
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+
+  /* Mobile-optimized form controls */
+  .mobile-input {
+    padding: 0.75rem;
+    font-size: 16px;
+    border-radius: 0.5rem;
+    border: 1px solid #e5e7eb;
+    min-height: 44px;
+  }
+
+  /* Mobile card optimizations */
+  .mobile-card {
+    border-radius: 0.75rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  }
+
+  /* Mobile text optimizations */
+  .mobile-heading {
+    font-size: 1.5rem;
+    line-height: 1.3;
+    margin-bottom: 0.5rem;
+  }
+
+  .mobile-body-text {
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  /* Safe area insets for devices with notches */
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .safe-area-left {
+    padding-left: env(safe-area-inset-left);
+  }
+
+  .safe-area-right {
+    padding-right: env(safe-area-inset-right);
+  }
+}
+
+/* Small mobile devices (< 480px) */
+@media (max-width: 479px) {
+  /* Reduce font sizes for very small screens */
+  .text-3xl {
+    font-size: 1.5rem !important;
+  }
+
+  .text-2xl {
+    font-size: 1.25rem !important;
+  }
+
+  .text-xl {
+    font-size: 1.125rem !important;
+  }
+
+  /* Tighter spacing on small screens */
+  .space-y-6 > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 1rem !important;
+  }
+
+  .space-y-4 > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 0.75rem !important;
+  }
+
+  /* Improved mobile grid layouts */
+  .mobile-grid-1 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+
+  .mobile-flex-col {
+    flex-direction: column;
+  }
+
+  /* Mobile-optimized button groups */
+  .mobile-button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .mobile-button-group button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Landscape orientation optimizations */
+@media (max-width: 767px) and (orientation: landscape) {
+  /* Reduce header height in landscape mode */
+  .mobile-header-landscape {
+    height: 3.5rem;
+  }
+
+  /* Optimize sidebar for landscape */
+  .mobile-sidebar-landscape {
+    width: 16rem;
+  }
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 2dppx) {
+  /* Crisp icons and images on retina displays */
+  .icon {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Dark mode support (if needed) */
+@media (prefers-color-scheme: dark) {
+  /* Dark mode styles would go here */
+  /* Currently maintaining light theme for LEA branding */
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  /* Disable animations for users who prefer reduced motion */
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Focus improvements for keyboard navigation */
+@media (max-width: 767px) {
+  /* Visible focus indicators */
+  button:focus-visible,
+  [role="button"]:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+  }
+
+  /* Enhanced tap feedback */
+  button:active,
+  [role="button"]:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
+}
+
+/* Scroll behavior improvements */
+.mobile-scroll-container {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Mobile-specific utility classes */
+.mobile-hidden {
+  @media (max-width: 767px) {
+    display: none !important;
+  }
+}
+
+.mobile-visible {
+  @media (min-width: 768px) {
+    display: none !important;
+  }
+}
+
+/* LEA-specific mobile branding */
+.lea-mobile-brand {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border: 1px solid #dee2e6;
+}
+
+/* Mobile drawer/overlay styles */
+.mobile-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 40;
+  backdrop-filter: blur(4px);
+}
+
+.mobile-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 320px;
+  max-width: 85vw;
+  background-color: #ffffff;
+  border-right: 1px solid #dee2e6;
+  z-index: 50;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease-in-out;
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
+}
+
+.mobile-drawer.open {
+  transform: translateX(0);
+}
+
+/* Mobile toast/notification positioning */
+@media (max-width: 767px) {
+  .mobile-toast {
+    bottom: env(safe-area-inset-bottom, 1rem);
+    left: 1rem;
+    right: 1rem;
+    width: auto;
+  }
+}

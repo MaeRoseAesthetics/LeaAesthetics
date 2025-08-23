@@ -4,8 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useState, useCallback } from "react";
 
 export default function StudentPortal() {
+  const [activeTab, setActiveTab] = useState("dashboard");
+
   // Mock student data
   const studentData = {
     name: "John Smith",
@@ -79,6 +82,33 @@ export default function StudentPortal() {
     }
   ];
 
+  // Handle button clicks to prevent navigation
+  const handleContinueLearning = useCallback((courseId: string) => {
+    console.log('Continue learning for course:', courseId);
+    setActiveTab("materials");
+    // Add your learning logic here
+  }, []);
+
+  const handleStartReview = useCallback((materialId: string, action: 'start' | 'review') => {
+    console.log(`${action} material:`, materialId);
+    // Add your material logic here
+  }, []);
+
+  const handleAssessmentAction = useCallback((assessmentId: string, action: 'submit' | 'start') => {
+    console.log(`${action} assessment:`, assessmentId);
+    // Add your assessment logic here
+  }, []);
+
+  const handleQuickAction = useCallback((action: string) => {
+    console.log('Quick action:', action);
+    // Add your quick action logic here
+  }, []);
+
+  const handleEnrollNow = useCallback((courseId: string) => {
+    console.log('Enroll in course:', courseId);
+    // Add your enrollment logic here
+  }, []);
+
   return (
     <div className="min-h-screen bg-lea-pearl-white">
       {/* Header */}
@@ -112,22 +142,61 @@ export default function StudentPortal() {
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid lg:grid-cols-4 gap-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-8">
+        <div className="flex flex-col lg:grid lg:grid-cols-4 gap-4 md:gap-8">
           {/* Main Content */}
-          <div className="lg:col-span-3">
-            <Tabs defaultValue="dashboard" className="space-y-6">
-              <TabsList className="grid w-full grid-cols-4 bg-lea-platinum-white border-lea-silver-grey">
+          <div className="lg:col-span-3 order-2 lg:order-1">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 md:space-y-6">
+              {/* Desktop Tab Navigation */}
+              <TabsList className="hidden sm:grid w-full grid-cols-4 bg-lea-platinum-white border-lea-silver-grey">
                 <TabsTrigger value="dashboard" className="text-lea-charcoal-grey data-[state=active]:text-lea-deep-charcoal data-[state=active]:bg-lea-elegant-silver/20">Dashboard</TabsTrigger>
                 <TabsTrigger value="courses" className="text-lea-charcoal-grey data-[state=active]:text-lea-deep-charcoal data-[state=active]:bg-lea-elegant-silver/20">My Courses</TabsTrigger>
                 <TabsTrigger value="materials" className="text-lea-charcoal-grey data-[state=active]:text-lea-deep-charcoal data-[state=active]:bg-lea-elegant-silver/20">Materials</TabsTrigger>
                 <TabsTrigger value="assessments" className="text-lea-charcoal-grey data-[state=active]:text-lea-deep-charcoal data-[state=active]:bg-lea-elegant-silver/20">Assessments</TabsTrigger>
               </TabsList>
+              
+              {/* Mobile Tab Navigation */}
+              <div className="sm:hidden bg-lea-platinum-white border border-lea-silver-grey rounded-xl p-2">
+                <div className="grid grid-cols-2 gap-2">
+                  <Button 
+                    variant={activeTab === "dashboard" ? "default" : "ghost"} 
+                    size="sm" 
+                    className={`justify-start text-xs ${activeTab === "dashboard" ? "bg-lea-elegant-silver/20 text-lea-deep-charcoal" : "text-lea-charcoal-grey hover:bg-lea-pearl-white"}`}
+                    onClick={() => setActiveTab("dashboard")}
+                  >
+                    <i className="fas fa-tachometer-alt mr-2"></i>Dashboard
+                  </Button>
+                  <Button 
+                    variant={activeTab === "courses" ? "default" : "ghost"} 
+                    size="sm" 
+                    className={`justify-start text-xs ${activeTab === "courses" ? "bg-lea-elegant-silver/20 text-lea-deep-charcoal" : "text-lea-charcoal-grey hover:bg-lea-pearl-white"}`}
+                    onClick={() => setActiveTab("courses")}
+                  >
+                    <i className="fas fa-graduation-cap mr-2"></i>Courses
+                  </Button>
+                  <Button 
+                    variant={activeTab === "materials" ? "default" : "ghost"} 
+                    size="sm" 
+                    className={`justify-start text-xs ${activeTab === "materials" ? "bg-lea-elegant-silver/20 text-lea-deep-charcoal" : "text-lea-charcoal-grey hover:bg-lea-pearl-white"}`}
+                    onClick={() => setActiveTab("materials")}
+                  >
+                    <i className="fas fa-book mr-2"></i>Materials
+                  </Button>
+                  <Button 
+                    variant={activeTab === "assessments" ? "default" : "ghost"} 
+                    size="sm" 
+                    className={`justify-start text-xs ${activeTab === "assessments" ? "bg-lea-elegant-silver/20 text-lea-deep-charcoal" : "text-lea-charcoal-grey hover:bg-lea-pearl-white"}`}
+                    onClick={() => setActiveTab("assessments")}
+                  >
+                    <i className="fas fa-clipboard-check mr-2"></i>Assessments
+                  </Button>
+                </div>
+              </div>
 
               {/* Dashboard Tab */}
-              <TabsContent value="dashboard" className="space-y-6">
+              <TabsContent value="dashboard" className="space-y-4 md:space-y-6">
                 {/* Progress Overview */}
-                <div className="grid md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                   <Card className="border border-lea-silver-grey shadow-lea-card hover:shadow-lea-card-hover transition-all duration-300 bg-lea-platinum-white">
                     <CardHeader className="pb-2">
                       <CardTitle className="text-lg text-lea-deep-charcoal font-serif">CPD Progress</CardTitle>
@@ -198,7 +267,13 @@ export default function StudentPortal() {
                             <span className="text-sm text-lea-charcoal-grey">
                               {enrollment.assessmentsDue} assessments due
                             </span>
-                            <Button size="sm" className="bg-lea-deep-charcoal text-lea-platinum-white hover:bg-lea-elegant-charcoal transition-all duration-300">Continue Learning</Button>
+                            <Button 
+                              size="sm" 
+                              className="bg-lea-deep-charcoal text-lea-platinum-white hover:bg-lea-elegant-charcoal transition-all duration-300"
+                              onClick={() => handleContinueLearning(enrollment.courseId)}
+                            >
+                              Continue Learning
+                            </Button>
                           </div>
                         </div>
                       ))}
@@ -208,36 +283,40 @@ export default function StudentPortal() {
               </TabsContent>
 
               {/* Courses Tab */}
-              <TabsContent value="courses" className="space-y-6">
-                <Card>
+              <TabsContent value="courses" className="space-y-4 md:space-y-6">
+                <Card className="border border-lea-silver-grey shadow-lea-card hover:shadow-lea-card-hover transition-all duration-300 bg-lea-platinum-white">
                   <CardHeader>
-                    <CardTitle>Available Courses</CardTitle>
+                    <CardTitle className="text-lea-deep-charcoal font-serif">Available Courses</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="grid md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {courses.map((course: any) => (
-                        <Card key={course.id} className="border hover:shadow-md transition-shadow">
+                        <Card key={course.id} className="border border-lea-silver-grey hover:shadow-lea-card-hover transition-all duration-300 bg-lea-platinum-white">
                           <CardHeader className="pb-2">
-                            <CardTitle className="text-lg">{course.name}</CardTitle>
-                            <Badge variant="secondary">{course.level}</Badge>
+                            <CardTitle className="text-lg text-lea-deep-charcoal font-serif">{course.name}</CardTitle>
+                            <Badge variant="secondary" className="bg-lea-silver-grey text-lea-charcoal-grey">{course.level}</Badge>
                           </CardHeader>
                           <CardContent>
-                            <p className="text-sm text-gray-600 mb-3">{course.description}</p>
+                            <p className="text-sm text-lea-charcoal-grey mb-3 leading-relaxed">{course.description}</p>
                             <div className="space-y-2 text-sm">
                               <div className="flex justify-between">
-                                <span>Duration:</span>
-                                <span>{course.duration} days</span>
+                                <span className="text-lea-charcoal-grey">Duration:</span>
+                                <span className="text-lea-deep-charcoal">{course.duration} days</span>
                               </div>
                               <div className="flex justify-between">
-                                <span>Price:</span>
-                                <span className="font-bold text-maerose-gold">£{course.price}</span>
+                                <span className="text-lea-charcoal-grey">Price:</span>
+                                <span className="font-bold text-lea-elegant-silver">£{course.price}</span>
                               </div>
                               <div className="flex justify-between">
-                                <span>Max Students:</span>
-                                <span>{course.maxStudents}</span>
+                                <span className="text-lea-charcoal-grey">Max Students:</span>
+                                <span className="text-lea-deep-charcoal">{course.maxStudents}</span>
                               </div>
                             </div>
-                            <Button size="sm" className="w-full mt-4">
+                            <Button 
+                              size="sm" 
+                              className="w-full mt-4 bg-lea-deep-charcoal text-lea-platinum-white hover:bg-lea-elegant-charcoal transition-all duration-300"
+                              onClick={() => handleEnrollNow(course.id)}
+                            >
                               Enroll Now
                             </Button>
                           </CardContent>
@@ -249,38 +328,43 @@ export default function StudentPortal() {
               </TabsContent>
 
               {/* Materials Tab */}
-              <TabsContent value="materials" className="space-y-6">
-                <Card>
+              <TabsContent value="materials" className="space-y-4 md:space-y-6">
+                <Card className="border border-lea-silver-grey shadow-lea-card hover:shadow-lea-card-hover transition-all duration-300 bg-lea-platinum-white">
                   <CardHeader>
-                    <CardTitle>Course Materials</CardTitle>
+                    <CardTitle className="text-lea-deep-charcoal font-serif">Course Materials</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
                       {courseMaterials.map((material) => (
-                        <div key={material.id} className="flex items-center justify-between p-4 border rounded-lg">
+                        <div key={material.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border border-lea-silver-grey rounded-xl bg-lea-pearl-white hover:shadow-lea-subtle transition-all duration-300 gap-4">
                           <div className="flex items-center space-x-4">
                             <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                              material.completed ? 'bg-green-100' : 'bg-gray-100'
+                              material.completed ? 'bg-lea-elegant-silver/20' : 'bg-lea-silver-grey/50'
                             }`}>
-                              {material.type === 'video' && <i className="fas fa-play text-blue-600"></i>}
-                              {material.type === 'pdf' && <i className="fas fa-file-pdf text-red-600"></i>}
-                              {material.type === 'quiz' && <i className="fas fa-question-circle text-purple-600"></i>}
-                              {material.type === 'assessment' && <i className="fas fa-clipboard-check text-orange-600"></i>}
+                              {material.type === 'video' && <i className="fas fa-play text-lea-clinical-blue"></i>}
+                              {material.type === 'pdf' && <i className="fas fa-file-pdf text-lea-error-red"></i>}
+                              {material.type === 'quiz' && <i className="fas fa-question-circle text-lea-elegant-silver"></i>}
+                              {material.type === 'assessment' && <i className="fas fa-clipboard-check text-lea-deep-charcoal"></i>}
                             </div>
                             <div>
-                              <h4 className="font-medium">{material.title}</h4>
-                              <p className="text-sm text-gray-600">{material.duration}</p>
+                              <h4 className="font-medium text-lea-deep-charcoal">{material.title}</h4>
+                              <p className="text-sm text-lea-charcoal-grey">{material.duration}</p>
                             </div>
                           </div>
-                          <div className="flex items-center space-x-2">
+                          <div className="flex items-center space-x-2 sm:flex-shrink-0">
                             {material.completed ? (
-                              <Badge variant="default">
+                              <Badge className="bg-lea-elegant-silver/20 text-lea-deep-charcoal border-lea-elegant-silver/30">
                                 <i className="fas fa-check mr-1"></i>Completed
                               </Badge>
                             ) : (
-                              <Badge variant="outline">Pending</Badge>
+                              <Badge variant="outline" className="border-lea-silver-grey text-lea-charcoal-grey">Pending</Badge>
                             )}
-                            <Button size="sm" variant={material.completed ? "outline" : "default"}>
+                            <Button 
+                              size="sm" 
+                              variant={material.completed ? "outline" : "default"}
+                              className={material.completed ? "border-lea-silver-grey text-lea-charcoal-grey hover:bg-lea-pearl-white" : "bg-lea-deep-charcoal text-lea-platinum-white hover:bg-lea-elegant-charcoal"}
+                              onClick={() => handleStartReview(material.id, material.completed ? 'review' : 'start')}
+                            >
                               {material.completed ? "Review" : "Start"}
                             </Button>
                           </div>
@@ -292,52 +376,65 @@ export default function StudentPortal() {
               </TabsContent>
 
               {/* Assessments Tab */}
-              <TabsContent value="assessments" className="space-y-6">
-                <div className="grid md:grid-cols-2 gap-6">
+              <TabsContent value="assessments" className="space-y-4 md:space-y-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
                   {/* Pending Assessments */}
-                  <Card>
+                  <Card className="border border-lea-silver-grey shadow-lea-card hover:shadow-lea-card-hover transition-all duration-300 bg-lea-platinum-white">
                     <CardHeader>
-                      <CardTitle>Pending Assessments</CardTitle>
+                      <CardTitle className="text-lea-deep-charcoal font-serif">Pending Assessments</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-4">
-                        <div className="border-l-4 border-red-500 pl-4">
-                          <h4 className="font-medium">Practical Skills Assessment</h4>
-                          <p className="text-sm text-gray-600">Due: September 15, 2025</p>
-                          <p className="text-sm text-red-600">High Priority</p>
-                          <Button size="sm" className="mt-2">Submit Assessment</Button>
+                        <div className="border-l-4 border-lea-error-red pl-4 py-2">
+                          <h4 className="font-medium text-lea-deep-charcoal">Practical Skills Assessment</h4>
+                          <p className="text-sm text-lea-charcoal-grey">Due: September 15, 2025</p>
+                          <p className="text-sm text-lea-error-red font-medium">High Priority</p>
+                          <Button 
+                            size="sm" 
+                            className="mt-2 bg-lea-deep-charcoal text-lea-platinum-white hover:bg-lea-elegant-charcoal transition-all duration-300"
+                            onClick={() => handleAssessmentAction('practical-skills', 'submit')}
+                          >
+                            Submit Assessment
+                          </Button>
                         </div>
-                        <div className="border-l-4 border-yellow-500 pl-4">
-                          <h4 className="font-medium">Theory Examination</h4>
-                          <p className="text-sm text-gray-600">Due: October 1, 2025</p>
-                          <p className="text-sm text-yellow-600">Medium Priority</p>
-                          <Button size="sm" className="mt-2" variant="outline">Start Assessment</Button>
+                        <div className="border-l-4 border-yellow-500 pl-4 py-2">
+                          <h4 className="font-medium text-lea-deep-charcoal">Theory Examination</h4>
+                          <p className="text-sm text-lea-charcoal-grey">Due: October 1, 2025</p>
+                          <p className="text-sm text-yellow-600 font-medium">Medium Priority</p>
+                          <Button 
+                            size="sm" 
+                            className="mt-2" 
+                            variant="outline"
+                            onClick={() => handleAssessmentAction('theory-exam', 'start')}
+                          >
+                            Start Assessment
+                          </Button>
                         </div>
                       </div>
                     </CardContent>
                   </Card>
 
                   {/* Completed Assessments */}
-                  <Card>
+                  <Card className="border border-lea-silver-grey shadow-lea-card hover:shadow-lea-card-hover transition-all duration-300 bg-lea-platinum-white">
                     <CardHeader>
-                      <CardTitle>Completed Assessments</CardTitle>
+                      <CardTitle className="text-lea-deep-charcoal font-serif">Completed Assessments</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-4">
-                        <div className="border-l-4 border-green-500 pl-4">
-                          <h4 className="font-medium">Anatomy Quiz</h4>
-                          <p className="text-sm text-gray-600">Completed: August 20, 2025</p>
+                        <div className="border-l-4 border-lea-clinical-blue pl-4 py-2">
+                          <h4 className="font-medium text-lea-deep-charcoal">Anatomy Quiz</h4>
+                          <p className="text-sm text-lea-charcoal-grey">Completed: August 20, 2025</p>
                           <div className="flex items-center space-x-2 mt-1">
-                            <span className="text-sm font-medium">Score: 85%</span>
-                            <Badge variant="default">Passed</Badge>
+                            <span className="text-sm font-medium text-lea-deep-charcoal">Score: 85%</span>
+                            <Badge className="bg-lea-clinical-blue/20 text-lea-clinical-blue border-lea-clinical-blue/30">Passed</Badge>
                           </div>
                         </div>
-                        <div className="border-l-4 border-green-500 pl-4">
-                          <h4 className="font-medium">Safety Protocol Test</h4>
-                          <p className="text-sm text-gray-600">Completed: August 15, 2025</p>
+                        <div className="border-l-4 border-lea-clinical-blue pl-4 py-2">
+                          <h4 className="font-medium text-lea-deep-charcoal">Safety Protocol Test</h4>
+                          <p className="text-sm text-lea-charcoal-grey">Completed: August 15, 2025</p>
                           <div className="flex items-center space-x-2 mt-1">
-                            <span className="text-sm font-medium">Score: 92%</span>
-                            <Badge variant="default">Passed</Badge>
+                            <span className="text-sm font-medium text-lea-deep-charcoal">Score: 92%</span>
+                            <Badge className="bg-lea-clinical-blue/20 text-lea-clinical-blue border-lea-clinical-blue/30">Passed</Badge>
                           </div>
                         </div>
                       </div>
@@ -349,7 +446,7 @@ export default function StudentPortal() {
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-6">
+          <div className="space-y-4 md:space-y-6 order-1 lg:order-2">
             {/* Student Profile */}
             <Card className="border border-lea-silver-grey shadow-lea-card hover:shadow-lea-card-hover transition-all duration-300 bg-lea-platinum-white">
               <CardHeader>
@@ -405,19 +502,39 @@ export default function StudentPortal() {
                 <CardTitle className="text-lea-deep-charcoal font-serif">Quick Actions</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Button variant="ghost" size="sm" className="w-full justify-start text-lea-charcoal-grey hover:bg-lea-pearl-white hover:text-lea-deep-charcoal transition-all duration-300">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="w-full justify-start text-lea-charcoal-grey hover:bg-lea-pearl-white hover:text-lea-deep-charcoal transition-all duration-300"
+                  onClick={() => handleQuickAction('download-certificates')}
+                >
                   <i className="fas fa-download mr-3 text-lea-elegant-silver"></i>
                   Download Certificates
                 </Button>
-                <Button variant="ghost" size="sm" className="w-full justify-start text-lea-charcoal-grey hover:bg-lea-pearl-white hover:text-lea-deep-charcoal transition-all duration-300">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="w-full justify-start text-lea-charcoal-grey hover:bg-lea-pearl-white hover:text-lea-deep-charcoal transition-all duration-300"
+                  onClick={() => handleQuickAction('view-schedule')}
+                >
                   <i className="fas fa-calendar mr-3 text-lea-clinical-blue"></i>
                   View Schedule
                 </Button>
-                <Button variant="ghost" size="sm" className="w-full justify-start text-lea-charcoal-grey hover:bg-lea-pearl-white hover:text-lea-deep-charcoal transition-all duration-300">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="w-full justify-start text-lea-charcoal-grey hover:bg-lea-pearl-white hover:text-lea-deep-charcoal transition-all duration-300"
+                  onClick={() => handleQuickAction('contact-tutor')}
+                >
                   <i className="fas fa-envelope mr-3 text-lea-deep-charcoal"></i>
                   Contact Tutor
                 </Button>
-                <Button variant="ghost" size="sm" className="w-full justify-start text-lea-charcoal-grey hover:bg-lea-pearl-white hover:text-lea-deep-charcoal transition-all duration-300">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="w-full justify-start text-lea-charcoal-grey hover:bg-lea-pearl-white hover:text-lea-deep-charcoal transition-all duration-300"
+                  onClick={() => handleQuickAction('resource-library')}
+                >
                   <i className="fas fa-book mr-3 text-lea-clinical-blue"></i>
                   Resource Library
                 </Button>
