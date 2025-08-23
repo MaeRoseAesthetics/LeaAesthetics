@@ -19,7 +19,29 @@
       "dest": "/api/$1"
     },
     {
-      "src": "/(.*)",
+      "src": "/assets/js/(.*\.js)$",
+      "dest": "/assets/js/$1",
+      "headers": {
+        "Content-Type": "application/javascript; charset=utf-8"
+      }
+    },
+    {
+      "src": "/assets/css/(.*\.css)$",
+      "dest": "/assets/css/$1",
+      "headers": {
+        "Content-Type": "text/css; charset=utf-8"
+      }
+    },
+    {
+      "src": "/assets/(.*)",
+      "dest": "/assets/$1"
+    },
+    {
+      "src": "/(.*\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot))$",
+      "dest": "/$1"
+    },
+    {
+      "src": "/((?!api|assets).*)",
       "dest": "/index.html"
     }
   ]
