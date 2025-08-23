@@ -32,22 +32,44 @@ export default function Landing() {
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = (data: LoginFormData) => {
-    console.log(`${loginDialog} login:`, data);
-    // Handle login based on user type
-    switch (loginDialog) {
-      case 'practitioner':
-        // Redirect to practitioner landing (will redirect to dashboard if authenticated)
-        window.location.href = '/practitioner';
-        break;
-      case 'client':
+  const onSubmit = async (data: LoginFormData) => {
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || 'Login failed');
+      }
+
+      // Store the session token in localStorage for client-side auth
+      if (result.session?.access_token) {
+        localStorage.setItem('supabase_token', result.session.access_token);
+      }
+
+      // Handle redirect based on user type and role
+      if (loginDialog === 'practitioner' || result.user.role === 'admin') {
+        // Redirect to dashboard for practitioners/admins
+        window.location.href = '/dashboard';
+      } else if (loginDialog === 'client') {
         // Redirect to client portal
         window.location.href = '/client-portal';
-        break;
-      case 'student':
+      } else if (loginDialog === 'student') {
         // Redirect to student portal
         window.location.href = '/student-portal';
-        break;
+      } else {
+        // Fallback redirect
+        window.location.href = '/dashboard';
+      }
+    } catch (error: any) {
+      console.error('Login error:', error);
+      alert(error.message || 'Login failed. Please try again.');
     }
   };
 

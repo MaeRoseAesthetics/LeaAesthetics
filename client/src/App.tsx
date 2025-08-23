@@ -7,6 +7,7 @@ import { useAuth } from "@/hooks/useAuth";
 import NotFound from "@/pages/not-found";
 import Landing from "@/pages/landing";
 import LandingMultiUser from "@/pages/landing-multi-user";
+import AdminSetup from "@/pages/admin-setup";
 import ClientPortal from "@/pages/client-portal";
 import StudentPortal from "@/pages/student-portal";
 import ClientRegistration from "@/pages/client-registration";
@@ -32,6 +33,9 @@ function Router() {
       <Route path="/student-portal" component={StudentPortal} />
       <Route path="/client-registration" component={ClientRegistration} />
       <Route path="/student-registration" component={StudentRegistration} />
+      
+      {/* Admin setup route */}
+      <Route path="/admin-setup" component={AdminSetup} />
       
       {/* Practitioner-specific landing and dashboard routes */}
       <Route path="/practitioner" component={Landing} />
