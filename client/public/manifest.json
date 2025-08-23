@@ -1,0 +1,120 @@
+{
+  "name": "Lea Aesthetics Clinic Academy",
+  "short_name": "Lea Aesthetics",
+  "description": "Premium aesthetic practice management and professional training platform",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#3A3A3A",
+  "background_color": "#FEFEFE",
+  "categories": ["medical", "business", "education", "productivity"],
+  "lang": "en-GB",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "description": "Access your practice dashboard",
+      "url": "/dashboard",
+      "icons": [
+        {
+          "src": "/android-chrome-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Bookings",
+      "short_name": "Bookings",
+      "description": "Manage client bookings",
+      "url": "/bookings",
+      "icons": [
+        {
+          "src": "/android-chrome-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Clients",
+      "short_name": "Clients", 
+      "description": "Manage client records",
+      "url": "/clients",
+      "icons": [
+        {
+          "src": "/android-chrome-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Courses",
+      "short_name": "Courses",
+      "description": "Access training courses",
+      "url": "/courses",
+      "icons": [
+        {
+          "src": "/android-chrome-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "screenshots": [
+    {
+      "src": "/screenshot-mobile-1.png",
+      "sizes": "320x640",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Dashboard view on mobile"
+    },
+    {
+      "src": "/screenshot-desktop-1.png", 
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Dashboard view on desktop"
+    }
+  ],
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  }
+}

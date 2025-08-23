@@ -2,12 +2,130 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-    <title>Lea Aesthetics Clinic Academy - Premium Practice Management & Training</title>
-    <meta name="description" content="Lea Aesthetics Clinic Academy - Elevating aesthetic practice management and professional training with elegance, precision, and regulatory excellence. UK Licensed." />
+    
+    <!-- Mobile-first viewport configuration -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0, user-scalable=yes, viewport-fit=cover" />
+    
+    <!-- Prevent zooming on inputs (iOS Safari) -->
+    <meta name="format-detection" content="telephone=no" />
+    
+    <!-- PWA Configuration -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Lea Aesthetics" />
+    <meta name="application-name" content="Lea Aesthetics" />
+    
+    <!-- Theme colors for mobile browsers -->
+    <meta name="theme-color" content="#3A3A3A" />
+    <meta name="msapplication-navbutton-color" content="#3A3A3A" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    
+    <!-- Windows Phone -->
+    <meta name="msapplication-starturl" content="/" />
+    <meta name="msapplication-TileColor" content="#3A3A3A" />
+    
+    <!-- Favicon and Icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    
+    <!-- Apple Touch Icons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="/apple-touch-icon-152x152.png" />
+    <link rel="apple-touch-icon" sizes="144x144" href="/apple-touch-icon-144x144.png" />
+    <link rel="apple-touch-icon" sizes="120x120" href="/apple-touch-icon-120x120.png" />
+    <link rel="apple-touch-icon" sizes="114x114" href="/apple-touch-icon-114x114.png" />
+    <link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon-76x76.png" />
+    <link rel="apple-touch-icon" sizes="72x72" href="/apple-touch-icon-72x72.png" />
+    <link rel="apple-touch-icon" sizes="60x60" href="/apple-touch-icon-60x60.png" />
+    <link rel="apple-touch-icon" sizes="57x57" href="/apple-touch-icon-57x57.png" />
+    
+    <!-- Android Chrome Icons -->
+    <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png" />
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+    
+    <!-- Preconnect to external domains -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    
+    <!-- SEO and Social Meta Tags -->
+    <title>Lea Aesthetics Clinic Academy - Premium Practice Management & Training</title>
+    <meta name="description" content="Lea Aesthetics Clinic Academy - Elevating aesthetic practice management and professional training with elegance, precision, and regulatory excellence. UK Licensed." />
+    <meta name="keywords" content="aesthetic clinic, practice management, medical training, healthcare, beauty treatments, professional development" />
+    <meta name="author" content="Lea Aesthetics" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://leaaesthetics.com/" />
+    <meta property="og:title" content="Lea Aesthetics Clinic Academy" />
+    <meta property="og:description" content="Premium aesthetic practice management and professional training platform" />
+    <meta property="og:image" content="/og-image.jpg" />
+    <meta property="og:site_name" content="Lea Aesthetics" />
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://leaaesthetics.com/" />
+    <meta name="twitter:title" content="Lea Aesthetics Clinic Academy" />
+    <meta name="twitter:description" content="Premium aesthetic practice management and professional training platform" />
+    <meta name="twitter:image" content="/twitter-image.jpg" />
+    
+    <!-- Fonts with display=swap for better performance -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+    
+    <!-- Critical CSS inlined for faster loading -->
+    <style>
+      /* Critical mobile-first styles */
+      * {
+        box-sizing: border-box;
+      }
+      
+      html {
+        -webkit-text-size-adjust: 100%;
+        -webkit-tap-highlight-color: transparent;
+        -webkit-overflow-scrolling: touch;
+      }
+      
+      body {
+        margin: 0;
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        overscroll-behavior-y: none;
+      }
+      
+      /* Safe area support for devices with notches */
+      @supports (padding: env(safe-area-inset-top)) {
+        body {
+          padding-top: env(safe-area-inset-top);
+          padding-left: env(safe-area-inset-left);
+          padding-right: env(safe-area-inset-right);
+          padding-bottom: env(safe-area-inset-bottom);
+        }
+      }
+      
+      #root {
+        min-height: 100vh;
+        min-height: 100dvh;
+      }
+      
+      /* Loading spinner */
+      .loading-spinner {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid #f3f3f3;
+        border-radius: 50%;
+        border-top-color: #3A3A3A;
+        animation: spin 1s ease-in-out infinite;
+      }
+      
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>
