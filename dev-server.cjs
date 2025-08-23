@@ -131,6 +131,53 @@ app.post('/api/create-payment-intent', async (req, res) => {
   });
 });
 
+// Admin setup endpoint
+app.post('/api/admin/setup', async (req, res) => {
+  console.log('Admin setup request received:', req.body);
+  
+  const { email, password, firstName, lastName } = req.body;
+  
+  // Basic validation
+  if (!email || !password || !firstName || !lastName) {
+    return res.status(400).json({
+      message: 'All fields are required'
+    });
+  }
+  
+  // Email format validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({
+      message: 'Invalid email format'
+    });
+  }
+  
+  // Password strength validation
+  if (password.length < 8) {
+    return res.status(400).json({
+      message: 'Password must be at least 8 characters long'
+    });
+  }
+  
+  // Mock successful admin creation
+  const adminUser = {
+    id: 'admin-' + Date.now(),
+    email: email,
+    firstName: firstName,
+    lastName: lastName,
+    role: 'admin',
+    createdAt: new Date().toISOString()
+  };
+  
+  console.log(`👑 ADMIN USER CREATED: ${firstName} ${lastName} (${email})`);
+  
+  res.json({
+    success: true,
+    message: 'Admin user created successfully',
+    user: adminUser
+  });
+});
+
 // Mock authentication endpoints
 app.post('/api/auth/signin', async (req, res) => {
   res.json({
