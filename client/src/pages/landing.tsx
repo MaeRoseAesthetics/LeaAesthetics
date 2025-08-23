@@ -1,8 +1,31 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useAuth } from "@/hooks/useAuth";
+import { useEffect } from "react";
+import { useLocation } from "wouter";
 
 export default function Landing() {
+  const { isAuthenticated, isLoading } = useAuth();
+  const [, setLocation] = useLocation();
+
+  // Redirect authenticated users to dashboard
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      setLocation("/dashboard");
+    }
+  }, [isAuthenticated, isLoading, setLocation]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-lea-platinum-grey flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-lea-elegant-silver border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-lea-charcoal-grey">Loading...</p>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="min-h-screen bg-lea-platinum-grey">
       {/* Header */}
@@ -26,6 +49,9 @@ export default function Landing() {
               </Badge>
             </div>
             <div className="flex items-center space-x-4">
+              <Button variant="ghost" asChild className="text-lea-charcoal-grey hover:text-lea-deep-charcoal">
+                <a href="/">← Back to Main</a>
+              </Button>
               <Button variant="outline" asChild className="border-lea-deep-charcoal text-lea-deep-charcoal hover:bg-lea-deep-charcoal hover:text-lea-platinum-white transition-all duration-300">
                 <a href="/api/login" data-testid="button-login">Practitioner Access</a>
               </Button>

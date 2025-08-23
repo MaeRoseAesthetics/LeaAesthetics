@@ -37,8 +37,8 @@ export default function Landing() {
     // Handle login based on user type
     switch (loginDialog) {
       case 'practitioner':
-        // Redirect to practitioner dashboard
-        window.location.href = '/';
+        // Redirect to practitioner landing (will redirect to dashboard if authenticated)
+        window.location.href = '/practitioner';
         break;
       case 'client':
         // Redirect to client portal

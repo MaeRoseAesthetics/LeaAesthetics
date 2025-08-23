@@ -24,19 +24,20 @@ function Router() {
 
   return (
     <Switch>
-      {/* Public routes */}
-      <Route path="/multi-user" component={LandingMultiUser} />
+      {/* Main entry point - Multi-user landing page */}
+      <Route path="/" component={LandingMultiUser} />
+      
+      {/* Public portal routes */}
       <Route path="/client-portal" component={ClientPortal} />
       <Route path="/student-portal" component={StudentPortal} />
       <Route path="/client-registration" component={ClientRegistration} />
       <Route path="/student-registration" component={StudentRegistration} />
       
-      {/* Practitioner routes */}
-      {isLoading || !isAuthenticated ? (
-        <Route path="/" component={Landing} />
-      ) : (
+      {/* Practitioner-specific landing and dashboard routes */}
+      <Route path="/practitioner" component={Landing} />
+      {isAuthenticated ? (
         <>
-          <Route path="/" component={Dashboard} />
+          <Route path="/dashboard" component={Dashboard} />
           <Route path="/bookings" component={Bookings} />
           <Route path="/clients" component={Clients} />
           <Route path="/payments" component={Payments} />
@@ -44,7 +45,8 @@ function Router() {
           <Route path="/students" component={Students} />
           <Route path="/compliance" component={Compliance} />
         </>
-      )}
+      ) : null}
+      
       <Route component={NotFound} />
     </Switch>
   );
