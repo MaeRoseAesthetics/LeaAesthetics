@@ -2,6 +2,10 @@ import { useEffect, useState, useCallback } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Calendar } from "@/components/ui/calendar";
 import Header from "@/components/layout/header";
 import Sidebar from "@/components/layout/sidebar";
 import StatsCards from "@/components/dashboard/stats-cards";
@@ -12,19 +16,317 @@ import CPDTracker from "@/components/dashboard/cpd-tracker";
 import QuickActions from "@/components/dashboard/quick-actions";
 
 // Tab Content Components
-const BookingsContent = () => (
-  <div className="p-4 lg:p-6">
-    <div className="mb-6">
-      <h2 className="text-2xl font-serif font-bold text-lea-deep-charcoal mb-2">Bookings Management</h2>
-      <p className="text-lea-charcoal-grey">Manage your appointments and schedule</p>
+const BookingsContent = () => {
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
+  const [showNewBooking, setShowNewBooking] = useState(false);
+  const [viewMode, setViewMode] = useState<'calendar' | 'list'>('calendar');
+  
+  // Mock bookings data
+  const bookings = [
+    {
+      id: '1',
+      clientName: 'Sarah Johnson',
+      treatment: 'Botox Consultation',
+      date: '2025-08-23',
+      time: '10:00',
+      duration: 60,
+      status: 'confirmed',
+      price: '£250'
+    },
+    {
+      id: '2',
+      clientName: 'Emma Wilson',
+      treatment: 'Dermal Fillers',
+      date: '2025-08-23',
+      time: '14:30',
+      duration: 90,
+      status: 'pending',
+      price: '£350'
+    },
+    {
+      id: '3',
+      clientName: 'Michael Brown',
+      treatment: 'Skin Assessment',
+      date: '2025-08-24',
+      time: '09:00',
+      duration: 45,
+      status: 'confirmed',
+      price: '£150'
+    }
+  ];
+
+  const todayBookings = bookings.filter(booking => 
+    new Date(booking.date).toDateString() === new Date().toDateString()
+  );
+
+  return (
+    <div className="p-4 lg:p-6 space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 className="text-2xl font-serif font-bold text-lea-deep-charcoal mb-2">Bookings Management</h2>
+          <p className="text-lea-charcoal-grey">Manage your appointments and schedule</p>
+        </div>
+        <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex bg-lea-platinum-white rounded-lg p-1 border border-lea-silver-grey">
+            <button
+              onClick={() => setViewMode('calendar')}
+              className={`px-3 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
+                viewMode === 'calendar' 
+                  ? 'bg-lea-elegant-silver text-lea-deep-charcoal shadow-sm' 
+                  : 'text-lea-charcoal-grey hover:text-lea-deep-charcoal'
+              }`}
+            >
+              <i className="fas fa-calendar mr-2"></i>Calendar
+            </button>
+            <button
+              onClick={() => setViewMode('list')}
+              className={`px-3 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
+                viewMode === 'list' 
+                  ? 'bg-lea-elegant-silver text-lea-deep-charcoal shadow-sm' 
+                  : 'text-lea-charcoal-grey hover:text-lea-deep-charcoal'
+              }`}
+            >
+              <i className="fas fa-list mr-2"></i>List
+            </button>
+          </div>
+          <Button 
+            onClick={() => setShowNewBooking(true)}
+            className="bg-lea-deep-charcoal text-lea-platinum-white hover:bg-lea-elegant-charcoal"
+          >
+            <i className="fas fa-plus mr-2"></i>New Booking
+          </Button>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        {/* Statistics Cards */}
+        <div className="lg:col-span-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <Card className="bg-lea-platinum-white border-lea-silver-grey">
+            <CardContent className="p-4">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-lea-clinical-blue/10 rounded-lg flex items-center justify-center">
+                  <i className="fas fa-calendar-day text-lea-clinical-blue"></i>
+                </div>
+                <div>
+                  <p className="text-sm text-lea-charcoal-grey">Today's Bookings</p>
+                  <p className="text-xl font-bold text-lea-deep-charcoal">{todayBookings.length}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card className="bg-lea-platinum-white border-lea-silver-grey">
+            <CardContent className="p-4">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-lea-elegant-silver/10 rounded-lg flex items-center justify-center">
+                  <i className="fas fa-clock text-lea-elegant-silver"></i>
+                </div>
+                <div>
+                  <p className="text-sm text-lea-charcoal-grey">Pending Confirmations</p>
+                  <p className="text-xl font-bold text-lea-deep-charcoal">
+                    {bookings.filter(b => b.status === 'pending').length}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card className="bg-lea-platinum-white border-lea-silver-grey">
+            <CardContent className="p-4">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                  <i className="fas fa-check-circle text-green-600"></i>
+                </div>
+                <div>
+                  <p className="text-sm text-lea-charcoal-grey">Confirmed</p>
+                  <p className="text-xl font-bold text-lea-deep-charcoal">
+                    {bookings.filter(b => b.status === 'confirmed').length}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card className="bg-lea-platinum-white border-lea-silver-grey">
+            <CardContent className="p-4">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-lea-deep-charcoal/10 rounded-lg flex items-center justify-center">
+                  <i className="fas fa-pound-sign text-lea-deep-charcoal"></i>
+                </div>
+                <div>
+                  <p className="text-sm text-lea-charcoal-grey">Today's Revenue</p>
+                  <p className="text-xl font-bold text-lea-deep-charcoal">£600</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Main Content */}
+        <div className="lg:col-span-3">
+          {viewMode === 'calendar' ? (
+            <Card className="bg-lea-platinum-white border-lea-silver-grey">
+              <CardHeader>
+                <CardTitle className="text-lea-deep-charcoal font-serif">Appointment Calendar</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {/* Mini Calendar */}
+                  <Calendar
+                    mode="single"
+                    selected={selectedDate}
+                    onSelect={setSelectedDate}
+                    className="rounded-md border border-lea-silver-grey mx-auto"
+                  />
+                  
+                  {/* Selected Date Appointments */}
+                  <div className="mt-6">
+                    <h4 className="text-lg font-medium text-lea-deep-charcoal mb-4">
+                      Appointments for {selectedDate?.toLocaleDateString()}
+                    </h4>
+                    <div className="space-y-3">
+                      {bookings
+                        .filter(booking => 
+                          selectedDate && new Date(booking.date).toDateString() === selectedDate.toDateString()
+                        )
+                        .map(booking => (
+                          <div key={booking.id} className="flex items-center justify-between p-3 bg-lea-pearl-white rounded-lg border border-lea-silver-grey">
+                            <div className="flex items-center space-x-3">
+                              <div className="w-2 h-8 bg-lea-clinical-blue rounded-full"></div>
+                              <div>
+                                <p className="font-medium text-lea-deep-charcoal">{booking.clientName}</p>
+                                <p className="text-sm text-lea-charcoal-grey">{booking.treatment}</p>
+                                <p className="text-sm text-lea-slate-grey">{booking.time} ({booking.duration}min)</p>
+                              </div>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <Badge className={`${
+                                booking.status === 'confirmed' 
+                                  ? 'bg-green-100 text-green-800 border-green-200' 
+                                  : 'bg-yellow-100 text-yellow-800 border-yellow-200'
+                              }`}>
+                                {booking.status}
+                              </Badge>
+                              <Button size="sm" variant="ghost">
+                                <i className="fas fa-edit"></i>
+                              </Button>
+                            </div>
+                          </div>
+                        ))}
+                      {bookings.filter(booking => 
+                        selectedDate && new Date(booking.date).toDateString() === selectedDate.toDateString()
+                      ).length === 0 && (
+                        <p className="text-center text-lea-charcoal-grey py-4">No appointments scheduled for this date</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ) : (
+            <Card className="bg-lea-platinum-white border-lea-silver-grey">
+              <CardHeader>
+                <CardTitle className="text-lea-deep-charcoal font-serif">All Appointments</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {bookings.map(booking => (
+                    <div key={booking.id} className="flex items-center justify-between p-4 border border-lea-silver-grey rounded-lg hover:shadow-lea-subtle transition-all duration-200">
+                      <div className="flex items-center space-x-4">
+                        <div className="w-12 h-12 bg-lea-clinical-blue/10 rounded-full flex items-center justify-center">
+                          <i className="fas fa-user text-lea-clinical-blue"></i>
+                        </div>
+                        <div>
+                          <p className="font-medium text-lea-deep-charcoal">{booking.clientName}</p>
+                          <p className="text-sm text-lea-charcoal-grey">{booking.treatment}</p>
+                          <p className="text-sm text-lea-slate-grey">
+                            {new Date(booking.date).toLocaleDateString()} at {booking.time}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-4">
+                        <div className="text-right">
+                          <p className="font-medium text-lea-deep-charcoal">{booking.price}</p>
+                          <p className="text-sm text-lea-charcoal-grey">{booking.duration} mins</p>
+                        </div>
+                        <Badge className={`${
+                          booking.status === 'confirmed' 
+                            ? 'bg-green-100 text-green-800 border-green-200' 
+                            : 'bg-yellow-100 text-yellow-800 border-yellow-200'
+                        }`}>
+                          {booking.status}
+                        </Badge>
+                        <div className="flex space-x-1">
+                          <Button size="sm" variant="ghost">
+                            <i className="fas fa-edit"></i>
+                          </Button>
+                          <Button size="sm" variant="ghost" className="text-red-600 hover:text-red-700">
+                            <i className="fas fa-trash"></i>
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+
+        {/* Sidebar */}
+        <div className="space-y-4">
+          <Card className="bg-lea-platinum-white border-lea-silver-grey">
+            <CardHeader>
+              <CardTitle className="text-lea-deep-charcoal font-serif text-lg">Today's Schedule</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {todayBookings.map(booking => (
+                  <div key={booking.id} className="flex items-center space-x-3 p-2 rounded-lg bg-lea-pearl-white">
+                    <div className="w-2 h-2 bg-lea-clinical-blue rounded-full"></div>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-lea-deep-charcoal">{booking.time}</p>
+                      <p className="text-xs text-lea-charcoal-grey">{booking.clientName}</p>
+                    </div>
+                  </div>
+                ))}
+                {todayBookings.length === 0 && (
+                  <p className="text-sm text-lea-charcoal-grey text-center py-4">No appointments today</p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-lea-platinum-white border-lea-silver-grey">
+            <CardHeader>
+              <CardTitle className="text-lea-deep-charcoal font-serif text-lg">Quick Actions</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                <Button size="sm" variant="ghost" className="w-full justify-start text-lea-charcoal-grey hover:text-lea-deep-charcoal">
+                  <i className="fas fa-plus mr-2 text-lea-clinical-blue"></i>
+                  New Appointment
+                </Button>
+                <Button size="sm" variant="ghost" className="w-full justify-start text-lea-charcoal-grey hover:text-lea-deep-charcoal">
+                  <i className="fas fa-calendar-check mr-2 text-lea-elegant-silver"></i>
+                  View Calendar
+                </Button>
+                <Button size="sm" variant="ghost" className="w-full justify-start text-lea-charcoal-grey hover:text-lea-deep-charcoal">
+                  <i className="fas fa-clock mr-2 text-lea-deep-charcoal"></i>
+                  Reschedule
+                </Button>
+                <Button size="sm" variant="ghost" className="w-full justify-start text-lea-charcoal-grey hover:text-lea-deep-charcoal">
+                  <i className="fas fa-download mr-2 text-lea-clinical-blue"></i>
+                  Export Schedule
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     </div>
-    <div className="bg-lea-platinum-white rounded-xl border border-lea-silver-grey p-6 text-center">
-      <i className="fas fa-calendar-alt text-4xl text-lea-charcoal-grey mb-4"></i>
-      <h3 className="text-lg font-medium text-lea-deep-charcoal mb-2">Bookings Dashboard</h3>
-      <p className="text-lea-charcoal-grey">Comprehensive booking management coming soon</p>
-    </div>
-  </div>
-);
+  );
+};
 
 const ClientsContent = () => (
   <div className="p-4 lg:p-6">
