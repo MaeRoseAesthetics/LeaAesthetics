@@ -300,8 +300,11 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h4 className="text-lg font-serif font-semibold text-lea-platinum-white mb-4">Lea Aesthetics Clinic Academy</h4>
-            <p className="text-sm text-lea-silver-grey mb-4">
+            <p className="text-sm text-lea-silver-grey mb-2">
               Elevating aesthetic practice management and professional training with elegance, precision, and regulatory excellence.
+            </p>
+            <p className="text-xs text-lea-warm-grey mb-4">
+              A product of MaeRose Aesthetics
             </p>
             <div className="flex justify-center space-x-6 text-sm text-lea-platinum-grey">
               <span>JCCP Compliant</span>

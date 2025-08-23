@@ -470,7 +470,7 @@ export default function Landing() {
               
               <div className="text-xs text-lea-warm-grey">
                 <p>© 2024 Lea Aesthetics Clinic Academy. All rights reserved.</p>
-                <p className="mt-1">Professional aesthetic training and practice management platform.</p>
+                <p className="mt-1">A product of MaeRose Aesthetics</p>
               </div>
             </motion.div>
           </div>
