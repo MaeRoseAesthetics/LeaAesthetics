@@ -16,73 +16,8 @@ interface Treatment {
   updatedAt: string;
 }
 
-// Mock treatments data - in production this would come from a database
-let treatments: Treatment[] = [
-  {
-    id: "1",
-    name: "Advanced Hydrating Facial",
-    category: "Facial Treatments",
-    description: "A deeply nourishing facial treatment using premium serums and advanced techniques to restore skin hydration and luminosity.",
-    price: 120,
-    duration: 90,
-    targetAudience: "client",
-    aftercare: "Avoid direct sunlight for 24 hours. Apply provided SPF daily.",
-    contraindications: "Active skin infections, recent chemical peels",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: "2",
-    name: "Chemical Peel Certification Course",
-    category: "Training Courses",
-    description: "Comprehensive 3-day certification course covering all aspects of chemical peel application, safety protocols, and client assessment.",
-    price: 850,
-    duration: 1440,
-    targetAudience: "practitioner",
-    requirements: "Level 3 Beauty Therapy qualification",
-    equipment: "Training models, peel solutions, safety equipment provided",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: "3",
-    name: "Microneedling Treatment",
-    category: "Microneedling",
-    description: "Professional microneedling treatment to improve skin texture, reduce scarring, and stimulate collagen production.",
-    price: 200,
-    duration: 75,
-    targetAudience: "client",
-    aftercare: "No makeup for 12 hours. Use provided healing serum twice daily.",
-    contraindications: "Active acne, keloid scarring, blood thinning medications",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: "4",
-    name: "Advanced Botox & Dermal Fillers Course",
-    category: "Training Courses",
-    description: "Expert-level training in botulinum toxin and dermal filler injection techniques, including facial anatomy and complication management.",
-    price: 1200,
-    duration: 2160,
-    targetAudience: "practitioner",
-    requirements: "Medical or Level 7 qualification, insurance coverage",
-    equipment: "Practice models, injection equipment, products provided",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: "5",
-    name: "Anti-Aging Consultation",
-    category: "Consultation Services",
-    description: "Comprehensive skin analysis and treatment planning session with personalized anti-aging recommendations.",
-    price: 75,
-    duration: 45,
-    targetAudience: "client",
-    aftercare: "Follow provided skincare regimen recommendations",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  }
-];
+// Empty treatments array - ready for client to add their own data
+let treatments: Treatment[] = [];
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // CORS headers

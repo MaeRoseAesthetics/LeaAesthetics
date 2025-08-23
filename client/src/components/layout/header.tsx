@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export default function Header() {
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, logout } = useAuth();
   const [activeMode, setActiveMode] = useState<'treatments' | 'training'>('treatments');
 
   const handleModeSwitch = (mode: 'treatments' | 'training') => {
@@ -119,11 +119,9 @@ export default function Header() {
                   Help & Support
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <a href="/api/logout" data-testid="menu-logout">
-                    <i className="fas fa-sign-out-alt mr-2"></i>
-                    Sign Out
-                  </a>
+                <DropdownMenuItem onClick={logout} data-testid="menu-logout">
+                  <i className="fas fa-sign-out-alt mr-2"></i>
+                  Sign Out
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

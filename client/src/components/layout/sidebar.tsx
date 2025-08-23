@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useLocation } from "wouter";
+import { useLocation, Link } from "wouter";
 import { Badge } from "@/components/ui/badge";
 
 export default function Sidebar() {
@@ -32,7 +32,7 @@ export default function Sidebar() {
     {
       path: "/treatments",
       icon: "fas fa-file-medical",
-      label: "Medical Records",
+      label: "Treatments",
       badge: null
     },
     {
@@ -119,23 +119,24 @@ export default function Sidebar() {
             <ul className="space-y-1">
               {treatmentNavItems.map((item) => (
                 <li key={item.path}>
-                  <a
-                    href={item.path}
-                    className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md ${
-                      isActive(item.path)
-                        ? 'bg-lea-charcoal text-lea-white'
-                        : 'text-lea-dark-grey hover:bg-lea-light-grey'
-                    }`}
-                    data-testid={`nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
-                  >
-                    <i className={`${item.icon} mr-3`}></i>
-                    {item.label}
-                    {item.badge && (
-                      <Badge className="ml-auto bg-lea-soft-gold text-lea-charcoal">
-                        {item.badge}
-                      </Badge>
-                    )}
-                  </a>
+                  <Link href={item.path}>
+                    <a
+                      className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md ${
+                        isActive(item.path)
+                          ? 'bg-lea-charcoal text-lea-white'
+                          : 'text-lea-dark-grey hover:bg-lea-light-grey'
+                      }`}
+                      data-testid={`nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
+                    >
+                      <i className={`${item.icon} mr-3`}></i>
+                      {item.label}
+                      {item.badge && (
+                        <Badge className="ml-auto bg-lea-soft-gold text-lea-charcoal">
+                          {item.badge}
+                        </Badge>
+                      )}
+                    </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -146,23 +147,24 @@ export default function Sidebar() {
             <ul className="space-y-1">
               {complianceNavItems.map((item) => (
                 <li key={item.path}>
-                  <a
-                    href={item.path}
-                    className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md ${
-                      isActive(item.path)
-                        ? 'bg-lea-charcoal text-lea-white'
-                        : 'text-lea-dark-grey hover:bg-lea-light-grey'
-                    }`}
-                    data-testid={`nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
-                  >
-                    <i className={`${item.icon} mr-3`}></i>
-                    {item.label}
-                    {item.statusIcon && (
-                      <span className="ml-auto">
-                        <i className={item.statusIcon}></i>
-                      </span>
-                    )}
-                  </a>
+                  <Link href={item.path}>
+                    <a
+                      className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md ${
+                        isActive(item.path)
+                          ? 'bg-lea-charcoal text-lea-white'
+                          : 'text-lea-dark-grey hover:bg-lea-light-grey'
+                      }`}
+                      data-testid={`nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
+                    >
+                      <i className={`${item.icon} mr-3`}></i>
+                      {item.label}
+                      {item.statusIcon && (
+                        <span className="ml-auto">
+                          <i className={item.statusIcon}></i>
+                        </span>
+                      )}
+                    </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -178,18 +180,19 @@ export default function Sidebar() {
             <ul className="space-y-1">
               {trainingNavItems.map((item) => (
                 <li key={item.path}>
-                  <a
-                    href={item.path}
-                    className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md ${
-                      isActive(item.path)
-                        ? 'bg-lea-charcoal text-lea-white'
-                        : 'text-lea-dark-grey hover:bg-lea-light-grey'
-                    }`}
-                    data-testid={`nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
-                  >
-                    <i className={`${item.icon} mr-3`}></i>
-                    {item.label}
-                  </a>
+                  <Link href={item.path}>
+                    <a
+                      className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md ${
+                        isActive(item.path)
+                          ? 'bg-lea-charcoal text-lea-white'
+                          : 'text-lea-dark-grey hover:bg-lea-light-grey'
+                      }`}
+                      data-testid={`nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
+                    >
+                      <i className={`${item.icon} mr-3`}></i>
+                      {item.label}
+                    </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -200,18 +203,19 @@ export default function Sidebar() {
             <ul className="space-y-1">
               {accreditationNavItems.map((item) => (
                 <li key={item.path}>
-                  <a
-                    href={item.path}
-                    className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md ${
-                      isActive(item.path)
-                        ? 'bg-lea-charcoal text-lea-white'
-                        : 'text-lea-dark-grey hover:bg-lea-light-grey'
-                    }`}
-                    data-testid={`nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
-                  >
-                    <i className={`${item.icon} mr-3`}></i>
-                    {item.label}
-                  </a>
+                  <Link href={item.path}>
+                    <a
+                      className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md ${
+                        isActive(item.path)
+                          ? 'bg-lea-charcoal text-lea-white'
+                          : 'text-lea-dark-grey hover:bg-lea-light-grey'
+                      }`}
+                      data-testid={`nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
+                    >
+                      <i className={`${item.icon} mr-3`}></i>
+                      {item.label}
+                    </a>
+                  </Link>
                 </li>
               ))}
             </ul>

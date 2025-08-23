@@ -82,52 +82,22 @@ export default function Treatments() {
     },
   });
 
-  // Mock data for now - will be replaced with API calls
+  // Load treatments from API
   useEffect(() => {
-    const mockTreatments: Treatment[] = [
-      {
-        id: "1",
-        name: "Advanced Hydrating Facial",
-        category: "Facial Treatments",
-        description: "A deeply nourishing facial treatment using premium serums and advanced techniques to restore skin hydration and luminosity.",
-        price: 120,
-        duration: 90,
-        targetAudience: "client",
-        aftercare: "Avoid direct sunlight for 24 hours. Apply provided SPF daily.",
-        contraindications: "Active skin infections, recent chemical peels",
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-      {
-        id: "2",
-        name: "Chemical Peel Certification Course",
-        category: "Training Courses",
-        description: "Comprehensive 3-day certification course covering all aspects of chemical peel application, safety protocols, and client assessment.",
-        price: 850,
-        duration: 1440, // 24 hours over 3 days
-        targetAudience: "practitioner",
-        requirements: "Level 3 Beauty Therapy qualification",
-        equipment: "Training models, peel solutions, safety equipment provided",
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-      {
-        id: "3",
-        name: "Microneedling Treatment",
-        category: "Microneedling",
-        description: "Professional microneedling treatment to improve skin texture, reduce scarring, and stimulate collagen production.",
-        price: 200,
-        duration: 75,
-        targetAudience: "client",
-        aftercare: "No makeup for 12 hours. Use provided healing serum twice daily.",
-        contraindications: "Active acne, keloid scarring, blood thinning medications",
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+    const fetchTreatments = async () => {
+      try {
+        const response = await fetch('/api/treatments');
+        const data = await response.json();
+        setTreatments(data.treatments || []);
+      } catch (error) {
+        console.error('Error fetching treatments:', error);
+        setTreatments([]);
+      } finally {
+        setIsLoading(false);
       }
-    ];
+    };
 
-    setTreatments(mockTreatments);
-    setIsLoading(false);
+    fetchTreatments();
   }, []);
 
   const onSubmit = async (data: TreatmentFormData) => {
