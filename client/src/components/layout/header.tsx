@@ -27,30 +27,30 @@ export default function Header() {
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <h1 className="text-2xl font-serif font-bold text-maerose-gold tracking-wide" data-testid="text-app-title">
-                MaeRose
+              <h1 className="text-2xl font-serif font-bold text-lea-charcoal tracking-wide" data-testid="text-app-title">
+                Lea Aesthetics Clinic Academy
               </h1>
             </div>
             <div className="hidden md:block ml-10">
               <div className="flex items-baseline space-x-4">
                 {/* Mode Toggle */}
-                <div className="bg-maerose-cream rounded-lg p-1 flex border border-maerose-gold/20">
+                <div className="bg-lea-light-grey rounded-lg p-1 flex border border-lea-mid-grey">
                   <button
                     className={`px-3 py-1 rounded-md text-sm font-medium transition-all ${
                       activeMode === 'treatments'
-                        ? 'bg-maerose-forest text-maerose-cream'
-                        : 'text-maerose-forest hover:text-maerose-burgundy'
+                        ? 'bg-lea-charcoal text-lea-white'
+                        : 'text-lea-charcoal hover:text-lea-soft-gold'
                     }`}
                     onClick={() => handleModeSwitch('treatments')}
                     data-testid="button-switch-treatments"
                   >
-                    <i className="fas fa-rose mr-1"></i> Treatments
+                    <i className="fas fa-spa mr-1"></i> Treatments
                   </button>
                   <button
                     className={`px-3 py-1 rounded-md text-sm font-medium transition-all ${
                       activeMode === 'training'
-                        ? 'bg-maerose-forest text-maerose-cream'
-                        : 'text-maerose-forest hover:text-maerose-burgundy'
+                        ? 'bg-lea-charcoal text-lea-white'
+                        : 'text-lea-charcoal hover:text-lea-soft-gold'
                     }`}
                     onClick={() => handleModeSwitch('training')}
                     data-testid="button-switch-training"
@@ -64,11 +64,11 @@ export default function Header() {
           <div className="flex items-center space-x-4">
             {/* Notifications */}
             <button 
-              className="p-2 text-gray-400 hover:text-gray-500 relative"
+              className="p-2 text-lea-dark-grey hover:text-lea-charcoal relative"
               data-testid="button-notifications"
             >
               <i className="fas fa-bell"></i>
-              <Badge className="absolute -top-1 -right-1 bg-maerose-burgundy text-white text-xs px-1.5 py-0.5">
+              <Badge className="absolute -top-1 -right-1 bg-lea-soft-gold text-lea-charcoal text-xs px-1.5 py-0.5">
                 3
               </Badge>
               <span className="sr-only">Notifications</span>
@@ -77,7 +77,7 @@ export default function Header() {
             {/* User Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <div className="flex items-center space-x-2 cursor-pointer hover:bg-gray-50 rounded-md p-2">
+                <div className="flex items-center space-x-2 cursor-pointer hover:bg-lea-light-grey rounded-md p-2">
                   <img
                     className="h-8 w-8 rounded-full object-cover"
                     src={user?.profileImageUrl || "/api/placeholder/32/32"}
@@ -85,15 +85,15 @@ export default function Header() {
                     data-testid="img-profile"
                   />
                   <div className="hidden md:block text-left">
-                    <span className="text-sm font-medium text-gray-900" data-testid="text-user-name">
+                    <span className="text-sm font-medium text-lea-charcoal" data-testid="text-user-name">
                       {user?.firstName && user?.lastName
                         ? `${user.firstName} ${user.lastName}`
                         : user?.email || 'User'
                       }
                     </span>
-                    <div className="text-xs text-gray-500">Practitioner</div>
+                    <div className="text-xs text-lea-dark-grey">Practitioner</div>
                   </div>
-                  <i className="fas fa-chevron-down text-xs text-gray-400"></i>
+                  <i className="fas fa-chevron-down text-xs text-lea-dark-grey"></i>
                 </div>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">

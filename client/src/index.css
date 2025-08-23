@@ -1,70 +1,77 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  /* Maerose Brand Colors */
-  --maerose-forest-green: #1E3A24;
-  --maerose-burgundy: #7C283C;
-  --maerose-cream: #F9F4E5;
-  --maerose-gold: #A18A49;
+  /* Lea Aesthetics Greyscale Palette */
+  --lea-pure-white: #FFFFFF;
+  --lea-light-grey: #F5F5F5;
+  --lea-mid-grey: #D3D3D3;
+  --lea-dark-grey: #4A4A4A;
+  --lea-charcoal: #2C2C2C;
+  --lea-near-black: #1A1A1A;
   
-  /* Updated color scheme with Maerose branding */
-  --background: var(--maerose-cream);
-  --foreground: var(--maerose-forest-green);
-  --card: hsl(0, 0%, 100%);
-  --card-foreground: var(--maerose-forest-green);
-  --popover: hsl(0, 0%, 100%);
-  --popover-foreground: var(--maerose-forest-green);
-  --primary: var(--maerose-forest-green);
-  --primary-foreground: var(--maerose-cream);
-  --secondary: var(--maerose-burgundy);
-  --secondary-foreground: var(--maerose-cream);
-  --muted: hsl(47, 27%, 95%);
-  --muted-foreground: hsl(129, 29%, 35%);
-  --accent: var(--maerose-gold);
-  --accent-foreground: var(--maerose-cream);
-  --destructive: hsl(356.3033, 90.5579%, 54.3137%);
-  --destructive-foreground: hsl(0, 0%, 100%);
-  --border: hsl(47, 20%, 88%);
-  --input: hsl(0, 0%, 100%);
-  --ring: var(--maerose-forest-green);
-  --chart-1: var(--maerose-forest-green);
-  --chart-2: var(--maerose-burgundy);
-  --chart-3: var(--maerose-gold);
-  --chart-4: hsl(147.1429, 78.5047%, 41.9608%);
-  --chart-5: hsl(341.4894, 75.2000%, 50.9804%);
-  --sidebar: hsl(0, 0%, 100%);
-  --sidebar-foreground: var(--maerose-forest-green);
-  --sidebar-primary: var(--maerose-forest-green);
-  --sidebar-primary-foreground: var(--maerose-cream);
-  --sidebar-accent: var(--maerose-gold);
-  --sidebar-accent-foreground: var(--maerose-cream);
-  --sidebar-border: hsl(47, 20%, 88%);
-  --sidebar-ring: var(--maerose-forest-green);
+  /* Lea Accent Colors */
+  --lea-soft-gold: #D4AF37;
+  --lea-clinical-blue: #007BFF;
+  --lea-error-red: #D32F2F;
+  
+  /* Lea Aesthetics UI Color System */
+  --background: var(--lea-pure-white);
+  --foreground: var(--lea-dark-grey);
+  --card: var(--lea-pure-white);
+  --card-foreground: var(--lea-dark-grey);
+  --popover: var(--lea-pure-white);
+  --popover-foreground: var(--lea-dark-grey);
+  --primary: var(--lea-charcoal);
+  --primary-foreground: var(--lea-pure-white);
+  --secondary: var(--lea-light-grey);
+  --secondary-foreground: var(--lea-dark-grey);
+  --muted: var(--lea-light-grey);
+  --muted-foreground: var(--lea-dark-grey);
+  --accent: var(--lea-soft-gold);
+  --accent-foreground: var(--lea-charcoal);
+  --destructive: var(--lea-error-red);
+  --destructive-foreground: var(--lea-pure-white);
+  --border: var(--lea-mid-grey);
+  --input: var(--lea-pure-white);
+  --ring: var(--lea-charcoal);
+  --chart-1: var(--lea-charcoal);
+  --chart-2: var(--lea-clinical-blue);
+  --chart-3: var(--lea-soft-gold);
+  --chart-4: var(--lea-dark-grey);
+  --chart-5: var(--lea-mid-grey);
+  --sidebar: var(--lea-pure-white);
+  --sidebar-foreground: var(--lea-dark-grey);
+  --sidebar-primary: var(--lea-charcoal);
+  --sidebar-primary-foreground: var(--lea-pure-white);
+  --sidebar-accent: var(--lea-soft-gold);
+  --sidebar-accent-foreground: var(--lea-charcoal);
+  --sidebar-border: var(--lea-mid-grey);
+  --sidebar-ring: var(--lea-charcoal);
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-serif: 'Libre Baskerville', 'Playfair Display', Georgia, serif;
+  --font-serif: 'Lora', Georgia, serif;
   --font-mono: 'Menlo', 'Monaco', 'Consolas', monospace;
   --radius: 0.5rem;
-  --shadow-2xs: 0px 1px 2px 0px rgba(30, 58, 36, 0.05);
-  --shadow-xs: 0px 1px 2px 0px rgba(30, 58, 36, 0.05);
-  --shadow-sm: 0px 1px 2px 0px rgba(30, 58, 36, 0.05), 0px 1px 3px 0px rgba(30, 58, 36, 0.1);
-  --shadow: 0px 1px 3px 0px rgba(30, 58, 36, 0.1), 0px 1px 2px 0px rgba(30, 58, 36, 0.06);
-  --shadow-md: 0px 4px 6px -1px rgba(30, 58, 36, 0.1), 0px 2px 4px -1px rgba(30, 58, 36, 0.06);
-  --shadow-lg: 0px 10px 15px -3px rgba(30, 58, 36, 0.1), 0px 4px 6px -2px rgba(30, 58, 36, 0.05);
-  --shadow-xl: 0px 20px 25px -5px rgba(30, 58, 36, 0.1), 0px 10px 10px -5px rgba(30, 58, 36, 0.04);
-  --shadow-2xl: 0px 25px 50px -12px rgba(30, 58, 36, 0.25);
+  --shadow-2xs: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
+  --shadow-xs: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0px 1px 2px 0px rgba(0, 0, 0, 0.05), 0px 1px 3px 0px rgba(0, 0, 0, 0.08);
+  --shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.08), 0px 1px 2px 0px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0px 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0px 10px 15px -3px rgba(0, 0, 0, 0.08), 0px 4px 6px -2px rgba(0, 0, 0, 0.04);
+  --shadow-xl: 0px 20px 25px -5px rgba(0, 0, 0, 0.08), 0px 10px 10px -5px rgba(0, 0, 0, 0.02);
+  --shadow-2xl: 0px 25px 50px -12px rgba(0, 0, 0, 0.12);
   --tracking-normal: 0em;
   --spacing: 0.25rem;
   
-  /* Maerose Brand Color Variables for Compatibility */
-  --medical-blue: var(--maerose-forest-green);
-  --clinical-grey: var(--maerose-cream);
+  /* Lea Aesthetics Color Variables for Compatibility */
+  --medical-blue: var(--lea-clinical-blue);
+  --clinical-grey: var(--lea-light-grey);
   --success: hsl(159, 78%, 42%);
-  --warning: var(--maerose-gold);
-  --error: hsl(356, 91%, 54%);
+  --warning: var(--lea-soft-gold);
+  --error: var(--lea-error-red);
 }
 
 .dark {
@@ -131,55 +138,140 @@
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
   }
 
-  /* Maerose Typography */
+  /* Lea Aesthetics Typography */
   h1, h2, h3, h4, h5, h6 {
     @apply font-serif;
-    color: var(--maerose-forest-green);
+    color: var(--lea-charcoal);
   }
 
-  /* Maerose Brand Utility Classes */
-  .bg-maerose-forest {
-    background-color: var(--maerose-forest-green);
+  /* Lea Aesthetics Brand Utility Classes */
+  .bg-lea-white {
+    background-color: var(--lea-pure-white);
   }
 
-  .text-maerose-forest {
-    color: var(--maerose-forest-green);
+  .bg-lea-light-grey {
+    background-color: var(--lea-light-grey);
   }
 
-  .border-maerose-forest {
-    border-color: var(--maerose-forest-green);
+  .bg-lea-mid-grey {
+    background-color: var(--lea-mid-grey);
   }
 
-  .bg-maerose-burgundy {
-    background-color: var(--maerose-burgundy);
+  .bg-lea-dark-grey {
+    background-color: var(--lea-dark-grey);
   }
 
-  .text-maerose-burgundy {
-    color: var(--maerose-burgundy);
+  .bg-lea-charcoal {
+    background-color: var(--lea-charcoal);
   }
 
-  .border-maerose-burgundy {
-    border-color: var(--maerose-burgundy);
+  .bg-lea-near-black {
+    background-color: var(--lea-near-black);
   }
 
-  .bg-maerose-cream {
-    background-color: var(--maerose-cream);
+  .bg-lea-soft-gold {
+    background-color: var(--lea-soft-gold);
   }
 
-  .text-maerose-cream {
-    color: var(--maerose-cream);
+  .bg-lea-clinical-blue {
+    background-color: var(--lea-clinical-blue);
   }
 
-  .bg-maerose-gold {
-    background-color: var(--maerose-gold);
+  .bg-lea-error-red {
+    background-color: var(--lea-error-red);
   }
 
-  .text-maerose-gold {
-    color: var(--maerose-gold);
+  .text-lea-white {
+    color: var(--lea-pure-white);
   }
 
-  .border-maerose-gold {
-    border-color: var(--maerose-gold);
+  .text-lea-light-grey {
+    color: var(--lea-light-grey);
+  }
+
+  .text-lea-mid-grey {
+    color: var(--lea-mid-grey);
+  }
+
+  .text-lea-dark-grey {
+    color: var(--lea-dark-grey);
+  }
+
+  .text-lea-charcoal {
+    color: var(--lea-charcoal);
+  }
+
+  .text-lea-near-black {
+    color: var(--lea-near-black);
+  }
+
+  .text-lea-soft-gold {
+    color: var(--lea-soft-gold);
+  }
+
+  .text-lea-clinical-blue {
+    color: var(--lea-clinical-blue);
+  }
+
+  .text-lea-error-red {
+    color: var(--lea-error-red);
+  }
+
+  .border-lea-white {
+    border-color: var(--lea-pure-white);
+  }
+
+  .border-lea-light-grey {
+    border-color: var(--lea-light-grey);
+  }
+
+  .border-lea-mid-grey {
+    border-color: var(--lea-mid-grey);
+  }
+
+  .border-lea-dark-grey {
+    border-color: var(--lea-dark-grey);
+  }
+
+  .border-lea-charcoal {
+    border-color: var(--lea-charcoal);
+  }
+
+  .border-lea-near-black {
+    border-color: var(--lea-near-black);
+  }
+
+  .border-lea-soft-gold {
+    border-color: var(--lea-soft-gold);
+  }
+
+  .border-lea-clinical-blue {
+    border-color: var(--lea-clinical-blue);
+  }
+
+  .border-lea-error-red {
+    border-color: var(--lea-error-red);
+  }
+
+  /* Lea Aesthetics opacity variations */
+  .text-lea-charcoal\/70 {
+    color: rgba(44, 44, 44, 0.7);
+  }
+
+  .text-lea-charcoal\/60 {
+    color: rgba(44, 44, 44, 0.6);
+  }
+
+  .text-lea-charcoal\/40 {
+    color: rgba(44, 44, 44, 0.4);
+  }
+
+  .text-lea-dark-grey\/70 {
+    color: rgba(74, 74, 74, 0.7);
+  }
+
+  .text-lea-dark-grey\/60 {
+    color: rgba(74, 74, 74, 0.6);
   }
 
   /* Medical Blue Utility Classes */

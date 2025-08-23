@@ -108,12 +108,12 @@ export default function Sidebar() {
   ];
 
   return (
-    <nav className="bg-maerose-cream w-64 min-h-screen border-r border-maerose-gold/30">
+    <nav className="bg-lea-white w-64 min-h-screen border-r border-lea-mid-grey">
       <div className="p-4">
         {/* Treatment Mode Navigation */}
         {activeSection === "treatments" && (
           <div className="treatment-nav">
-            <h3 className="text-xs font-serif font-semibold text-maerose-forest uppercase tracking-wider mb-3">
+            <h3 className="text-xs font-serif font-semibold text-lea-charcoal uppercase tracking-wider mb-3">
               Practice Management
             </h3>
             <ul className="space-y-1">
@@ -123,15 +123,15 @@ export default function Sidebar() {
                     href={item.path}
                     className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md ${
                       isActive(item.path)
-                        ? 'bg-maerose-forest text-maerose-cream'
-                        : 'text-maerose-forest hover:bg-white/50'
+                        ? 'bg-lea-charcoal text-lea-white'
+                        : 'text-lea-dark-grey hover:bg-lea-light-grey'
                     }`}
                     data-testid={`nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
                   >
                     <i className={`${item.icon} mr-3`}></i>
                     {item.label}
                     {item.badge && (
-                      <Badge className="ml-auto bg-maerose-burgundy text-white">
+                      <Badge className="ml-auto bg-lea-soft-gold text-lea-charcoal">
                         {item.badge}
                       </Badge>
                     )}
@@ -140,7 +140,7 @@ export default function Sidebar() {
               ))}
             </ul>
 
-            <h3 className="text-xs font-serif font-semibold text-maerose-forest uppercase tracking-wider mt-8 mb-3">
+            <h3 className="text-xs font-serif font-semibold text-lea-charcoal uppercase tracking-wider mt-8 mb-3">
               Compliance
             </h3>
             <ul className="space-y-1">
@@ -150,8 +150,8 @@ export default function Sidebar() {
                     href={item.path}
                     className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md ${
                       isActive(item.path)
-                        ? 'bg-maerose-forest text-maerose-cream'
-                        : 'text-maerose-forest hover:bg-white/50'
+                        ? 'bg-lea-charcoal text-lea-white'
+                        : 'text-lea-dark-grey hover:bg-lea-light-grey'
                     }`}
                     data-testid={`nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
                   >
@@ -172,7 +172,7 @@ export default function Sidebar() {
         {/* Training Mode Navigation */}
         {activeSection === "training" && (
           <div className="training-nav">
-            <h3 className="text-xs font-serif font-semibold text-maerose-forest uppercase tracking-wider mb-3">
+            <h3 className="text-xs font-serif font-semibold text-lea-charcoal uppercase tracking-wider mb-3">
               Training Management
             </h3>
             <ul className="space-y-1">
@@ -182,8 +182,8 @@ export default function Sidebar() {
                     href={item.path}
                     className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md ${
                       isActive(item.path)
-                        ? 'bg-maerose-forest text-maerose-cream'
-                        : 'text-maerose-forest hover:bg-white/50'
+                        ? 'bg-lea-charcoal text-lea-white'
+                        : 'text-lea-dark-grey hover:bg-lea-light-grey'
                     }`}
                     data-testid={`nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
                   >
@@ -194,7 +194,7 @@ export default function Sidebar() {
               ))}
             </ul>
 
-            <h3 className="text-xs font-serif font-semibold text-maerose-forest uppercase tracking-wider mt-8 mb-3">
+            <h3 className="text-xs font-serif font-semibold text-lea-charcoal uppercase tracking-wider mt-8 mb-3">
               Accreditation
             </h3>
             <ul className="space-y-1">
@@ -204,8 +204,8 @@ export default function Sidebar() {
                     href={item.path}
                     className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md ${
                       isActive(item.path)
-                        ? 'bg-maerose-forest text-maerose-cream'
-                        : 'text-maerose-forest hover:bg-white/50'
+                        ? 'bg-lea-charcoal text-lea-white'
+                        : 'text-lea-dark-grey hover:bg-lea-light-grey'
                     }`}
                     data-testid={`nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
                   >

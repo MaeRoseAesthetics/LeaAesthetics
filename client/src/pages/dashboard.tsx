@@ -37,7 +37,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-maerose-cream">
+    <div className="min-h-screen bg-lea-light-grey">
       <Header />
       <div className="flex">
         <Sidebar />
@@ -47,22 +47,22 @@ export default function Dashboard() {
             <div className="px-4 sm:px-6 lg:px-8 py-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-2xl font-serif font-bold text-maerose-forest" data-testid="text-page-title">
+                  <h2 className="text-2xl font-serif font-bold text-lea-charcoal" data-testid="text-page-title">
                     Practice Dashboard
                   </h2>
-                  <p className="text-sm text-gray-500 mt-1">
+                  <p className="text-sm text-lea-dark-grey mt-1">
                     Welcome back. Here's what's happening today.
                   </p>
                 </div>
                 <div className="flex space-x-3">
                   <button 
-                    className="bg-maerose-forest text-maerose-cream px-4 py-2 rounded-md text-sm font-medium hover:bg-maerose-forest/90 transition-colors"
+                    className="bg-lea-charcoal text-lea-white px-4 py-2 rounded-md text-sm font-medium hover:bg-lea-near-black transition-colors"
                     data-testid="button-new-booking"
                   >
                     <i className="fas fa-plus mr-2"></i>New Booking
                   </button>
                   <button 
-                    className="bg-white text-maerose-forest border border-maerose-gold/30 px-4 py-2 rounded-md text-sm font-medium hover:bg-maerose-cream/50 transition-colors"
+                    className="bg-white text-lea-charcoal border border-lea-mid-grey px-4 py-2 rounded-md text-sm font-medium hover:bg-lea-light-grey transition-colors"
                     data-testid="button-export-report"
                   >
                     <i className="fas fa-download mr-2"></i>Export Report

@@ -50,13 +50,13 @@ export default function StatsCards() {
         <CardContent className="p-6">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-maerose-forest rounded-md flex items-center justify-center">
-                <i className="fas fa-calendar-check text-maerose-cream text-sm"></i>
+              <div className="w-8 h-8 bg-lea-charcoal rounded-md flex items-center justify-center">
+                <i className="fas fa-calendar-check text-lea-white text-sm"></i>
               </div>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-maerose-forest/60">Today's Appointments</p>
-              <p className="text-2xl font-semibold text-maerose-forest" data-testid="stat-today-appointments">
+              <p className="text-sm font-medium text-lea-charcoal/60">Today's Appointments</p>
+              <p className="text-2xl font-semibold text-lea-charcoal" data-testid="stat-today-appointments">
                 {displayStats.todayAppointments}
               </p>
             </div>
@@ -68,13 +68,13 @@ export default function StatsCards() {
         <CardContent className="p-6">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-maerose-gold rounded-md flex items-center justify-center">
-                <i className="fas fa-coins text-maerose-cream text-sm"></i>
+              <div className="w-8 h-8 bg-lea-soft-gold rounded-md flex items-center justify-center">
+                <i className="fas fa-coins text-lea-charcoal text-sm"></i>
               </div>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-maerose-forest/60">Monthly Revenue</p>
-              <p className="text-2xl font-semibold text-maerose-forest" data-testid="stat-monthly-revenue">
+              <p className="text-sm font-medium text-lea-charcoal/60">Monthly Revenue</p>
+              <p className="text-2xl font-semibold text-lea-charcoal" data-testid="stat-monthly-revenue">
                 {displayStats.monthlyRevenue}
               </p>
             </div>
@@ -86,13 +86,13 @@ export default function StatsCards() {
         <CardContent className="p-6">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-maerose-burgundy rounded-md flex items-center justify-center">
-                <i className="fas fa-user-graduate text-maerose-cream text-sm"></i>
+              <div className="w-8 h-8 bg-lea-clinical-blue rounded-md flex items-center justify-center">
+                <i className="fas fa-user-graduate text-lea-white text-sm"></i>
               </div>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-maerose-forest/60">Active Students</p>
-              <p className="text-2xl font-semibold text-maerose-forest" data-testid="stat-active-students">
+              <p className="text-sm font-medium text-lea-charcoal/60">Active Students</p>
+              <p className="text-2xl font-semibold text-lea-charcoal" data-testid="stat-active-students">
                 {displayStats.activeStudents}
               </p>
             </div>
@@ -104,13 +104,13 @@ export default function StatsCards() {
         <CardContent className="p-6">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-maerose-forest rounded-md flex items-center justify-center">
-                <i className="fas fa-award text-maerose-cream text-sm"></i>
+              <div className="w-8 h-8 bg-lea-charcoal rounded-md flex items-center justify-center">
+                <i className="fas fa-award text-lea-white text-sm"></i>
               </div>
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-maerose-forest/60">Compliance Score</p>
-              <p className="text-2xl font-semibold text-maerose-forest" data-testid="stat-compliance-score">
+              <p className="text-sm font-medium text-lea-charcoal/60">Compliance Score</p>
+              <p className="text-2xl font-semibold text-lea-charcoal" data-testid="stat-compliance-score">
                 {displayStats.complianceScore}
               </p>
             </div>
