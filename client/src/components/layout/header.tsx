@@ -49,8 +49,9 @@ export default function Header({
             {isMobile && (
               <button
                 onClick={onMobileMenuToggle}
-                className="p-2 mr-3 text-lea-deep-charcoal hover:bg-lea-pearl-white rounded-lg transition-colors"
+                className="p-3 mr-3 text-lea-deep-charcoal hover:bg-lea-pearl-white rounded-lg transition-colors touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center"
                 data-testid="mobile-menu-toggle"
+                aria-label="Toggle navigation menu"
               >
                 <i className={`fas ${isMobileMenuOpen ? 'fa-times' : 'fa-bars'} text-lg`}></i>
                 <span className="sr-only">Toggle menu</span>

@@ -345,7 +345,7 @@ export default function Dashboard() {
           />
         )}
         
-        <main className={`flex-1 overflow-y-auto ${isMobile ? 'w-full' : ''}`}>
+        <main className={`flex-1 overflow-y-auto ${isMobile ? 'w-full mobile-main-content' : ''}`}>
           {/* Dashboard Header - only show on dashboard tab */}
           {activeTab === 'dashboard' && (
             <div className="bg-lea-platinum-grey/95 backdrop-blur-lg border-b border-lea-warm-grey shadow-lea-subtle">

@@ -178,7 +178,7 @@ export default function Sidebar({
         <nav 
           id="mobile-sidebar"
           className={cn(
-            "fixed left-0 top-0 h-full w-80 max-w-[85vw] bg-lea-platinum-white border-r border-lea-silver-grey z-50 transform transition-transform duration-300 ease-in-out shadow-2xl",
+            "fixed left-0 top-0 h-full w-72 max-w-[80vw] bg-lea-platinum-white border-r border-lea-silver-grey z-50 transform transition-transform duration-300 ease-in-out shadow-2xl overflow-hidden",
             isOpen ? "translate-x-0" : "-translate-x-full"
           )}
         >
