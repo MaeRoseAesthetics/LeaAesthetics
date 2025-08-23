@@ -40,21 +40,21 @@ export default function ComplianceWidget() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-maerose-forest font-serif">Compliance Status</CardTitle>
-        <p className="text-sm text-maerose-forest/60">Regulatory compliance overview</p>
+        <CardTitle className="text-lea-charcoal font-serif">Compliance Status</CardTitle>
+        <p className="text-sm text-lea-charcoal/60">Regulatory compliance overview</p>
       </CardHeader>
       <CardContent className="space-y-4">
         {complianceItems.map((item) => (
           <div key={item.id} className="flex items-center justify-between">
             <div className="flex items-center">
-              <div className={`w-8 h-8 ${item.statusColor === 'text-success' ? 'bg-maerose-forest' : 'bg-maerose-gold'} rounded-full flex items-center justify-center mr-3`}>
-                <i className={`${item.icon} text-maerose-cream text-xs`}></i>
+              <div className={`w-8 h-8 ${item.statusColor === 'text-success' ? 'bg-lea-charcoal' : 'bg-lea-soft-gold'} rounded-full flex items-center justify-center mr-3`}>
+                <i className={`${item.icon} ${item.statusColor === 'text-success' ? 'text-lea-white' : 'text-lea-charcoal'} text-xs`}></i>
               </div>
               <div>
-                <p className="text-sm font-medium text-maerose-forest" data-testid={`compliance-name-${item.id}`}>
+                <p className="text-sm font-medium text-lea-charcoal" data-testid={`compliance-name-${item.id}`}>
                   {item.name}
                 </p>
-                <p className="text-xs text-maerose-forest/60">{item.validity}</p>
+                <p className="text-xs text-lea-charcoal/60">{item.validity}</p>
               </div>
             </div>
             <span className={`${item.statusColor} font-medium text-sm`} data-testid={`compliance-status-${item.id}`}>
@@ -63,9 +63,9 @@ export default function ComplianceWidget() {
           </div>
         ))}
 
-        <div className="mt-4 pt-4 border-t border-maerose-gold/30">
+        <div className="mt-4 pt-4 border-t border-lea-mid-grey">
           <Button 
-            className="w-full bg-maerose-forest text-maerose-cream hover:bg-maerose-forest/90" 
+            className="w-full bg-lea-charcoal text-lea-white hover:bg-lea-near-black" 
             data-testid="button-generate-compliance-report"
           >
             <i className="fas fa-download mr-2"></i>Generate Compliance Report

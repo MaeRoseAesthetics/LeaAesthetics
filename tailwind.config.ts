@@ -1,16 +1,36 @@
 import type { Config } from "tailwindcss";
 
+// Lea Aesthetics Clinic Academy - Elegant Greyscale Theme
 export default {
   darkMode: ["class"],
   content: ["./client/index.html", "./client/src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
-      borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
-      },
+      // Lea Aesthetics Elegant Platinum Color Palette
       colors: {
+        // Elegant Platinum Palette
+        'lea': {
+          'platinum-white': '#FEFEFE',
+          'pearl-white': '#F9F9F9',
+          'platinum-grey': '#F0F0F0',
+          'silver-grey': '#E5E5E5',
+          'warm-grey': '#C8C8C8',
+          'slate-grey': '#8A8A8A',
+          'charcoal-grey': '#5A5A5A',
+          'deep-charcoal': '#3A3A3A',
+          'elegant-charcoal': '#2A2A2A',
+          // Accent Colors (Sparse, Regulatory-Compliant)
+          'elegant-silver': '#9CA3AF',
+          'clinical-blue': '#007BFF',
+          'error-red': '#D32F2F',
+        },
+      borderRadius: {
+        lg: "var(--radius)", // 12px
+        md: "calc(var(--radius) - 4px)", // 8px  
+        sm: "calc(var(--radius) - 8px)", // 4px
+        xl: "calc(var(--radius) + 12px)", // 24px
+        '2xl': "calc(var(--radius) + 20px)", // 32px
+      },
         background: "var(--background)",
         foreground: "var(--foreground)",
         card: {
@@ -129,8 +149,8 @@ export default {
         },
       },
       fontFamily: {
-        sans: ["var(--font-sans)", "Inter", "system-ui", "-apple-system", "sans-serif"],
-        serif: ["var(--font-serif)", "Georgia", "serif"],
+        sans: ["Inter", "var(--font-sans)", "system-ui", "-apple-system", "sans-serif"],
+        serif: ["Lora", "var(--font-serif)", "Georgia", "serif"],
         mono: ["var(--font-mono)", "Menlo", "Monaco", "Consolas", "monospace"],
       },
       fontSize: {
@@ -216,6 +236,12 @@ export default {
         xs: "2px",
       },
       boxShadow: {
+        // Lea Aesthetics Elegant Shadow System
+        "lea-card": "0 4px 12px rgba(0, 0, 0, 0.08)",
+        "lea-card-hover": "0 8px 16px rgba(0, 0, 0, 0.12)",
+        "lea-modal": "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+        "lea-subtle": "0 1px 3px rgba(0, 0, 0, 0.06)",
+        // Legacy medical shadows (for backward compatibility)
         "medical": "0 4px 6px -1px rgba(0, 102, 204, 0.1), 0 2px 4px -1px rgba(0, 102, 204, 0.06)",
         "medical-lg": "0 10px 15px -3px rgba(0, 102, 204, 0.1), 0 4px 6px -2px rgba(0, 102, 204, 0.05)",
         "medical-xl": "0 20px 25px -5px rgba(0, 102, 204, 0.1), 0 10px 10px -5px rgba(0, 102, 204, 0.04)",

@@ -37,32 +37,48 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-lea-light-grey">
+    <div className="min-h-screen bg-lea-pearl-white">
       <Header />
       <div className="flex">
         <Sidebar />
-        <main className="flex-1 overflow-y-auto">
+        <main className="flex-1 overflow-y-auto scrollbar-medical">
           {/* Dashboard Header */}
-          <div className="bg-white border-b border-gray-200">
-            <div className="px-4 sm:px-6 lg:px-8 py-6">
+          <div className="bg-lea-platinum-grey/95 backdrop-blur-lg border-b border-lea-warm-grey shadow-lea-subtle">
+            <div className="px-4 sm:px-6 lg:px-8 py-8">
               <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-2xl font-serif font-bold text-lea-charcoal" data-testid="text-page-title">
-                    Practice Dashboard
-                  </h2>
-                  <p className="text-sm text-lea-dark-grey mt-1">
-                    Welcome back. Here's what's happening today.
-                  </p>
+                <div className="flex items-center space-x-6">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-12 h-12 bg-gradient-to-br from-lea-elegant-silver via-lea-elegant-silver to-gray-500 rounded-lg flex items-center justify-center shadow-lea-card">
+                      <span className="text-lea-deep-charcoal font-bold text-xl font-serif">L</span>
+                    </div>
+                    <div className="flex flex-col">
+                      <h2 className="text-2xl font-serif font-bold text-lea-deep-charcoal tracking-tight leading-none" data-testid="text-page-title">
+                        LEA AESTHETICS
+                      </h2>
+                      <p className="text-sm font-medium text-lea-charcoal-grey tracking-wider">
+                        Practice Management Dashboard
+                      </p>
+                    </div>
+                  </div>
+                  <div className="h-8 w-px bg-lea-silver-grey"></div>
+                  <div className="flex flex-col">
+                    <p className="text-sm font-medium text-lea-charcoal-grey">
+                      Welcome back, Dr. Smith
+                    </p>
+                    <p className="text-xs text-lea-slate-grey">
+                      {new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+                    </p>
+                  </div>
                 </div>
-                <div className="flex space-x-3">
+                <div className="flex items-center space-x-3">
                   <button 
-                    className="bg-lea-charcoal text-lea-white px-4 py-2 rounded-md text-sm font-medium hover:bg-lea-near-black transition-colors"
+                    className="bg-lea-elegant-silver text-lea-deep-charcoal px-6 py-3 rounded-lg text-sm font-medium hover:bg-opacity-90 transition-all duration-300 shadow-lea-card hover:shadow-lea-card-hover flex items-center"
                     data-testid="button-new-booking"
                   >
                     <i className="fas fa-plus mr-2"></i>New Booking
                   </button>
                   <button 
-                    className="bg-white text-lea-charcoal border border-lea-mid-grey px-4 py-2 rounded-md text-sm font-medium hover:bg-lea-light-grey transition-colors"
+                    className="bg-lea-platinum-white/80 text-lea-deep-charcoal border border-lea-silver-grey px-6 py-3 rounded-lg text-sm font-medium hover:bg-lea-platinum-white transition-all duration-300 shadow-lea-card hover:shadow-lea-card-hover flex items-center"
                     data-testid="button-export-report"
                   >
                     <i className="fas fa-download mr-2"></i>Export Report

@@ -5,52 +5,55 @@
 @tailwind utilities;
 
 :root {
-  /* Lea Aesthetics Greyscale Palette */
-  --lea-pure-white: #FFFFFF;
-  --lea-light-grey: #F5F5F5;
-  --lea-mid-grey: #D3D3D3;
-  --lea-dark-grey: #4A4A4A;
-  --lea-charcoal: #2C2C2C;
-  --lea-near-black: #1A1A1A;
+  /* Lea Aesthetics Elegant Platinum Palette */
+  --lea-platinum-white: #FEFEFE;
+  --lea-pearl-white: #F9F9F9;
+  --lea-platinum-grey: #F0F0F0;
+  --lea-silver-grey: #E5E5E5;
+  --lea-warm-grey: #C8C8C8;
+  --lea-slate-grey: #8A8A8A;
+  --lea-charcoal-grey: #5A5A5A;
+  --lea-deep-charcoal: #3A3A3A;
+  --lea-elegant-charcoal: #2A2A2A;
   
   /* Lea Accent Colors */
-  --lea-soft-gold: #D4AF37;
+  --lea-elegant-silver: #9CA3AF;
   --lea-clinical-blue: #007BFF;
   --lea-error-red: #D32F2F;
   
   /* Lea Aesthetics UI Color System */
-  --background: var(--lea-pure-white);
-  --foreground: var(--lea-dark-grey);
-  --card: var(--lea-pure-white);
-  --card-foreground: var(--lea-dark-grey);
-  --popover: var(--lea-pure-white);
-  --popover-foreground: var(--lea-dark-grey);
-  --primary: var(--lea-charcoal);
-  --primary-foreground: var(--lea-pure-white);
-  --secondary: var(--lea-light-grey);
-  --secondary-foreground: var(--lea-dark-grey);
-  --muted: var(--lea-light-grey);
-  --muted-foreground: var(--lea-dark-grey);
-  --accent: var(--lea-soft-gold);
-  --accent-foreground: var(--lea-charcoal);
+  --background: var(--lea-platinum-white);
+  --foreground: var(--lea-charcoal-grey);
+  --card: var(--lea-platinum-white);
+  --card-foreground: var(--lea-charcoal-grey);
+  --popover: var(--lea-platinum-white);
+  --popover-foreground: var(--lea-charcoal-grey);
+  --primary: var(--lea-deep-charcoal);
+  --primary-foreground: var(--lea-platinum-white);
+  --secondary: var(--lea-platinum-grey);
+  --secondary-foreground: var(--lea-charcoal-grey);
+  --muted: var(--lea-platinum-grey);
+  --muted-foreground: var(--lea-slate-grey);
+  --accent: var(--lea-elegant-silver);
+  --accent-foreground: var(--lea-deep-charcoal);
   --destructive: var(--lea-error-red);
-  --destructive-foreground: var(--lea-pure-white);
-  --border: var(--lea-mid-grey);
-  --input: var(--lea-pure-white);
-  --ring: var(--lea-charcoal);
-  --chart-1: var(--lea-charcoal);
+  --destructive-foreground: var(--lea-platinum-white);
+  --border: var(--lea-silver-grey);
+  --input: var(--lea-platinum-white);
+  --ring: var(--lea-deep-charcoal);
+  --chart-1: var(--lea-deep-charcoal);
   --chart-2: var(--lea-clinical-blue);
-  --chart-3: var(--lea-soft-gold);
-  --chart-4: var(--lea-dark-grey);
-  --chart-5: var(--lea-mid-grey);
-  --sidebar: var(--lea-pure-white);
-  --sidebar-foreground: var(--lea-dark-grey);
-  --sidebar-primary: var(--lea-charcoal);
-  --sidebar-primary-foreground: var(--lea-pure-white);
-  --sidebar-accent: var(--lea-soft-gold);
-  --sidebar-accent-foreground: var(--lea-charcoal);
-  --sidebar-border: var(--lea-mid-grey);
-  --sidebar-ring: var(--lea-charcoal);
+  --chart-3: var(--lea-elegant-silver);
+  --chart-4: var(--lea-charcoal-grey);
+  --chart-5: var(--lea-warm-grey);
+  --sidebar: var(--lea-pearl-white);
+  --sidebar-foreground: var(--lea-charcoal-grey);
+  --sidebar-primary: var(--lea-deep-charcoal);
+  --sidebar-primary-foreground: var(--lea-platinum-white);
+  --sidebar-accent: var(--lea-elegant-silver);
+  --sidebar-accent-foreground: var(--lea-deep-charcoal);
+  --sidebar-border: var(--lea-silver-grey);
+  --sidebar-ring: var(--lea-deep-charcoal);
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
   --font-serif: 'Lora', Georgia, serif;
   --font-mono: 'Menlo', 'Monaco', 'Consolas', monospace;
@@ -70,7 +73,7 @@
   --medical-blue: var(--lea-clinical-blue);
   --clinical-grey: var(--lea-light-grey);
   --success: hsl(159, 78%, 42%);
-  --warning: var(--lea-soft-gold);
+  --warning: var(--lea-elegant-silver);
   --error: var(--lea-error-red);
 }
 

@@ -42,17 +42,30 @@ export default function ClientPortal() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-maerose-cream via-white to-maerose-cream/50">
+    <div className="min-h-screen bg-lea-pearl-white">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
+      <header className="bg-lea-platinum-grey/95 backdrop-blur-lg border-b border-lea-warm-grey shadow-lea-subtle">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <h1 className="text-2xl font-serif font-bold text-maerose-gold tracking-wide">MaeRose Client Portal</h1>
+          <div className="flex justify-between items-center h-20">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-lea-elegant-silver via-lea-elegant-silver to-gray-500 rounded-lg flex items-center justify-center">
+                <span className="text-lea-deep-charcoal font-bold text-lg font-serif">L</span>
+              </div>
+              <div className="flex flex-col">
+                <h1 className="text-xl font-serif font-bold text-lea-deep-charcoal tracking-tight leading-none">
+                  LEA AESTHETICS
+                </h1>
+                <p className="text-xs font-medium text-lea-charcoal-grey tracking-wider uppercase">
+                  Client Portal
+                </p>
+              </div>
             </div>
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-500">Welcome, {clientData.name}</span>
-              <Button variant="outline" size="sm">
+              <div className="text-right">
+                <p className="text-sm font-medium text-lea-deep-charcoal">Welcome back, {clientData.name}</p>
+                <p className="text-xs text-lea-charcoal-grey">Your aesthetic journey continues</p>
+              </div>
+              <Button variant="outline" size="sm" className="border-lea-deep-charcoal text-lea-deep-charcoal hover:bg-lea-deep-charcoal hover:text-lea-platinum-white transition-all duration-300">
                 <i className="fas fa-sign-out-alt mr-2"></i>Logout
               </Button>
             </div>
@@ -65,57 +78,70 @@ export default function ClientPortal() {
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
             {/* Welcome Section */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <i className="fas fa-rose text-maerose-burgundy mr-3"></i>
-                  Welcome to Your Treatment Journey
-                </CardTitle>
+            <Card className="border border-lea-silver-grey shadow-lea-card hover:shadow-lea-card-hover transition-all duration-300 bg-lea-platinum-white">
+              <CardHeader className="pb-4">
+                <div className="flex items-center space-x-3 mb-2">
+                  <div className="w-8 h-8 bg-lea-elegant-silver rounded-lg flex items-center justify-center">
+                    <i className="fas fa-sparkles text-lea-deep-charcoal text-sm"></i>
+                  </div>
+                  <CardTitle className="text-lea-deep-charcoal font-serif text-xl">
+                    Your Aesthetic Journey
+                  </CardTitle>
+                </div>
+                <div className="h-px bg-gradient-to-r from-lea-elegant-silver/30 to-transparent w-32"></div>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600 mb-4">
-                  Book treatments, view your history, and manage your aesthetic journey with ease.
+                <p className="text-lea-charcoal-grey mb-6 leading-relaxed">
+                  Experience seamless treatment booking and personalized care management. Your journey to aesthetic excellence begins here.
                 </p>
                 <div className="grid md:grid-cols-2 gap-4">
-                  <Button onClick={() => setShowBookingDialog(true)} className="h-12">
-                    <i className="fas fa-calendar-plus mr-2"></i>
-                    Book New Treatment
+                  <Button onClick={() => setShowBookingDialog(true)} className="h-14 bg-lea-elegant-silver text-lea-deep-charcoal hover:bg-opacity-90 transition-all duration-300 font-medium">
+                    <i className="fas fa-calendar-plus mr-3"></i>
+                    Schedule Treatment
                   </Button>
-                  <Button variant="outline" className="h-12">
-                    <i className="fas fa-history mr-2"></i>
-                    View Treatment History
+                  <Button variant="outline" className="h-14 border-lea-silver-grey text-lea-charcoal-grey hover:bg-lea-pearl-white transition-all duration-300">
+                    <i className="fas fa-history mr-3"></i>
+                    Treatment History
                   </Button>
                 </div>
               </CardContent>
             </Card>
 
             {/* Available Treatments */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Available Treatments</CardTitle>
+            <Card className="border border-lea-silver-grey shadow-lea-card hover:shadow-lea-card-hover transition-all duration-300 bg-lea-platinum-white">
+              <CardHeader className="pb-4">
+                <div className="flex items-center space-x-3 mb-2">
+                  <div className="w-8 h-8 bg-lea-clinical-blue rounded-lg flex items-center justify-center">
+                    <i className="fas fa-spa text-lea-platinum-white text-sm"></i>
+                  </div>
+                  <CardTitle className="text-lea-deep-charcoal font-serif text-xl">
+                    Premium Treatments
+                  </CardTitle>
+                </div>
+                <div className="h-px bg-gradient-to-r from-lea-clinical-blue/30 to-transparent w-32"></div>
               </CardHeader>
               <CardContent>
-                <div className="grid md:grid-cols-2 gap-4">
+                <div className="grid md:grid-cols-2 gap-6">
                   {treatments.map((treatment: any) => (
-                    <Card key={treatment.id} className="border hover:shadow-md transition-shadow">
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-lg">{treatment.name}</CardTitle>
+                    <Card key={treatment.id} className="border border-lea-silver-grey hover:shadow-lea-card-hover transition-all duration-300 bg-lea-platinum-white">
+                      <CardHeader className="pb-3">
+                        <CardTitle className="text-lg text-lea-deep-charcoal font-serif">{treatment.name}</CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <p className="text-sm text-gray-600 mb-3">{treatment.description}</p>
-                        <div className="flex justify-between items-center mb-3">
-                          <span className="text-lg font-bold text-maerose-forest">£{treatment.price}</span>
-                          <span className="text-sm text-gray-500">{treatment.duration} mins</span>
+                        <p className="text-sm text-lea-charcoal-grey mb-4 leading-relaxed">{treatment.description}</p>
+                        <div className="flex justify-between items-center mb-4">
+                          <span className="text-2xl font-bold text-lea-elegant-silver">£{treatment.price}</span>
+                          <span className="text-sm text-lea-slate-grey bg-lea-pearl-white px-3 py-1 rounded-full">{treatment.duration} mins</span>
                         </div>
                         <Button 
                           size="sm" 
-                          className="w-full"
+                          className="w-full bg-lea-deep-charcoal text-lea-platinum-white hover:bg-lea-elegant-charcoal transition-all duration-300 font-medium"
                           onClick={() => {
                             setSelectedTreatment(treatment.id);
                             setShowBookingDialog(true);
                           }}
                         >
-                          Book This Treatment
+                          Reserve Treatment
                         </Button>
                       </CardContent>
                     </Card>
@@ -125,17 +151,25 @@ export default function ClientPortal() {
             </Card>
 
             {/* Recent Appointments */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Recent Appointments</CardTitle>
+            <Card className="border border-lea-silver-grey shadow-lea-card hover:shadow-lea-card-hover transition-all duration-300 bg-lea-platinum-white">
+              <CardHeader className="pb-4">
+                <div className="flex items-center space-x-3 mb-2">
+                  <div className="w-8 h-8 bg-lea-deep-charcoal rounded-lg flex items-center justify-center">
+                    <i className="fas fa-clock text-lea-platinum-white text-sm"></i>
+                  </div>
+                  <CardTitle className="text-lea-deep-charcoal font-serif text-xl">
+                    Recent Appointments
+                  </CardTitle>
+                </div>
+                <div className="h-px bg-gradient-to-r from-lea-deep-charcoal/30 to-transparent w-32"></div>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   {bookings.slice(0, 3).map((booking: any) => (
-                    <div key={booking.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div key={booking.id} className="flex items-center justify-between p-4 bg-lea-pearl-white rounded-xl border border-lea-silver-grey hover:shadow-lea-subtle transition-all duration-300">
                       <div>
-                        <p className="font-medium">Treatment #{booking.treatmentId}</p>
-                        <p className="text-sm text-gray-500">
+                        <p className="font-medium text-lea-deep-charcoal">Treatment #{booking.treatmentId}</p>
+                        <p className="text-sm text-lea-charcoal-grey">
                           {new Date(booking.scheduledDate).toLocaleDateString()} at{' '}
                           {new Date(booking.scheduledDate).toLocaleTimeString('en-GB', {
                             hour: '2-digit',
@@ -143,7 +177,10 @@ export default function ClientPortal() {
                           })}
                         </p>
                       </div>
-                      <Badge variant={booking.status === 'completed' ? 'default' : 'secondary'}>
+                      <Badge 
+                        variant={booking.status === 'completed' ? 'default' : 'secondary'}
+                        className={booking.status === 'completed' ? 'bg-lea-elegant-silver text-lea-deep-charcoal' : 'bg-lea-silver-grey text-lea-charcoal-grey'}
+                      >
                         {booking.status}
                       </Badge>
                     </div>
@@ -156,31 +193,31 @@ export default function ClientPortal() {
           {/* Sidebar */}
           <div className="space-y-8">
             {/* Profile Card */}
-            <Card>
+            <Card className="border border-lea-silver-grey shadow-lea-card hover:shadow-lea-card-hover transition-all duration-300 bg-lea-platinum-white">
               <CardHeader>
-                <CardTitle className="text-center">Your Profile</CardTitle>
+                <CardTitle className="text-center text-lea-deep-charcoal font-serif">Client Profile</CardTitle>
               </CardHeader>
               <CardContent className="text-center">
-                <div className="w-16 h-16 bg-maerose-burgundy rounded-full flex items-center justify-center mx-auto mb-4">
-                  <i className="fas fa-user text-maerose-cream text-xl"></i>
+                <div className="w-16 h-16 bg-lea-elegant-silver rounded-full flex items-center justify-center mx-auto mb-4 shadow-lea-card">
+                  <i className="fas fa-user text-lea-deep-charcoal text-xl"></i>
                 </div>
-                <h3 className="font-semibold text-lg">{clientData.name}</h3>
-                <p className="text-gray-600 text-sm mb-4">{clientData.email}</p>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span>Consent Status:</span>
-                    <Badge variant="default">
-                      <i className="fas fa-check mr-1"></i>Signed
-                    </Badge>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Age Verified:</span>
-                    <Badge variant="default">
+                <h3 className="font-semibold text-lg text-lea-deep-charcoal">{clientData.name}</h3>
+                <p className="text-lea-charcoal-grey text-sm mb-4">{clientData.email}</p>
+                <div className="space-y-3 text-sm">
+                  <div className="flex justify-between items-center">
+                    <span className="text-lea-charcoal-grey">Consent Status:</span>
+                    <Badge className="bg-lea-elegant-silver/20 text-lea-deep-charcoal border-lea-elegant-silver/30">
                       <i className="fas fa-check mr-1"></i>Verified
                     </Badge>
                   </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-lea-charcoal-grey">Age Verified:</span>
+                    <Badge className="bg-lea-elegant-silver/20 text-lea-deep-charcoal border-lea-elegant-silver/30">
+                      <i className="fas fa-check mr-1"></i>Confirmed
+                    </Badge>
+                  </div>
                 </div>
-                <Button variant="outline" size="sm" className="mt-4 w-full">
+                <Button variant="outline" size="sm" className="mt-6 w-full border-lea-silver-grey text-lea-charcoal-grey hover:bg-lea-pearl-white transition-all duration-300">
                   Update Profile
                 </Button>
               </CardContent>
@@ -188,29 +225,29 @@ export default function ClientPortal() {
 
             {/* Next Appointment */}
             {clientData.nextAppointment && (
-              <Card>
+              <Card className="border border-lea-silver-grey shadow-lea-card hover:shadow-lea-card-hover transition-all duration-300 bg-lea-platinum-white">
                 <CardHeader>
-                  <CardTitle>Next Appointment</CardTitle>
+                  <CardTitle className="text-center text-lea-deep-charcoal font-serif">Next Appointment</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="text-center">
-                    <div className="w-12 h-12 bg-maerose-gold rounded-full flex items-center justify-center mx-auto mb-3">
-                      <i className="fas fa-calendar text-maerose-cream"></i>
+                    <div className="w-14 h-14 bg-lea-clinical-blue rounded-full flex items-center justify-center mx-auto mb-4 shadow-lea-card">
+                      <i className="fas fa-calendar text-lea-platinum-white text-lg"></i>
                     </div>
-                    <p className="font-medium">
+                    <p className="font-bold text-lea-deep-charcoal text-lg">
                       {new Date(clientData.nextAppointment).toLocaleDateString()}
                     </p>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-lea-charcoal-grey">
                       {new Date(clientData.nextAppointment).toLocaleTimeString('en-GB', {
                         hour: '2-digit',
                         minute: '2-digit'
                       })}
                     </p>
-                    <div className="mt-4 space-y-2">
-                      <Button variant="outline" size="sm" className="w-full">
+                    <div className="mt-6 space-y-3">
+                      <Button variant="outline" size="sm" className="w-full border-lea-silver-grey text-lea-charcoal-grey hover:bg-lea-pearl-white transition-all duration-300">
                         Reschedule
                       </Button>
-                      <Button variant="ghost" size="sm" className="w-full text-red-600">
+                      <Button variant="ghost" size="sm" className="w-full text-lea-error-red hover:bg-lea-error-red/10 transition-all duration-300">
                         Cancel Appointment
                       </Button>
                     </div>
@@ -220,25 +257,25 @@ export default function ClientPortal() {
             )}
 
             {/* Quick Actions */}
-            <Card>
+            <Card className="border border-lea-silver-grey shadow-lea-card hover:shadow-lea-card-hover transition-all duration-300 bg-lea-platinum-white">
               <CardHeader>
-                <CardTitle>Quick Actions</CardTitle>
+                <CardTitle className="text-lea-deep-charcoal font-serif">Quick Actions</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-2">
-                <Button variant="ghost" size="sm" className="w-full justify-start">
-                  <i className="fas fa-file-medical mr-2"></i>
+              <CardContent className="space-y-3">
+                <Button variant="ghost" size="sm" className="w-full justify-start text-lea-charcoal-grey hover:bg-lea-pearl-white hover:text-lea-deep-charcoal transition-all duration-300">
+                  <i className="fas fa-file-medical mr-3 text-lea-clinical-blue"></i>
                   Medical History
                 </Button>
-                <Button variant="ghost" size="sm" className="w-full justify-start">
-                  <i className="fas fa-file-signature mr-2"></i>
+                <Button variant="ghost" size="sm" className="w-full justify-start text-lea-charcoal-grey hover:bg-lea-pearl-white hover:text-lea-deep-charcoal transition-all duration-300">
+                  <i className="fas fa-file-signature mr-3 text-lea-elegant-silver"></i>
                   Consent Forms
                 </Button>
-                <Button variant="ghost" size="sm" className="w-full justify-start">
-                  <i className="fas fa-credit-card mr-2"></i>
+                <Button variant="ghost" size="sm" className="w-full justify-start text-lea-charcoal-grey hover:bg-lea-pearl-white hover:text-lea-deep-charcoal transition-all duration-300">
+                  <i className="fas fa-credit-card mr-3 text-lea-deep-charcoal"></i>
                   Payment Methods
                 </Button>
-                <Button variant="ghost" size="sm" className="w-full justify-start">
-                  <i className="fas fa-envelope mr-2"></i>
+                <Button variant="ghost" size="sm" className="w-full justify-start text-lea-charcoal-grey hover:bg-lea-pearl-white hover:text-lea-deep-charcoal transition-all duration-300">
+                  <i className="fas fa-envelope mr-3 text-lea-clinical-blue"></i>
                   Messages
                 </Button>
               </CardContent>

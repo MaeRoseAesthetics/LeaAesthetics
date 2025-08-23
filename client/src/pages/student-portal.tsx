@@ -80,18 +80,31 @@ export default function StudentPortal() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-maerose-cream via-white to-maerose-cream/50">
+    <div className="min-h-screen bg-lea-pearl-white">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
+      <header className="bg-lea-platinum-grey/95 backdrop-blur-lg border-b border-lea-warm-grey shadow-lea-subtle">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <h1 className="text-2xl font-serif font-bold text-maerose-gold tracking-wide">MaeRose Student Portal</h1>
+          <div className="flex justify-between items-center h-20">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-lea-elegant-silver via-lea-elegant-silver to-gray-500 rounded-lg flex items-center justify-center">
+                <span className="text-lea-deep-charcoal font-bold text-lg font-serif">L</span>
+              </div>
+              <div className="flex flex-col">
+                <h1 className="text-xl font-serif font-bold text-lea-deep-charcoal tracking-tight leading-none">
+                  LEA AESTHETICS
+                </h1>
+                <p className="text-xs font-medium text-lea-charcoal-grey tracking-wider uppercase">
+                  Academy
+                </p>
+              </div>
             </div>
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-500">Welcome, {studentData.name}</span>
-              <Badge variant="secondary">{studentData.studentId}</Badge>
-              <Button variant="outline" size="sm">
+              <div className="text-right">
+                <p className="text-sm font-medium text-lea-deep-charcoal">Welcome, {studentData.name}</p>
+                <p className="text-xs text-lea-charcoal-grey">Excellence in aesthetic education</p>
+              </div>
+              <Badge variant="secondary" className="bg-lea-silver-grey text-lea-deep-charcoal">{studentData.studentId}</Badge>
+              <Button variant="outline" size="sm" className="border-lea-deep-charcoal text-lea-deep-charcoal hover:bg-lea-deep-charcoal hover:text-lea-platinum-white transition-all duration-300">
                 <i className="fas fa-sign-out-alt mr-2"></i>Logout
               </Button>
             </div>
@@ -104,88 +117,88 @@ export default function StudentPortal() {
           {/* Main Content */}
           <div className="lg:col-span-3">
             <Tabs defaultValue="dashboard" className="space-y-6">
-              <TabsList className="grid w-full grid-cols-4">
-                <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
-                <TabsTrigger value="courses">My Courses</TabsTrigger>
-                <TabsTrigger value="materials">Materials</TabsTrigger>
-                <TabsTrigger value="assessments">Assessments</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-4 bg-lea-platinum-white border-lea-silver-grey">
+                <TabsTrigger value="dashboard" className="text-lea-charcoal-grey data-[state=active]:text-lea-deep-charcoal data-[state=active]:bg-lea-elegant-silver/20">Dashboard</TabsTrigger>
+                <TabsTrigger value="courses" className="text-lea-charcoal-grey data-[state=active]:text-lea-deep-charcoal data-[state=active]:bg-lea-elegant-silver/20">My Courses</TabsTrigger>
+                <TabsTrigger value="materials" className="text-lea-charcoal-grey data-[state=active]:text-lea-deep-charcoal data-[state=active]:bg-lea-elegant-silver/20">Materials</TabsTrigger>
+                <TabsTrigger value="assessments" className="text-lea-charcoal-grey data-[state=active]:text-lea-deep-charcoal data-[state=active]:bg-lea-elegant-silver/20">Assessments</TabsTrigger>
               </TabsList>
 
               {/* Dashboard Tab */}
               <TabsContent value="dashboard" className="space-y-6">
                 {/* Progress Overview */}
                 <div className="grid md:grid-cols-3 gap-6">
-                  <Card>
+                  <Card className="border border-lea-silver-grey shadow-lea-card hover:shadow-lea-card-hover transition-all duration-300 bg-lea-platinum-white">
                     <CardHeader className="pb-2">
-                      <CardTitle className="text-lg">CPD Progress</CardTitle>
+                      <CardTitle className="text-lg text-lea-deep-charcoal font-serif">CPD Progress</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-2">
                         <div className="flex justify-between text-sm">
-                          <span>Current Hours</span>
-                          <span className="font-medium">{studentData.cpdHours}/{studentData.targetCpdHours}</span>
+                          <span className="text-lea-charcoal-grey">Current Hours</span>
+                          <span className="font-medium text-lea-deep-charcoal">{studentData.cpdHours}/{studentData.targetCpdHours}</span>
                         </div>
-                        <Progress value={(studentData.cpdHours / studentData.targetCpdHours) * 100} />
-                        <p className="text-xs text-gray-500">
+                        <Progress value={(studentData.cpdHours / studentData.targetCpdHours) * 100} className="h-2" />
+                        <p className="text-xs text-lea-slate-grey">
                           {studentData.targetCpdHours - studentData.cpdHours} hours remaining
                         </p>
                       </div>
                     </CardContent>
                   </Card>
 
-                  <Card>
+                  <Card className="border border-lea-silver-grey shadow-lea-card hover:shadow-lea-card-hover transition-all duration-300 bg-lea-platinum-white">
                     <CardHeader className="pb-2">
-                      <CardTitle className="text-lg">Active Courses</CardTitle>
+                      <CardTitle className="text-lg text-lea-deep-charcoal font-serif">Active Courses</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="text-center">
-                        <div className="text-3xl font-bold text-maerose-gold">{currentEnrollments.length}</div>
-                        <p className="text-sm text-gray-600">Courses in progress</p>
+                        <div className="text-3xl font-bold text-lea-elegant-silver">{currentEnrollments.length}</div>
+                        <p className="text-sm text-lea-charcoal-grey">Courses in progress</p>
                       </div>
                     </CardContent>
                   </Card>
 
-                  <Card>
+                  <Card className="border border-lea-silver-grey shadow-lea-card hover:shadow-lea-card-hover transition-all duration-300 bg-lea-platinum-white">
                     <CardHeader className="pb-2">
-                      <CardTitle className="text-lg">Next Deadline</CardTitle>
+                      <CardTitle className="text-lg text-lea-deep-charcoal font-serif">Next Deadline</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="text-center">
-                        <div className="text-lg font-bold text-red-600">Sep 15</div>
-                        <p className="text-sm text-gray-600">Assessment due</p>
+                        <div className="text-lg font-bold text-lea-clinical-blue">Sep 15</div>
+                        <p className="text-sm text-lea-charcoal-grey">Assessment due</p>
                       </div>
                     </CardContent>
                   </Card>
                 </div>
 
                 {/* Current Courses */}
-                <Card>
+                <Card className="border border-lea-silver-grey shadow-lea-card hover:shadow-lea-card-hover transition-all duration-300 bg-lea-platinum-white">
                   <CardHeader>
-                    <CardTitle>Current Enrollments</CardTitle>
+                    <CardTitle className="text-lea-deep-charcoal font-serif">Current Enrollments</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
                       {currentEnrollments.map((enrollment) => (
-                        <div key={enrollment.id} className="border rounded-lg p-4">
+                        <div key={enrollment.id} className="border border-lea-silver-grey rounded-xl p-4 bg-lea-pearl-white hover:shadow-lea-subtle transition-all duration-300">
                           <div className="flex justify-between items-start mb-3">
                             <div>
-                              <h4 className="font-medium">{enrollment.courseName}</h4>
-                              <p className="text-sm text-gray-600">Next deadline: {enrollment.nextDeadline}</p>
+                              <h4 className="font-medium text-lea-deep-charcoal">{enrollment.courseName}</h4>
+                              <p className="text-sm text-lea-charcoal-grey">Next deadline: {enrollment.nextDeadline}</p>
                             </div>
-                            <Badge variant="default">{enrollment.status}</Badge>
+                            <Badge variant="default" className="bg-lea-elegant-silver text-lea-deep-charcoal">{enrollment.status}</Badge>
                           </div>
                           <div className="space-y-2">
                             <div className="flex justify-between text-sm">
-                              <span>Progress</span>
-                              <span>{enrollment.progress}%</span>
+                              <span className="text-lea-charcoal-grey">Progress</span>
+                              <span className="text-lea-deep-charcoal">{enrollment.progress}%</span>
                             </div>
-                            <Progress value={enrollment.progress} />
+                            <Progress value={enrollment.progress} className="h-2" />
                           </div>
                           <div className="flex justify-between items-center mt-3">
-                            <span className="text-sm text-gray-600">
+                            <span className="text-sm text-lea-charcoal-grey">
                               {enrollment.assessmentsDue} assessments due
                             </span>
-                            <Button size="sm">Continue Learning</Button>
+                            <Button size="sm" className="bg-lea-deep-charcoal text-lea-platinum-white hover:bg-lea-elegant-charcoal transition-all duration-300">Continue Learning</Button>
                           </div>
                         </div>
                       ))}
@@ -338,74 +351,74 @@ export default function StudentPortal() {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Student Profile */}
-            <Card>
+            <Card className="border border-lea-silver-grey shadow-lea-card hover:shadow-lea-card-hover transition-all duration-300 bg-lea-platinum-white">
               <CardHeader>
-                <CardTitle className="text-center">Student Profile</CardTitle>
+                <CardTitle className="text-center text-lea-deep-charcoal font-serif">Student Profile</CardTitle>
               </CardHeader>
               <CardContent className="text-center">
-                <div className="w-16 h-16 bg-maerose-gold rounded-full flex items-center justify-center mx-auto mb-4">
-                  <i className="fas fa-graduation-cap text-maerose-cream text-xl"></i>
+                <div className="w-16 h-16 bg-lea-clinical-blue rounded-full flex items-center justify-center mx-auto mb-4 shadow-lea-card">
+                  <i className="fas fa-graduation-cap text-lea-platinum-white text-xl"></i>
                 </div>
-                <h3 className="font-semibold text-lg">{studentData.name}</h3>
-                <p className="text-gray-600 text-sm mb-4">{studentData.email}</p>
+                <h3 className="font-semibold text-lg text-lea-deep-charcoal">{studentData.name}</h3>
+                <p className="text-lea-charcoal-grey text-sm mb-4">{studentData.email}</p>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span>Student ID:</span>
-                    <span className="font-medium">{studentData.studentId}</span>
+                    <span className="text-lea-charcoal-grey">Student ID:</span>
+                    <span className="font-medium text-lea-deep-charcoal">{studentData.studentId}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Level:</span>
-                    <span className="font-medium">{studentData.currentLevel}</span>
+                    <span className="text-lea-charcoal-grey">Level:</span>
+                    <span className="font-medium text-lea-deep-charcoal">{studentData.currentLevel}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Enrolled:</span>
-                    <span className="font-medium">{new Date(studentData.enrollmentDate).toLocaleDateString()}</span>
+                    <span className="text-lea-charcoal-grey">Enrolled:</span>
+                    <span className="font-medium text-lea-deep-charcoal">{new Date(studentData.enrollmentDate).toLocaleDateString()}</span>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
             {/* Quick Stats */}
-            <Card>
+            <Card className="border border-lea-silver-grey shadow-lea-card hover:shadow-lea-card-hover transition-all duration-300 bg-lea-platinum-white">
               <CardHeader>
-                <CardTitle>Learning Stats</CardTitle>
+                <CardTitle className="text-lea-deep-charcoal font-serif">Academic Excellence</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-maerose-gold">{studentData.cpdHours}</div>
-                  <p className="text-sm text-gray-600">CPD Hours Completed</p>
+                  <div className="text-2xl font-bold text-lea-elegant-silver">{studentData.cpdHours}</div>
+                  <p className="text-sm text-lea-charcoal-grey">CPD Hours Completed</p>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-green-600">2</div>
-                  <p className="text-sm text-gray-600">Courses Completed</p>
+                  <div className="text-2xl font-bold text-lea-clinical-blue">2</div>
+                  <p className="text-sm text-lea-charcoal-grey">Courses Completed</p>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-blue-600">87%</div>
-                  <p className="text-sm text-gray-600">Average Score</p>
+                  <div className="text-2xl font-bold text-lea-deep-charcoal">87%</div>
+                  <p className="text-sm text-lea-charcoal-grey">Average Score</p>
                 </div>
               </CardContent>
             </Card>
 
             {/* Quick Actions */}
-            <Card>
+            <Card className="border border-lea-silver-grey shadow-lea-card hover:shadow-lea-card-hover transition-all duration-300 bg-lea-platinum-white">
               <CardHeader>
-                <CardTitle>Quick Actions</CardTitle>
+                <CardTitle className="text-lea-deep-charcoal font-serif">Quick Actions</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-2">
-                <Button variant="ghost" size="sm" className="w-full justify-start">
-                  <i className="fas fa-download mr-2"></i>
+              <CardContent className="space-y-3">
+                <Button variant="ghost" size="sm" className="w-full justify-start text-lea-charcoal-grey hover:bg-lea-pearl-white hover:text-lea-deep-charcoal transition-all duration-300">
+                  <i className="fas fa-download mr-3 text-lea-elegant-silver"></i>
                   Download Certificates
                 </Button>
-                <Button variant="ghost" size="sm" className="w-full justify-start">
-                  <i className="fas fa-calendar mr-2"></i>
+                <Button variant="ghost" size="sm" className="w-full justify-start text-lea-charcoal-grey hover:bg-lea-pearl-white hover:text-lea-deep-charcoal transition-all duration-300">
+                  <i className="fas fa-calendar mr-3 text-lea-clinical-blue"></i>
                   View Schedule
                 </Button>
-                <Button variant="ghost" size="sm" className="w-full justify-start">
-                  <i className="fas fa-envelope mr-2"></i>
+                <Button variant="ghost" size="sm" className="w-full justify-start text-lea-charcoal-grey hover:bg-lea-pearl-white hover:text-lea-deep-charcoal transition-all duration-300">
+                  <i className="fas fa-envelope mr-3 text-lea-deep-charcoal"></i>
                   Contact Tutor
                 </Button>
-                <Button variant="ghost" size="sm" className="w-full justify-start">
-                  <i className="fas fa-book mr-2"></i>
+                <Button variant="ghost" size="sm" className="w-full justify-start text-lea-charcoal-grey hover:bg-lea-pearl-white hover:text-lea-deep-charcoal transition-all duration-300">
+                  <i className="fas fa-book mr-3 text-lea-clinical-blue"></i>
                   Resource Library
                 </Button>
               </CardContent>
