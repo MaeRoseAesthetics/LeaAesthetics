@@ -37,8 +37,8 @@ export default function Landing() {
                 <span className="text-lea-deep-charcoal font-bold text-lg font-serif">L</span>
               </div>
               <div className="flex flex-col">
-                <h1 className="text-xl font-serif font-bold text-lea-deep-charcoal tracking-tight leading-none">
-                  LEA AESTHETICS
+                <h1 className="text-xl font-cursive font-semibold text-lea-deep-charcoal tracking-tight leading-none">
+                  Lea Aesthetics
                 </h1>
                 <p className="text-xs font-medium text-lea-charcoal-grey tracking-wider uppercase">
                   Clinic Academy
@@ -68,8 +68,8 @@ export default function Landing() {
             <span className="text-sm font-medium text-lea-charcoal-grey tracking-wider uppercase">Premium Practice Management</span>
             <div className="h-px bg-gradient-to-r from-transparent via-lea-elegant-silver to-transparent w-16"></div>
           </div>
-          <h2 className="text-4xl md:text-5xl font-serif font-bold text-lea-deep-charcoal mb-6 tracking-tight">
-            LEA AESTHETICS CLINIC ACADEMY
+          <h2 className="text-4xl md:text-5xl font-cursive font-semibold text-lea-deep-charcoal mb-6 tracking-tight">
+            Lea Aesthetics Clinic Academy
           </h2>
           <p className="text-xl text-lea-charcoal-grey mb-8 max-w-3xl mx-auto leading-relaxed">
             Elevating aesthetic practice management and professional training with elegance, precision, and regulatory excellence. 
@@ -299,7 +299,7 @@ export default function Landing() {
       <footer className="bg-lea-deep-charcoal border-t border-lea-silver-grey py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h4 className="text-lg font-serif font-semibold text-lea-platinum-white mb-4">Lea Aesthetics Clinic Academy</h4>
+            <h4 className="text-lg font-cursive font-semibold text-lea-platinum-white mb-4">Lea Aesthetics Clinic Academy</h4>
             <p className="text-sm text-lea-silver-grey mb-2">
               Elevating aesthetic practice management and professional training with elegance, precision, and regulatory excellence.
             </p>

@@ -102,8 +102,8 @@ export default function AdminSetup() {
               <span className={`text-lea-deep-charcoal font-bold ${isMobile ? 'text-base' : 'text-lg'} font-serif`}>L</span>
             </div>
             <div className="flex flex-col text-left">
-              <h1 className={`${isMobile ? 'text-lg' : 'text-xl'} font-serif font-bold text-lea-deep-charcoal tracking-tight leading-none`}>
-                LEA AESTHETICS
+              <h1 className={`${isMobile ? 'text-lg' : 'text-xl'} font-cursive font-semibold text-lea-deep-charcoal tracking-tight leading-none`}>
+                Lea Aesthetics
               </h1>
               <p className="text-xs font-medium text-lea-charcoal-grey tracking-wider uppercase">
                 Clinic Academy

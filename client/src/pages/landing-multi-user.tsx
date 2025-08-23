@@ -95,9 +95,9 @@ export default function Landing() {
                   <span className="text-lea-deep-charcoal font-bold text-lg font-serif">L</span>
                 </div>
                 <div className="flex flex-col">
-                  <h1 className="text-xl font-serif font-bold text-lea-deep-charcoal tracking-tight leading-none">
-                    LEA AESTHETICS
-                  </h1>
+                <h1 className="text-xl font-cursive font-semibold text-lea-deep-charcoal tracking-tight leading-none">
+                  Lea Aesthetics
+                </h1>
                   <p className="text-xs font-medium text-lea-charcoal-grey tracking-wider uppercase">
                     Clinic Academy
                   </p>
@@ -141,9 +141,9 @@ export default function Landing() {
               <span className="text-sm font-medium text-lea-charcoal-grey tracking-wider uppercase">Premium Aesthetics Platform</span>
               <div className="h-px bg-gradient-to-r from-transparent via-lea-elegant-silver to-transparent w-16"></div>
             </div>
-            <h2 className="text-5xl md:text-6xl font-serif font-bold text-lea-deep-charcoal mb-8 leading-tight tracking-tight">
-              LEA AESTHETICS
-              <span className="block text-3xl md:text-4xl font-light text-lea-charcoal-grey mt-2">Clinic Academy</span>
+            <h2 className="text-5xl md:text-6xl font-cursive font-semibold text-lea-deep-charcoal mb-8 leading-tight tracking-tight">
+              Lea Aesthetics
+              <span className="block text-3xl md:text-4xl font-serif font-light text-lea-charcoal-grey mt-2">Clinic Academy</span>
             </h2>
             <p className="text-xl text-lea-charcoal-grey mb-12 max-w-4xl mx-auto leading-relaxed">
               Where clinical excellence meets educational distinction. Our sophisticated platform serves the UK's most discerning aesthetic practitioners, 
@@ -442,7 +442,7 @@ export default function Landing() {
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <h4 className="text-2xl font-serif font-bold text-lea-platinum-white mb-4">
+              <h4 className="text-2xl font-cursive font-semibold text-lea-platinum-white mb-4">
                 Lea Aesthetics Clinic Academy
               </h4>
               <p className="text-lea-silver-grey mb-8 max-w-2xl mx-auto">

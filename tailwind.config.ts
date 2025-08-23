@@ -151,6 +151,8 @@ export default {
       fontFamily: {
         sans: ["Inter", "var(--font-sans)", "system-ui", "-apple-system", "sans-serif"],
         serif: ["Lora", "var(--font-serif)", "Georgia", "serif"],
+        cursive: ["Dancing Script", "Brush Script MT", "Lucida Handwriting", "cursive"],
+        elegant: ["Playfair Display", "Cormorant Garamond", "Georgia", "serif"],
         mono: ["var(--font-mono)", "Menlo", "Monaco", "Consolas", "monospace"],
       },
       fontSize: {
