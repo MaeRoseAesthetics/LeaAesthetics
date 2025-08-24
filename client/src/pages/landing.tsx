@@ -107,7 +107,7 @@ export default function Landing() {
                 <h1 className="text-xl font-cursive font-semibold text-lea-deep-charcoal tracking-tight leading-none">
                   Lea Aesthetics
                 </h1>
-                <p className="text-xs font-medium text-lea-charcoal-grey tracking-wider uppercase">
+                <p className="text-xs lg:text-sm font-medium text-lea-charcoal-grey tracking-wider">
                   Clinic Academy
                 </p>
               </div>
@@ -116,16 +116,13 @@ export default function Landing() {
               </Badge>
             </div>
             <div className="flex items-center space-x-4">
-              <Button variant="ghost" asChild className="text-lea-charcoal-grey hover:text-lea-deep-charcoal">
-                <Link href="/">← Back to Main</Link>
-              </Button>
               <Button 
                 variant="outline" 
                 className="border-lea-deep-charcoal text-lea-deep-charcoal hover:bg-lea-deep-charcoal hover:text-lea-platinum-white transition-all duration-300"
                 data-testid="button-login"
-                onClick={openLoginDialog}
+                onClick={() => setLocation('/practitioner')}
               >
-                Practitioner Access
+                Practitioner Portal
               </Button>
             </div>
           </div>

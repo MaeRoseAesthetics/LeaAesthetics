@@ -117,11 +117,18 @@ export default function Landing() {
               transition={{ duration: 0.6, delay: 0.2 }}
             >
               <Button 
+                variant="ghost" 
+                onClick={() => navigate('/')}
+                className="text-lea-charcoal-grey hover:text-lea-deep-charcoal"
+              >
+                ← Back to Main
+              </Button>
+              <Button 
                 variant="outline" 
                 onClick={() => openLoginDialog('practitioner')}
                 className="border-lea-deep-charcoal text-lea-deep-charcoal hover:bg-lea-deep-charcoal hover:text-lea-platinum-white transition-all duration-300 px-6 py-2.5 font-medium"
               >
-                Practitioner Access
+                Admin Login
               </Button>
             </motion.div>
           </div>

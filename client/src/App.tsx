@@ -54,8 +54,11 @@ function Router() {
 
   return (
     <Switch>
-      {/* Main entry point - Multi-user landing page */}
-      <Route path="/" component={LandingMultiUser} />
+      {/* Main entry point - Marketing landing page for aestheticians/tutors */}
+      <Route path="/" component={Landing} />
+      
+      {/* Practitioner portal - Multi-user access for practitioners' clients/students */}
+      <Route path="/practitioner" component={LandingMultiUser} />
       
       {/* Public portal routes */}
       <Route path="/client-portal" component={ClientPortal} />
@@ -65,9 +68,6 @@ function Router() {
       
       {/* Admin setup route */}
       <Route path="/admin-setup" component={AdminSetup} />
-      
-      {/* Practitioner-specific landing */}
-      <Route path="/practitioner" component={Landing} />
       
       {/* Public pages accessible to all */}
       <Route path="/background" component={Background} />
