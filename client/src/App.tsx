@@ -13,18 +13,7 @@ import ClientPortal from "@/pages/client-portal";
 import StudentPortal from "@/pages/student-portal";
 import ClientRegistration from "@/pages/client-registration";
 import StudentRegistration from "@/pages/student-registration";
-import Dashboard from "@/pages/dashboard";
-import Bookings from "@/pages/bookings";
-import Clients from "@/pages/clients";
-import Payments from "@/pages/payments";
-import Courses from "@/pages/courses";
-import Students from "@/pages/students";
-import Compliance from "@/pages/compliance";
-import Treatments from "@/pages/treatments";
-import Inventory from "@/pages/inventory";
-import Audit from "@/pages/audit";
-import AdminSettings from "@/pages/admin-settings";
-import Analytics from "@/pages/analytics";
+import PractitionerPortal from "@/pages/practitioner-portal";
 import Background from "@/pages/background";
 
 // Protected Route Component
@@ -83,19 +72,8 @@ function Router() {
       {/* Public pages accessible to all */}
       <Route path="/background" component={Background} />
       
-      {/* Protected routes - require authentication */}
-      <Route path="/dashboard" component={() => <ProtectedRoute component={Dashboard} />} />
-      <Route path="/bookings" component={() => <ProtectedRoute component={Bookings} />} />
-      <Route path="/clients" component={() => <ProtectedRoute component={Clients} />} />
-      <Route path="/payments" component={() => <ProtectedRoute component={Payments} />} />
-      <Route path="/courses" component={() => <ProtectedRoute component={Courses} />} />
-      <Route path="/students" component={() => <ProtectedRoute component={Students} />} />
-      <Route path="/compliance" component={() => <ProtectedRoute component={Compliance} />} />
-      <Route path="/treatments" component={() => <ProtectedRoute component={Treatments} />} />
-      <Route path="/inventory" component={() => <ProtectedRoute component={Inventory} />} />
-      <Route path="/audit" component={() => <ProtectedRoute component={Audit} />} />
-      <Route path="/analytics" component={() => <ProtectedRoute component={Analytics} />} />
-      <Route path="/admin-settings" component={() => <ProtectedRoute component={AdminSettings} />} />
+      {/* Unified Practitioner Portal - Single protected route for all practitioner functions */}
+      <Route path="/dashboard" component={() => <ProtectedRoute component={PractitionerPortal} />} />
       
       {/* Catch all unmatched routes */}
       <Route component={NotFound} />
