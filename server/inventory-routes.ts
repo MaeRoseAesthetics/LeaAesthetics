@@ -1,6 +1,47 @@
 import type { Express } from "express";
-import { isAuthenticated } from "./replitAuth";
 import { storage } from "./storage";
+
+// Simple auth middleware for Supabase JWT verification
+const verifySupabaseToken = async (req: any, res: any, next: any) => {
+  try {
+    const authHeader = req.headers.authorization;
+    
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const token = authHeader.split(' ')[1];
+    
+    // Get Supabase configuration
+    const supabaseUrl = process.env.DATABASE_SUPABASE_URL || 
+                       process.env.DATABASE_NEXT_PUBLIC_SUPABASE_URL || 
+                       process.env.NEXT_PUBLIC_SUPABASE_URL;
+                       
+    const supabaseKey = process.env.DATABASE_NEXT_PUBLIC_SUPABASE_ANON_KEY || 
+                       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    
+    if (!supabaseUrl || !supabaseKey) {
+      return res.status(500).json({ message: 'Supabase configuration missing' });
+    }
+
+    const { createClient } = require('@supabase/supabase-js');
+    const supabase = createClient(supabaseUrl, supabaseKey);
+    
+    // Verify token with Supabase
+    const { data: { user }, error } = await supabase.auth.getUser(token);
+    
+    if (error || !user) {
+      return res.status(401).json({ message: "Invalid or expired token" });
+    }
+
+    // Attach user to request
+    req.user = user;
+    next();
+  } catch (error) {
+    console.error('Auth middleware error:', error);
+    res.status(401).json({ message: "Unauthorized" });
+  }
+};
 import { 
   insertInventorySchema,
   insertEquipmentSchema,
@@ -23,7 +64,7 @@ export function registerInventoryRoutes(app: Express) {
   // ============ INVENTORY MANAGEMENT ROUTES ============
 
   // Create inventory item
-  app.post("/api/inventory", isAuthenticated, async (req, res) => {
+  app.post("/api/inventory", verifySupabaseToken, async (req, res) => {
     try {
       const inventoryData = insertInventorySchema.parse(req.body);
       const inventory = await storage.createInventory(inventoryData);
@@ -37,7 +78,7 @@ export function registerInventoryRoutes(app: Express) {
           previousQuantity: 0,
           newQuantity: inventoryData.quantity,
           reason: "initial_stock",
-          userId: (req as any).user.claims.sub,
+          userId: ((req as any).user.id,
           cost: inventoryData.unitCost ? Number(inventoryData.unitCost) * inventoryData.quantity : undefined,
           notes: "Initial stock entry"
         });
@@ -50,7 +91,7 @@ export function registerInventoryRoutes(app: Express) {
   });
 
   // Get all inventory items with stock alerts
-  app.get("/api/inventory", isAuthenticated, async (req, res) => {
+  app.get("/api/inventory", verifySupabaseToken, async (req, res) => {
     try {
       const { category, location, lowStock, expired } = req.query;
       
@@ -97,7 +138,7 @@ export function registerInventoryRoutes(app: Express) {
   });
 
   // Get single inventory item with stock history
-  app.get("/api/inventory/:id", isAuthenticated, async (req, res) => {
+  app.get("/api/inventory/:id", verifySupabaseToken, async (req, res) => {
     try {
       const inventory = await storage.getInventory(req.params.id);
       if (!inventory) {
@@ -119,7 +160,7 @@ export function registerInventoryRoutes(app: Express) {
   });
 
   // Update inventory item
-  app.put("/api/inventory/:id", isAuthenticated, async (req, res) => {
+  app.put("/api/inventory/:id", verifySupabaseToken, async (req, res) => {
     try {
       const currentInventory = await storage.getInventory(req.params.id);
       if (!currentInventory) {
@@ -141,7 +182,7 @@ export function registerInventoryRoutes(app: Express) {
           previousQuantity: currentInventory.quantity,
           newQuantity: updateData.quantity,
           reason: 'manual_adjustment',
-          userId: (req as any).user.claims.sub,
+          userId: ((req as any).user.id,
           notes: req.body.adjustmentNote || 'Manual quantity adjustment'
         });
       }
@@ -153,7 +194,7 @@ export function registerInventoryRoutes(app: Express) {
   });
 
   // Delete inventory item
-  app.delete("/api/inventory/:id", isAuthenticated, async (req, res) => {
+  app.delete("/api/inventory/:id", verifySupabaseToken, async (req, res) => {
     try {
       await storage.deleteInventory(req.params.id);
       res.json({ message: "Inventory item deleted successfully" });
@@ -165,7 +206,7 @@ export function registerInventoryRoutes(app: Express) {
   // ============ STOCK MOVEMENT ROUTES ============
 
   // Record stock movement (used for treatments, sales, etc.)
-  app.post("/api/inventory/:id/movement", isAuthenticated, async (req, res) => {
+  app.post("/api/inventory/:id/movement", verifySupabaseToken, async (req, res) => {
     try {
       const inventory = await storage.getInventory(req.params.id);
       if (!inventory) {
@@ -195,7 +236,7 @@ export function registerInventoryRoutes(app: Express) {
         newQuantity,
         reason,
         reference,
-        userId: (req as any).user.claims.sub,
+        userId: ((req as any).user.id,
         notes
       });
 
@@ -220,7 +261,7 @@ export function registerInventoryRoutes(app: Express) {
   });
 
   // Get stock movements for an inventory item
-  app.get("/api/inventory/:id/movements", isAuthenticated, async (req, res) => {
+  app.get("/api/inventory/:id/movements", verifySupabaseToken, async (req, res) => {
     try {
       const movements = await storage.getStockMovementsByInventory(req.params.id);
       res.json(movements);
@@ -232,7 +273,7 @@ export function registerInventoryRoutes(app: Express) {
   // ============ EQUIPMENT MANAGEMENT ROUTES ============
 
   // Create equipment
-  app.post("/api/equipment", isAuthenticated, async (req, res) => {
+  app.post("/api/equipment", verifySupabaseToken, async (req, res) => {
     try {
       const equipmentData = insertEquipmentSchema.parse(req.body);
       const equipment = await storage.createEquipment(equipmentData);
@@ -243,7 +284,7 @@ export function registerInventoryRoutes(app: Express) {
   });
 
   // Get all equipment with maintenance status
-  app.get("/api/equipment", isAuthenticated, async (req, res) => {
+  app.get("/api/equipment", verifySupabaseToken, async (req, res) => {
     try {
       const { status, location, maintenanceDue } = req.query;
       
@@ -290,7 +331,7 @@ export function registerInventoryRoutes(app: Express) {
   });
 
   // Get single equipment with maintenance history
-  app.get("/api/equipment/:id", isAuthenticated, async (req, res) => {
+  app.get("/api/equipment/:id", verifySupabaseToken, async (req, res) => {
     try {
       const equipment = await storage.getEquipment(req.params.id);
       if (!equipment) {
@@ -309,7 +350,7 @@ export function registerInventoryRoutes(app: Express) {
   });
 
   // Update equipment
-  app.put("/api/equipment/:id", isAuthenticated, async (req, res) => {
+  app.put("/api/equipment/:id", verifySupabaseToken, async (req, res) => {
     try {
       const updateData = insertEquipmentSchema.partial().parse(req.body);
       const updatedEquipment = await storage.updateEquipment(req.params.id, updateData);
@@ -327,7 +368,7 @@ export function registerInventoryRoutes(app: Express) {
   // ============ MAINTENANCE ROUTES ============
 
   // Schedule maintenance
-  app.post("/api/equipment/:id/maintenance", isAuthenticated, async (req, res) => {
+  app.post("/api/equipment/:id/maintenance", verifySupabaseToken, async (req, res) => {
     try {
       const equipment = await storage.getEquipment(req.params.id);
       if (!equipment) {
@@ -357,7 +398,7 @@ export function registerInventoryRoutes(app: Express) {
   });
 
   // Complete maintenance
-  app.put("/api/maintenance/:id/complete", isAuthenticated, async (req, res) => {
+  app.put("/api/maintenance/:id/complete", verifySupabaseToken, async (req, res) => {
     try {
       const { completedDate, issuesFound, actionsPerformed, cost, nextServiceDate } = req.body;
       
@@ -390,7 +431,7 @@ export function registerInventoryRoutes(app: Express) {
   });
 
   // Get maintenance records
-  app.get("/api/maintenance", isAuthenticated, async (req, res) => {
+  app.get("/api/maintenance", verifySupabaseToken, async (req, res) => {
     try {
       const { status, equipmentId, maintenanceType } = req.query;
       
@@ -417,7 +458,7 @@ export function registerInventoryRoutes(app: Express) {
   // ============ ALERTS AND NOTIFICATIONS ============
 
   // Get all alerts
-  app.get("/api/alerts", isAuthenticated, async (req, res) => {
+  app.get("/api/alerts", verifySupabaseToken, async (req, res) => {
     try {
       const { alertType, severity, unreadOnly } = req.query;
       
@@ -442,7 +483,7 @@ export function registerInventoryRoutes(app: Express) {
   });
 
   // Mark alert as read
-  app.put("/api/alerts/:id/read", isAuthenticated, async (req, res) => {
+  app.put("/api/alerts/:id/read", verifySupabaseToken, async (req, res) => {
     try {
       const alert = await storage.updateInventoryAlert(req.params.id, { isRead: true });
       if (!alert) {
@@ -455,7 +496,7 @@ export function registerInventoryRoutes(app: Express) {
   });
 
   // Dismiss alert
-  app.put("/api/alerts/:id/dismiss", isAuthenticated, async (req, res) => {
+  app.put("/api/alerts/:id/dismiss", verifySupabaseToken, async (req, res) => {
     try {
       const alert = await storage.updateInventoryAlert(req.params.id, { isDismissed: true });
       if (!alert) {
@@ -470,7 +511,7 @@ export function registerInventoryRoutes(app: Express) {
   // ============ SUPPLIERS AND PURCHASING ============
 
   // Create supplier
-  app.post("/api/suppliers", isAuthenticated, async (req, res) => {
+  app.post("/api/suppliers", verifySupabaseToken, async (req, res) => {
     try {
       const supplierData = insertSupplierSchema.parse(req.body);
       const supplier = await storage.createSupplier(supplierData);
@@ -481,7 +522,7 @@ export function registerInventoryRoutes(app: Express) {
   });
 
   // Get all suppliers
-  app.get("/api/suppliers", isAuthenticated, async (req, res) => {
+  app.get("/api/suppliers", verifySupabaseToken, async (req, res) => {
     try {
       const suppliers = await storage.getAllSuppliers();
       res.json(suppliers);
@@ -491,7 +532,7 @@ export function registerInventoryRoutes(app: Express) {
   });
 
   // Create purchase order
-  app.post("/api/purchase-orders", isAuthenticated, async (req, res) => {
+  app.post("/api/purchase-orders", verifySupabaseToken, async (req, res) => {
     try {
       const { items, ...orderData } = req.body;
       
@@ -501,7 +542,7 @@ export function registerInventoryRoutes(app: Express) {
       const purchaseOrderData = insertPurchaseOrderSchema.parse({
         ...orderData,
         orderNumber,
-        createdBy: (req as any).user.claims.sub
+        createdBy: ((req as any).user.id
       });
       
       const purchaseOrder = await storage.createPurchaseOrder(purchaseOrderData);
@@ -523,7 +564,7 @@ export function registerInventoryRoutes(app: Express) {
   });
 
   // Get purchase orders
-  app.get("/api/purchase-orders", isAuthenticated, async (req, res) => {
+  app.get("/api/purchase-orders", verifySupabaseToken, async (req, res) => {
     try {
       const { status, supplierId } = req.query;
       
@@ -546,7 +587,7 @@ export function registerInventoryRoutes(app: Express) {
   // ============ REPORTING AND ANALYTICS ============
 
   // Get inventory summary
-  app.get("/api/inventory/summary", isAuthenticated, async (req, res) => {
+  app.get("/api/inventory/summary", verifySupabaseToken, async (req, res) => {
     try {
       const inventory = await storage.getAllInventory();
       
@@ -575,7 +616,7 @@ export function registerInventoryRoutes(app: Express) {
   });
 
   // Get equipment summary
-  app.get("/api/equipment/summary", isAuthenticated, async (req, res) => {
+  app.get("/api/equipment/summary", verifySupabaseToken, async (req, res) => {
     try {
       const equipment = await storage.getAllEquipment();
       const now = new Date();

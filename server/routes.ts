@@ -1,7 +1,6 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { setupAuth, isAuthenticated } from "./replitAuth";
 import { 
   insertClientSchema,
   insertStudentSchema, 
@@ -25,18 +24,68 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: "2023-10-16",
 });
 
+// Simple auth middleware for Supabase JWT verification
+const verifySupabaseToken = async (req: any, res: any, next: any) => {
+  try {
+    const authHeader = req.headers.authorization;
+    
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const token = authHeader.split(' ')[1];
+    
+    // Get Supabase configuration
+    const supabaseUrl = process.env.DATABASE_SUPABASE_URL || 
+                       process.env.DATABASE_NEXT_PUBLIC_SUPABASE_URL || 
+                       process.env.NEXT_PUBLIC_SUPABASE_URL;
+                       
+    const supabaseKey = process.env.DATABASE_NEXT_PUBLIC_SUPABASE_ANON_KEY || 
+                       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    
+    if (!supabaseUrl || !supabaseKey) {
+      return res.status(500).json({ message: 'Supabase configuration missing' });
+    }
+
+    const { createClient } = require('@supabase/supabase-js');
+    const supabase = createClient(supabaseUrl, supabaseKey);
+    
+    // Verify token with Supabase
+    const { data: { user }, error } = await supabase.auth.getUser(token);
+    
+    if (error || !user) {
+      return res.status(401).json({ message: "Invalid or expired token" });
+    }
+
+    // Attach user to request
+    req.user = user;
+    next();
+  } catch (error) {
+    console.error('Auth middleware error:', error);
+    res.status(401).json({ message: "Unauthorized" });
+  }
+};
+
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Auth middleware
-  await setupAuth(app);
-  
   // Register inventory management routes
   registerInventoryRoutes(app);
 
   // Auth routes
-  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
+  app.get('/api/auth/user', verifySupabaseToken, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const user = await storage.getUser(userId);
+      if (!user) {
+        // Create a basic user record if it doesn't exist
+        const newUser = await storage.upsertUser({
+          id: userId,
+          email: req.user.email || '',
+          firstName: req.user.user_metadata?.first_name || '',
+          lastName: req.user.user_metadata?.last_name || '',
+          profileImageUrl: req.user.user_metadata?.profile_image_url || null
+        });
+        return res.json(newUser);
+      }
       res.json(user);
     } catch (error) {
       console.error("Error fetching user:", error);
@@ -45,11 +94,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Client routes
-  app.post("/api/clients", isAuthenticated, async (req: any, res) => {
+  app.post("/api/clients", verifySupabaseToken, async (req: any, res) => {
     try {
       const clientData = insertClientSchema.parse({
         ...req.body,
-        userId: req.user.claims.sub
+        userId: req.user.id
       });
       const client = await storage.createClient(clientData);
       res.json(client);
@@ -58,9 +107,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/clients", isAuthenticated, async (req: any, res) => {
+  app.get("/api/clients", verifySupabaseToken, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const clients = await storage.getClientsByUser(userId);
       res.json(clients);
     } catch (error) {
@@ -68,7 +117,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/clients/:id", isAuthenticated, async (req, res) => {
+  app.get("/api/clients/:id", verifySupabaseToken, async (req, res) => {
     try {
       const client = await storage.getClient(req.params.id);
       if (!client) {
@@ -81,11 +130,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Student routes
-  app.post("/api/students", isAuthenticated, async (req: any, res) => {
+  app.post("/api/students", verifySupabaseToken, async (req: any, res) => {
     try {
       const studentData = insertStudentSchema.parse({
         ...req.body,
-        userId: req.user.claims.sub
+        userId: req.user.id
       });
       const student = await storage.createStudent(studentData);
       res.json(student);
@@ -94,9 +143,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/students", isAuthenticated, async (req: any, res) => {
+  app.get("/api/students", verifySupabaseToken, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const students = await storage.getStudentsByUser(userId);
       res.json(students);
     } catch (error) {
@@ -105,7 +154,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Treatment routes
-  app.post("/api/treatments", isAuthenticated, async (req, res) => {
+  app.post("/api/treatments", verifySupabaseToken, async (req, res) => {
     try {
       const treatmentData = insertTreatmentSchema.parse(req.body);
       const treatment = await storage.createTreatment(treatmentData);
@@ -125,7 +174,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Course routes
-  app.post("/api/courses", isAuthenticated, async (req, res) => {
+  app.post("/api/courses", verifySupabaseToken, async (req, res) => {
     try {
       const courseData = insertCourseSchema.parse(req.body);
       const course = await storage.createCourse(courseData);
@@ -145,7 +194,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Booking routes
-  app.post("/api/bookings", isAuthenticated, async (req, res) => {
+  app.post("/api/bookings", verifySupabaseToken, async (req, res) => {
     try {
       const bookingData = insertBookingSchema.parse(req.body);
       const booking = await storage.createBooking(bookingData);
@@ -155,9 +204,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/bookings", isAuthenticated, async (req: any, res) => {
+  app.get("/api/bookings", verifySupabaseToken, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       // Get all clients for this user and their bookings
       const clients = await storage.getClientsByUser(userId);
       let allBookings = [];
@@ -174,7 +223,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Enrollment routes
-  app.post("/api/enrollments", isAuthenticated, async (req, res) => {
+  app.post("/api/enrollments", verifySupabaseToken, async (req, res) => {
     try {
       const enrollmentData = insertEnrollmentSchema.parse(req.body);
       const enrollment = await storage.createEnrollment(enrollmentData);
@@ -184,9 +233,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/enrollments", isAuthenticated, async (req: any, res) => {
+  app.get("/api/enrollments", verifySupabaseToken, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const students = await storage.getStudentsByUser(userId);
       let allEnrollments = [];
       
@@ -202,7 +251,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Consent form routes
-  app.post("/api/consent-forms", isAuthenticated, async (req, res) => {
+  app.post("/api/consent-forms", verifySupabaseToken, async (req, res) => {
     try {
       const formData = insertConsentFormSchema.parse(req.body);
       const form = await storage.createConsentForm(formData);
@@ -212,7 +261,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/consent-forms/:clientId", isAuthenticated, async (req, res) => {
+  app.get("/api/consent-forms/:clientId", verifySupabaseToken, async (req, res) => {
     try {
       const forms = await storage.getConsentFormsByClient(req.params.clientId);
       res.json(forms);
@@ -221,7 +270,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/consent-forms/:id/sign", isAuthenticated, async (req, res) => {
+  app.put("/api/consent-forms/:id/sign", verifySupabaseToken, async (req, res) => {
     try {
       const { signatureData } = req.body;
       const form = await storage.updateConsentForm(req.params.id, {
@@ -236,7 +285,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Payment routes - Stripe integration
-  app.post("/api/create-payment-intent", isAuthenticated, async (req, res) => {
+  app.post("/api/create-payment-intent", verifySupabaseToken, async (req, res) => {
     try {
       const { amount, currency = "gbp", clientId, studentId, bookingId, enrollmentId } = req.body;
       
@@ -271,7 +320,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/payments/:id/verify-age", isAuthenticated, async (req, res) => {
+  app.post("/api/payments/:id/verify-age", verifySupabaseToken, async (req, res) => {
     try {
       const payment = await storage.updatePayment(req.params.id, {
         ageVerified: true
@@ -282,9 +331,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/payments", isAuthenticated, async (req: any, res) => {
+  app.get("/api/payments", verifySupabaseToken, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const clients = await storage.getClientsByUser(userId);
       const students = await storage.getStudentsByUser(userId);
       
@@ -307,7 +356,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Course content routes
-  app.post("/api/course-content", isAuthenticated, async (req, res) => {
+  app.post("/api/course-content", verifySupabaseToken, async (req, res) => {
     try {
       const contentData = insertCourseContentSchema.parse(req.body);
       const content = await storage.createCourseContent(contentData);
@@ -317,7 +366,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/course-content/:courseId", isAuthenticated, async (req, res) => {
+  app.get("/api/course-content/:courseId", verifySupabaseToken, async (req, res) => {
     try {
       const content = await storage.getCourseContentByCourse(req.params.courseId);
       res.json(content);
@@ -327,7 +376,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Assessment routes
-  app.post("/api/assessments", isAuthenticated, async (req, res) => {
+  app.post("/api/assessments", verifySupabaseToken, async (req, res) => {
     try {
       const assessmentData = insertAssessmentSchema.parse(req.body);
       const assessment = await storage.createAssessment(assessmentData);
@@ -337,7 +386,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/assessments/:studentId", isAuthenticated, async (req, res) => {
+  app.get("/api/assessments/:studentId", verifySupabaseToken, async (req, res) => {
     try {
       const assessments = await storage.getAssessmentsByStudent(req.params.studentId);
       res.json(assessments);
@@ -347,9 +396,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Dashboard stats route
-  app.get("/api/dashboard/stats", isAuthenticated, async (req: any, res) => {
+  app.get("/api/dashboard/stats", verifySupabaseToken, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const clients = await storage.getClientsByUser(userId);
       const students = await storage.getStudentsByUser(userId);
       
