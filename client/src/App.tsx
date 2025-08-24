@@ -23,6 +23,8 @@ import Compliance from "@/pages/compliance";
 import Treatments from "@/pages/treatments";
 import Inventory from "@/pages/inventory";
 import Audit from "@/pages/audit";
+import AdminSettings from "@/pages/admin-settings";
+import Analytics from "@/pages/analytics";
 import Background from "@/pages/background";
 
 // Protected Route Component
@@ -92,6 +94,8 @@ function Router() {
       <Route path="/treatments" component={() => <ProtectedRoute component={Treatments} />} />
       <Route path="/inventory" component={() => <ProtectedRoute component={Inventory} />} />
       <Route path="/audit" component={() => <ProtectedRoute component={Audit} />} />
+      <Route path="/analytics" component={() => <ProtectedRoute component={Analytics} />} />
+      <Route path="/admin-settings" component={() => <ProtectedRoute component={AdminSettings} />} />
       
       {/* Catch all unmatched routes */}
       <Route component={NotFound} />

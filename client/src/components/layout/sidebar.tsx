@@ -137,6 +137,23 @@ export default function Sidebar({
     }
   ];
 
+  const adminNavItems = [
+    {
+      id: "admin-settings",
+      path: "/admin-settings",
+      icon: "fas fa-cog",
+      label: "Admin Settings",
+      badge: null
+    },
+    {
+      id: "analytics",
+      path: "/analytics",
+      icon: "fas fa-chart-bar",
+      label: "Analytics",
+      badge: null
+    }
+  ];
+
   const trainingNavItems = [
     {
       id: "courses",
@@ -259,6 +276,30 @@ export default function Sidebar({
                       </li>
                     ))}
                   </ul>
+
+                  <h3 className="text-xs font-serif font-semibold text-lea-deep-charcoal uppercase tracking-wider mt-8 mb-4">
+                    Administration
+                  </h3>
+                  <ul className="space-y-2">
+                    {adminNavItems.map((item) => (
+                      <li key={item.id}>
+                        <Link
+                          href={item.path}
+                          onClick={handleTabClick}
+                          className={cn(
+                            "group flex items-center w-full px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 min-h-[48px]",
+                            isTabActive(item.id)
+                              ? 'bg-lea-deep-charcoal text-lea-platinum-white shadow-lea-card'
+                              : 'text-lea-charcoal-grey hover:bg-lea-pearl-white hover:text-lea-deep-charcoal'
+                          )}
+                          data-testid={`nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
+                        >
+                          <i className={`${item.icon} mr-3 text-base`}></i>
+                          <span className="flex-1 text-left">{item.label}</span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               ) : (
                 <div className="training-nav">
@@ -377,6 +418,30 @@ export default function Sidebar({
                         <i className={item.statusIcon}></i>
                       </span>
                     )}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+
+            <h3 className="text-xs font-serif font-semibold text-lea-deep-charcoal uppercase tracking-wider mt-8 mb-3">
+              Administration
+            </h3>
+            <ul className="space-y-1">
+              {adminNavItems.map((item) => (
+                <li key={item.id}>
+                  <Link
+                    href={item.path}
+                    onClick={handleTabClick}
+                    className={cn(
+                      "group flex items-center w-full px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 min-h-[40px]",
+                      isTabActive(item.id)
+                        ? 'bg-lea-deep-charcoal text-lea-platinum-white shadow-lea-card'
+                        : 'text-lea-charcoal-grey hover:bg-lea-pearl-white hover:text-lea-deep-charcoal'
+                    )}
+                    data-testid={`nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
+                  >
+                    <i className={`${item.icon} mr-3`}></i>
+                    <span className="flex-1 text-left">{item.label}</span>
                   </Link>
                 </li>
               ))}

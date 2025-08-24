@@ -15,11 +15,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { AlertTriangle, Package, Settings, Calendar, Plus, Search, Filter, TrendingDown, TrendingUp } from "lucide-react";
+import { AlertTriangle, Package, Settings, Calendar, Plus, Search, Filter, TrendingDown, TrendingUp, BarChart3, Users } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { apiRequest } from "@/lib/queryClient";
+import SupplierManagement from "@/components/inventory/supplier-management";
+import InventoryAnalytics from "@/components/inventory/inventory-analytics";
 
 const inventoryItemSchema = z.object({
   name: z.string().min(1, "Product name is required"),
@@ -381,10 +383,18 @@ export default function Inventory() {
 
             {/* Main Content Tabs */}
             <Tabs defaultValue="inventory" className="w-full">
-              <TabsList className="grid w-full grid-cols-3">
+              <TabsList className="grid w-full grid-cols-5">
                 <TabsTrigger value="inventory">Inventory</TabsTrigger>
                 <TabsTrigger value="equipment">Equipment</TabsTrigger>
                 <TabsTrigger value="maintenance">Maintenance</TabsTrigger>
+                <TabsTrigger value="suppliers">
+                  <Users className="w-4 h-4 mr-1" />
+                  Suppliers
+                </TabsTrigger>
+                <TabsTrigger value="analytics">
+                  <BarChart3 className="w-4 h-4 mr-1" />
+                  Analytics
+                </TabsTrigger>
               </TabsList>
 
               <TabsContent value="inventory" className="space-y-4 mt-6">
@@ -661,6 +671,14 @@ export default function Inventory() {
                     </Card>
                   ))}
                 </div>
+              </TabsContent>
+
+              <TabsContent value="suppliers" className="mt-6">
+                <SupplierManagement />
+              </TabsContent>
+
+              <TabsContent value="analytics" className="mt-6">
+                <InventoryAnalytics />
               </TabsContent>
             </Tabs>
           </div>
