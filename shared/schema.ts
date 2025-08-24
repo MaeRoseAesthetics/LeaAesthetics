@@ -833,3 +833,426 @@ export type InsertClientDocuments = z.infer<typeof insertClientDocumentsSchema>;
 export type ClientDocuments = typeof clientDocuments.$inferSelect;
 export type InsertBusinessMetrics = z.infer<typeof insertBusinessMetricsSchema>;
 export type BusinessMetrics = typeof businessMetrics.$inferSelect;
+
+// LMS Enhancement Tables
+
+// Course Modules for structured learning
+export const courseModules = pgTable("course_modules", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  courseId: varchar("course_id").references(() => courses.id).notNull(),
+  title: varchar("title").notNull(),
+  description: text("description"),
+  orderIndex: integer("order_index").default(0),
+  duration: integer("duration"), // in hours
+  contentType: varchar("content_type").notNull(), // "video", "document", "interactive", "quiz"
+  contentUrl: varchar("content_url"),
+  isRequired: boolean("is_required").default(true),
+  prerequisites: jsonb("prerequisites"), // Array of module IDs
+  learningObjectives: jsonb("learning_objectives"),
+  resources: jsonb("resources"), // Additional resources and materials
+  active: boolean("active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Student module completion tracking
+export const moduleProgress = pgTable("module_progress", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  studentId: varchar("student_id").references(() => students.id).notNull(),
+  courseId: varchar("course_id").references(() => courses.id).notNull(),
+  moduleId: varchar("module_id").references(() => courseModules.id).notNull(),
+  status: varchar("status").default("not_started"), // not_started, in_progress, completed, failed
+  progress: integer("progress").default(0), // percentage
+  timeSpent: integer("time_spent").default(0), // minutes
+  startedAt: timestamp("started_at"),
+  completedAt: timestamp("completed_at"),
+  score: integer("score"),
+  maxScore: integer("max_score"),
+  attempts: integer("attempts").default(0),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Assessment Questions and Quizzes
+export const assessmentQuestions = pgTable("assessment_questions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  assessmentId: varchar("assessment_id").notNull(), // Reference to assessment
+  moduleId: varchar("module_id").references(() => courseModules.id),
+  type: varchar("type").notNull(), // "multiple_choice", "true_false", "short_answer", "essay", "practical"
+  question: text("question").notNull(),
+  options: jsonb("options"), // For multiple choice questions
+  correctAnswer: text("correct_answer"),
+  explanation: text("explanation"),
+  points: integer("points").default(1),
+  difficulty: varchar("difficulty").default("medium"), // easy, medium, hard
+  tags: jsonb("tags"), // For categorization
+  mediaUrl: varchar("media_url"), // Images, videos, etc.
+  orderIndex: integer("order_index").default(0),
+  active: boolean("active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Student Assessment Responses
+export const assessmentResponses = pgTable("assessment_responses", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  assessmentId: varchar("assessment_id").notNull(),
+  questionId: varchar("question_id").references(() => assessmentQuestions.id).notNull(),
+  studentId: varchar("student_id").references(() => students.id).notNull(),
+  response: text("response"), // Student's answer
+  isCorrect: boolean("is_correct"),
+  pointsEarned: integer("points_earned").default(0),
+  feedback: text("feedback"), // Instructor feedback
+  timeSpent: integer("time_spent").default(0), // seconds
+  submittedAt: timestamp("submitted_at").defaultNow(),
+  gradedAt: timestamp("graded_at"),
+  gradedBy: varchar("graded_by").references(() => userProfiles.id),
+});
+
+// CPD (Continuing Professional Development) Records
+export const cpdRecords = pgTable("cpd_records", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  studentId: varchar("student_id").references(() => students.id).notNull(),
+  activityType: varchar("activity_type").notNull(), // "course", "workshop", "conference", "webinar", "self_study", "mentoring"
+  title: varchar("title").notNull(),
+  description: text("description"),
+  provider: varchar("provider"), // Training provider or institution
+  hours: decimal("hours", { precision: 5, scale: 2 }).notNull(),
+  dateCompleted: timestamp("date_completed").notNull(),
+  certificateNumber: varchar("certificate_number"),
+  verificationStatus: varchar("verification_status").default("pending"), // pending, verified, rejected
+  verifiedBy: varchar("verified_by").references(() => userProfiles.id),
+  verifiedAt: timestamp("verified_at"),
+  evidenceUrl: varchar("evidence_url"), // Certificate or proof document
+  category: varchar("category"), // "clinical", "business", "regulatory", "safety"
+  relevanceRating: integer("relevance_rating"), // 1-5 scale
+  notes: text("notes"),
+  expiryDate: timestamp("expiry_date"),
+  renewalRequired: boolean("renewal_required").default(false),
+  cpdYear: integer("cpd_year").notNull(), // CPD reporting year
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Digital Certificates
+export const digitalCertificates = pgTable("digital_certificates", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  studentId: varchar("student_id").references(() => students.id).notNull(),
+  courseId: varchar("course_id").references(() => courses.id),
+  certificateNumber: varchar("certificate_number").unique().notNull(),
+  certificateType: varchar("certificate_type").notNull(), // "completion", "achievement", "competency", "cpd"
+  title: varchar("title").notNull(),
+  description: text("description"),
+  issuedDate: timestamp("issued_date").notNull(),
+  expiryDate: timestamp("expiry_date"),
+  awardingBody: varchar("awarding_body").notNull(),
+  qualificationLevel: varchar("qualification_level"), // Level 3, 4, 5, 6, 7
+  credits: integer("credits"),
+  gradingScale: varchar("grading_scale"), // "Pass/Fail", "A-F", "Percentage"
+  finalGrade: varchar("final_grade"),
+  finalScore: decimal("final_score", { precision: 5, scale: 2 }),
+  maxScore: decimal("max_score", { precision: 5, scale: 2 }),
+  hoursCompleted: decimal("hours_completed", { precision: 6, scale: 2 }),
+  instructorName: varchar("instructor_name"),
+  instructorSignature: text("instructor_signature"),
+  institutionSeal: text("institution_seal"),
+  digitalSignature: text("digital_signature"),
+  verificationCode: varchar("verification_code").unique(),
+  blockchain_hash: varchar("blockchain_hash"), // For blockchain verification
+  status: varchar("status").default("active"), // active, revoked, expired
+  metadata: jsonb("metadata"), // Additional certificate data
+  templateId: varchar("template_id"), // Certificate template used
+  pdfUrl: varchar("pdf_url"), // Generated PDF URL
+  shareable_url: varchar("shareable_url"), // Public verification URL
+  downloadCount: integer("download_count").default(0),
+  lastDownloaded: timestamp("last_downloaded"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Certificate Verification Log
+export const certificateVerifications = pgTable("certificate_verifications", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  certificateId: varchar("certificate_id").references(() => digitalCertificates.id).notNull(),
+  verifierName: varchar("verifier_name"),
+  verifierEmail: varchar("verifier_email"),
+  verifierOrganization: varchar("verifier_organization"),
+  ipAddress: varchar("ip_address"),
+  userAgent: text("user_agent"),
+  verificationResult: varchar("verification_result").notNull(), // "valid", "invalid", "expired", "revoked"
+  verifiedAt: timestamp("verified_at").defaultNow(),
+});
+
+// Learning Paths - Structured learning sequences
+export const learningPaths = pgTable("learning_paths", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  description: text("description"),
+  level: varchar("level"), // "Beginner", "Intermediate", "Advanced"
+  duration: integer("duration"), // estimated weeks to complete
+  courses: jsonb("courses").notNull(), // Ordered array of course IDs
+  prerequisites: jsonb("prerequisites"),
+  learningObjectives: jsonb("learning_objectives"),
+  targetAudience: text("target_audience"),
+  price: decimal("price", { precision: 10, scale: 2 }),
+  discountPrice: decimal("discount_price", { precision: 10, scale: 2 }),
+  imageUrl: varchar("image_url"),
+  tags: jsonb("tags"),
+  difficulty: varchar("difficulty").default("intermediate"),
+  popularity: integer("popularity").default(0),
+  rating: decimal("rating", { precision: 3, scale: 2 }),
+  reviewCount: integer("review_count").default(0),
+  enrollmentCount: integer("enrollment_count").default(0),
+  completionRate: decimal("completion_rate", { precision: 5, scale: 2 }),
+  active: boolean("active").default(true),
+  featured: boolean("featured").default(false),
+  createdBy: varchar("created_by").references(() => userProfiles.id),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Student Learning Path Progress
+export const learningPathProgress = pgTable("learning_path_progress", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  studentId: varchar("student_id").references(() => students.id).notNull(),
+  learningPathId: varchar("learning_path_id").references(() => learningPaths.id).notNull(),
+  enrollmentDate: timestamp("enrollment_date").defaultNow(),
+  status: varchar("status").default("active"), // active, paused, completed, dropped
+  progress: integer("progress").default(0), // percentage
+  currentCourseId: varchar("current_course_id").references(() => courses.id),
+  completedCourses: jsonb("completed_courses").default('[]'),
+  startedAt: timestamp("started_at"),
+  completedAt: timestamp("completed_at"),
+  targetCompletionDate: timestamp("target_completion_date"),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Instructor Profiles
+export const instructors = pgTable("instructors", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => userProfiles.id),
+  firstName: varchar("first_name").notNull(),
+  lastName: varchar("last_name").notNull(),
+  email: varchar("email").notNull().unique(),
+  phone: varchar("phone"),
+  bio: text("bio"),
+  qualifications: jsonb("qualifications"),
+  specializations: jsonb("specializations"),
+  experience: text("experience"),
+  rating: decimal("rating", { precision: 3, scale: 2 }),
+  reviewCount: integer("review_count").default(0),
+  coursesCount: integer("courses_count").default(0),
+  studentsCount: integer("students_count").default(0),
+  profileImageUrl: varchar("profile_image_url"),
+  linkedinUrl: varchar("linkedin_url"),
+  websiteUrl: varchar("website_url"),
+  hourlyRate: decimal("hourly_rate", { precision: 8, scale: 2 }),
+  availability: jsonb("availability"), // Available time slots
+  languages: jsonb("languages"),
+  certifications: jsonb("certifications"),
+  isVerified: boolean("is_verified").default(false),
+  verifiedAt: timestamp("verified_at"),
+  active: boolean("active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Course-Instructor Assignments
+export const courseInstructors = pgTable("course_instructors", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  courseId: varchar("course_id").references(() => courses.id).notNull(),
+  instructorId: varchar("instructor_id").references(() => instructors.id).notNull(),
+  role: varchar("role").default("primary"), // primary, assistant, guest
+  assignedAt: timestamp("assigned_at").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Student Feedback and Reviews
+export const courseReviews = pgTable("course_reviews", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  courseId: varchar("course_id").references(() => courses.id).notNull(),
+  studentId: varchar("student_id").references(() => students.id).notNull(),
+  instructorId: varchar("instructor_id").references(() => instructors.id),
+  rating: integer("rating").notNull(), // 1-5 stars
+  title: varchar("title"),
+  comment: text("comment"),
+  wouldRecommend: boolean("would_recommend"),
+  tags: jsonb("tags"), // "helpful", "clear", "engaging", etc.
+  isAnonymous: boolean("is_anonymous").default(false),
+  isVerified: boolean("is_verified").default(false), // Verified completion
+  helpfulVotes: integer("helpful_votes").default(0),
+  reportedCount: integer("reported_count").default(0),
+  status: varchar("status").default("active"), // active, hidden, reported
+  moderatedBy: varchar("moderated_by").references(() => userProfiles.id),
+  moderatedAt: timestamp("moderated_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Relations for LMS Enhancement Tables
+export const courseModulesRelations = relations(courseModules, ({ one, many }) => ({
+  course: one(courses, { fields: [courseModules.courseId], references: [courses.id] }),
+  moduleProgress: many(moduleProgress),
+  assessmentQuestions: many(assessmentQuestions),
+}));
+
+export const moduleProgressRelations = relations(moduleProgress, ({ one }) => ({
+  student: one(students, { fields: [moduleProgress.studentId], references: [students.id] }),
+  course: one(courses, { fields: [moduleProgress.courseId], references: [courses.id] }),
+  module: one(courseModules, { fields: [moduleProgress.moduleId], references: [courseModules.id] }),
+}));
+
+export const assessmentQuestionsRelations = relations(assessmentQuestions, ({ one, many }) => ({
+  module: one(courseModules, { fields: [assessmentQuestions.moduleId], references: [courseModules.id] }),
+  responses: many(assessmentResponses),
+}));
+
+export const assessmentResponsesRelations = relations(assessmentResponses, ({ one }) => ({
+  question: one(assessmentQuestions, { fields: [assessmentResponses.questionId], references: [assessmentQuestions.id] }),
+  student: one(students, { fields: [assessmentResponses.studentId], references: [students.id] }),
+  gradedByUser: one(userProfiles, { fields: [assessmentResponses.gradedBy], references: [userProfiles.id] }),
+}));
+
+export const cpdRecordsRelations = relations(cpdRecords, ({ one }) => ({
+  student: one(students, { fields: [cpdRecords.studentId], references: [students.id] }),
+  verifiedByUser: one(userProfiles, { fields: [cpdRecords.verifiedBy], references: [userProfiles.id] }),
+}));
+
+export const digitalCertificatesRelations = relations(digitalCertificates, ({ one, many }) => ({
+  student: one(students, { fields: [digitalCertificates.studentId], references: [students.id] }),
+  course: one(courses, { fields: [digitalCertificates.courseId], references: [courses.id] }),
+  verifications: many(certificateVerifications),
+}));
+
+export const certificateVerificationsRelations = relations(certificateVerifications, ({ one }) => ({
+  certificate: one(digitalCertificates, { fields: [certificateVerifications.certificateId], references: [digitalCertificates.id] }),
+}));
+
+export const learningPathsRelations = relations(learningPaths, ({ one, many }) => ({
+  createdByUser: one(userProfiles, { fields: [learningPaths.createdBy], references: [userProfiles.id] }),
+  progress: many(learningPathProgress),
+}));
+
+export const learningPathProgressRelations = relations(learningPathProgress, ({ one }) => ({
+  student: one(students, { fields: [learningPathProgress.studentId], references: [students.id] }),
+  learningPath: one(learningPaths, { fields: [learningPathProgress.learningPathId], references: [learningPaths.id] }),
+  currentCourse: one(courses, { fields: [learningPathProgress.currentCourseId], references: [courses.id] }),
+}));
+
+export const instructorsRelations = relations(instructors, ({ one, many }) => ({
+  user: one(userProfiles, { fields: [instructors.userId], references: [userProfiles.id] }),
+  courseAssignments: many(courseInstructors),
+  reviews: many(courseReviews),
+}));
+
+export const courseInstructorsRelations = relations(courseInstructors, ({ one }) => ({
+  course: one(courses, { fields: [courseInstructors.courseId], references: [courses.id] }),
+  instructor: one(instructors, { fields: [courseInstructors.instructorId], references: [instructors.id] }),
+}));
+
+export const courseReviewsRelations = relations(courseReviews, ({ one }) => ({
+  course: one(courses, { fields: [courseReviews.courseId], references: [courses.id] }),
+  student: one(students, { fields: [courseReviews.studentId], references: [students.id] }),
+  instructor: one(instructors, { fields: [courseReviews.instructorId], references: [instructors.id] }),
+  moderatedByUser: one(userProfiles, { fields: [courseReviews.moderatedBy], references: [userProfiles.id] }),
+}));
+
+// Insert schemas for LMS enhancement tables
+export const insertCourseModuleSchema = createInsertSchema(courseModules).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertModuleProgressSchema = createInsertSchema(moduleProgress).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertAssessmentQuestionSchema = createInsertSchema(assessmentQuestions).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertAssessmentResponseSchema = createInsertSchema(assessmentResponses).omit({
+  id: true,
+  submittedAt: true,
+});
+
+export const insertCpdRecordSchema = createInsertSchema(cpdRecords).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertDigitalCertificateSchema = createInsertSchema(digitalCertificates).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertCertificateVerificationSchema = createInsertSchema(certificateVerifications).omit({
+  id: true,
+  verifiedAt: true,
+});
+
+export const insertLearningPathSchema = createInsertSchema(learningPaths).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertLearningPathProgressSchema = createInsertSchema(learningPathProgress).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertInstructorSchema = createInsertSchema(instructors).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertCourseInstructorSchema = createInsertSchema(courseInstructors).omit({
+  id: true,
+  assignedAt: true,
+  createdAt: true,
+});
+
+export const insertCourseReviewSchema = createInsertSchema(courseReviews).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+// Additional Types for LMS Enhancement
+export type InsertCourseModule = z.infer<typeof insertCourseModuleSchema>;
+export type CourseModule = typeof courseModules.$inferSelect;
+export type InsertModuleProgress = z.infer<typeof insertModuleProgressSchema>;
+export type ModuleProgress = typeof moduleProgress.$inferSelect;
+export type InsertAssessmentQuestion = z.infer<typeof insertAssessmentQuestionSchema>;
+export type AssessmentQuestion = typeof assessmentQuestions.$inferSelect;
+export type InsertAssessmentResponse = z.infer<typeof insertAssessmentResponseSchema>;
+export type AssessmentResponse = typeof assessmentResponses.$inferSelect;
+export type InsertCpdRecord = z.infer<typeof insertCpdRecordSchema>;
+export type CpdRecord = typeof cpdRecords.$inferSelect;
+export type InsertDigitalCertificate = z.infer<typeof insertDigitalCertificateSchema>;
+export type DigitalCertificate = typeof digitalCertificates.$inferSelect;
+export type InsertCertificateVerification = z.infer<typeof insertCertificateVerificationSchema>;
+export type CertificateVerification = typeof certificateVerifications.$inferSelect;
+export type InsertLearningPath = z.infer<typeof insertLearningPathSchema>;
+export type LearningPath = typeof learningPaths.$inferSelect;
+export type InsertLearningPathProgress = z.infer<typeof insertLearningPathProgressSchema>;
+export type LearningPathProgress = typeof learningPathProgress.$inferSelect;
+export type InsertInstructor = z.infer<typeof insertInstructorSchema>;
+export type Instructor = typeof instructors.$inferSelect;
+export type InsertCourseInstructor = z.infer<typeof insertCourseInstructorSchema>;
+export type CourseInstructor = typeof courseInstructors.$inferSelect;
+export type InsertCourseReview = z.infer<typeof insertCourseReviewSchema>;
+export type CourseReview = typeof courseReviews.$inferSelect;
