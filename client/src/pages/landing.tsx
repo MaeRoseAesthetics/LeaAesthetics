@@ -1,13 +1,80 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/useAuth";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, Link } from "wouter";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useQueryClient } from "@tanstack/react-query";
+
+const loginSchema = z.object({
+  email: z.string().email("Valid email is required"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});
+
+type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function Landing() {
   const { isAuthenticated, isLoading } = useAuth();
   const [, setLocation] = useLocation();
+  const [loginDialog, setLoginDialog] = useState(false);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const queryClient = useQueryClient();
+  
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+  });
+
+  const onSubmit = async (data: LoginFormData) => {
+    try {
+      setIsLoggingIn(true);
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || 'Login failed');
+      }
+
+      // Store the session token in localStorage for client-side auth
+      if (result.session?.access_token) {
+        localStorage.setItem('supabase_token', result.session.access_token);
+      }
+
+      // Invalidate and refetch the user query to update authentication state
+      await queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
+
+      // Redirect to dashboard for practitioners/admins
+      setLoginDialog(false);
+      setLocation('/dashboard');
+    } catch (error: any) {
+      console.error('Login error:', error);
+      alert(error.message || 'Login failed. Please try again.');
+    } finally {
+      setIsLoggingIn(false);
+    }
+  };
+
+  const openLoginDialog = () => {
+    setLoginDialog(true);
+    reset();
+  };
 
   // Redirect authenticated users to dashboard
   useEffect(() => {
@@ -56,7 +123,7 @@ export default function Landing() {
                 variant="outline" 
                 className="border-lea-deep-charcoal text-lea-deep-charcoal hover:bg-lea-deep-charcoal hover:text-lea-platinum-white transition-all duration-300"
                 data-testid="button-login"
-                onClick={() => window.location.href = '/api/login'}
+                onClick={openLoginDialog}
               >
                 Practitioner Access
               </Button>
@@ -84,7 +151,7 @@ export default function Landing() {
             <Button 
               size="lg" 
               data-testid="button-get-started"
-              onClick={() => window.location.href = '/api/login'}
+              onClick={openLoginDialog}
             >
               Get Started
             </Button>
@@ -302,7 +369,7 @@ export default function Landing() {
             size="lg" 
             className="bg-lea-elegant-silver hover:bg-lea-elegant-silver/90 text-lea-deep-charcoal font-semibold" 
             data-testid="button-start-trial"
-            onClick={() => window.location.href = '/api/login'}
+            onClick={openLoginDialog}
           >
             Begin Your Journey
           </Button>
@@ -332,6 +399,68 @@ export default function Landing() {
           </div>
         </div>
       </footer>
+
+      {/* Login Dialog */}
+      <Dialog open={loginDialog} onOpenChange={setLoginDialog}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-center text-lea-deep-charcoal font-serif">
+              Practitioner Login
+            </DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <div>
+              <Label htmlFor="email" className="text-lea-deep-charcoal">Email Address</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="Enter your email"
+                className="border-lea-silver-grey focus:border-lea-deep-charcoal"
+                {...register("email")}
+              />
+              {errors.email && (
+                <p className="text-sm text-red-500 mt-1">{errors.email.message}</p>
+              )}
+            </div>
+            <div>
+              <Label htmlFor="password" className="text-lea-deep-charcoal">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                placeholder="Enter your password"
+                className="border-lea-silver-grey focus:border-lea-deep-charcoal"
+                {...register("password")}
+              />
+              {errors.password && (
+                <p className="text-sm text-red-500 mt-1">{errors.password.message}</p>
+              )}
+            </div>
+            <div className="flex flex-col space-y-2 pt-2">
+              <Button 
+                type="submit" 
+                disabled={isLoggingIn}
+                className="w-full bg-lea-deep-charcoal hover:bg-lea-elegant-charcoal text-lea-platinum-white"
+              >
+                {isLoggingIn ? (
+                  <div className="flex items-center space-x-2">
+                    <div className="w-4 h-4 border-2 border-lea-platinum-white border-t-transparent rounded-full animate-spin" />
+                    <span>Signing In...</span>
+                  </div>
+                ) : (
+                  'Sign In'
+                )}
+              </Button>
+              <Button 
+                type="button" 
+                variant="ghost" 
+                className="w-full text-sm text-lea-charcoal-grey hover:text-lea-deep-charcoal"
+              >
+                Forgot password?
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
