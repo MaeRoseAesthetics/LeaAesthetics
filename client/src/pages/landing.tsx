@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/useAuth";
 import { useEffect } from "react";
-import { useLocation } from "wouter";
+import { useLocation, Link } from "wouter";
 
 export default function Landing() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -50,10 +50,15 @@ export default function Landing() {
             </div>
             <div className="flex items-center space-x-4">
               <Button variant="ghost" asChild className="text-lea-charcoal-grey hover:text-lea-deep-charcoal">
-                <a href="/">← Back to Main</a>
+                <Link href="/">← Back to Main</Link>
               </Button>
-              <Button variant="outline" asChild className="border-lea-deep-charcoal text-lea-deep-charcoal hover:bg-lea-deep-charcoal hover:text-lea-platinum-white transition-all duration-300">
-                <a href="/api/login" data-testid="button-login">Practitioner Access</a>
+              <Button 
+                variant="outline" 
+                className="border-lea-deep-charcoal text-lea-deep-charcoal hover:bg-lea-deep-charcoal hover:text-lea-platinum-white transition-all duration-300"
+                data-testid="button-login"
+                onClick={() => window.location.href = '/api/login'}
+              >
+                Practitioner Access
               </Button>
             </div>
           </div>
@@ -76,8 +81,12 @@ export default function Landing() {
             Where clinical distinction meets educational sophistication.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" asChild data-testid="button-get-started">
-              <a href="/api/login">Get Started</a>
+            <Button 
+              size="lg" 
+              data-testid="button-get-started"
+              onClick={() => window.location.href = '/api/login'}
+            >
+              Get Started
             </Button>
             <Button size="lg" variant="outline" data-testid="button-learn-more">
               Learn More
@@ -289,8 +298,13 @@ export default function Landing() {
           <p className="text-xl text-lea-silver-grey mb-8">
             Join discerning UK aesthetic practitioners who trust Lea Aesthetics for their sophisticated practice needs
           </p>
-          <Button size="lg" className="bg-lea-elegant-silver hover:bg-lea-elegant-silver/90 text-lea-deep-charcoal font-semibold" asChild data-testid="button-start-trial">
-            <a href="/api/login">Begin Your Journey</a>
+          <Button 
+            size="lg" 
+            className="bg-lea-elegant-silver hover:bg-lea-elegant-silver/90 text-lea-deep-charcoal font-semibold" 
+            data-testid="button-start-trial"
+            onClick={() => window.location.href = '/api/login'}
+          >
+            Begin Your Journey
           </Button>
         </div>
       </section>

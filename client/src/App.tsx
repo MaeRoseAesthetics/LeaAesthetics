@@ -1,4 +1,4 @@
-import { Switch, Route } from "wouter";
+import { Switch, Route, Redirect } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -25,8 +25,41 @@ import Inventory from "@/pages/inventory";
 import Audit from "@/pages/audit";
 import Background from "@/pages/background";
 
+// Protected Route Component
+function ProtectedRoute({ component: Component, ...props }: { component: React.ComponentType<any> }) {
+  const { isAuthenticated, isLoading } = useAuth();
+  
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-lea-pearl-white">
+        <div className="flex flex-col items-center space-y-4">
+          <div className="animate-spin w-8 h-8 border-4 border-lea-elegant-silver border-t-lea-deep-charcoal rounded-full" />
+          <p className="text-lea-charcoal-grey font-medium">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+  
+  if (!isAuthenticated) {
+    return <Redirect to="/practitioner" />;
+  }
+  
+  return <Component {...props} />;
+}
+
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-lea-pearl-white">
+        <div className="flex flex-col items-center space-y-4">
+          <div className="animate-spin w-8 h-8 border-4 border-lea-elegant-silver border-t-lea-deep-charcoal rounded-full" />
+          <p className="text-lea-charcoal-grey font-medium">Loading your portal...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <Switch>
@@ -42,27 +75,25 @@ function Router() {
       {/* Admin setup route */}
       <Route path="/admin-setup" component={AdminSetup} />
       
-      {/* Practitioner-specific landing and dashboard routes */}
+      {/* Practitioner-specific landing */}
       <Route path="/practitioner" component={Landing} />
       
       {/* Public pages accessible to all */}
       <Route path="/background" component={Background} />
       
-      {isAuthenticated ? (
-        <>
-          <Route path="/dashboard" component={Dashboard} />
-          <Route path="/bookings" component={Bookings} />
-          <Route path="/clients" component={Clients} />
-          <Route path="/payments" component={Payments} />
-          <Route path="/courses" component={Courses} />
-          <Route path="/students" component={Students} />
-          <Route path="/compliance" component={Compliance} />
-          <Route path="/treatments" component={Treatments} />
-          <Route path="/inventory" component={Inventory} />
-          <Route path="/audit" component={Audit} />
-        </>
-      ) : null}
+      {/* Protected routes - require authentication */}
+      <Route path="/dashboard" component={() => <ProtectedRoute component={Dashboard} />} />
+      <Route path="/bookings" component={() => <ProtectedRoute component={Bookings} />} />
+      <Route path="/clients" component={() => <ProtectedRoute component={Clients} />} />
+      <Route path="/payments" component={() => <ProtectedRoute component={Payments} />} />
+      <Route path="/courses" component={() => <ProtectedRoute component={Courses} />} />
+      <Route path="/students" component={() => <ProtectedRoute component={Students} />} />
+      <Route path="/compliance" component={() => <ProtectedRoute component={Compliance} />} />
+      <Route path="/treatments" component={() => <ProtectedRoute component={Treatments} />} />
+      <Route path="/inventory" component={() => <ProtectedRoute component={Inventory} />} />
+      <Route path="/audit" component={() => <ProtectedRoute component={Audit} />} />
       
+      {/* Catch all unmatched routes */}
       <Route component={NotFound} />
     </Switch>
   );

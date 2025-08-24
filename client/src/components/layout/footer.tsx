@@ -1,5 +1,6 @@
 import React from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { Link } from 'wouter';
 
 type FooterProps = {
   variant?: 'default' | 'minimal' | 'detailed';
@@ -52,10 +53,10 @@ export default function Footer({
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-lea-platinum-white">Services</h3>
                 <ul className="text-sm text-lea-pearl-white space-y-2">
-                  <li><a href="/treatments" className="hover:text-lea-platinum-white transition-colors">Treatments</a></li>
-                  <li><a href="/courses" className="hover:text-lea-platinum-white transition-colors">Training Courses</a></li>
-                  <li><a href="/bookings" className="hover:text-lea-platinum-white transition-colors">Book Appointment</a></li>
-                  <li><a href="/compliance" className="hover:text-lea-platinum-white transition-colors">Compliance</a></li>
+                  <li><Link href="/treatments" className="hover:text-lea-platinum-white transition-colors">Treatments</Link></li>
+                  <li><Link href="/courses" className="hover:text-lea-platinum-white transition-colors">Training Courses</Link></li>
+                  <li><Link href="/bookings" className="hover:text-lea-platinum-white transition-colors">Book Appointment</Link></li>
+                  <li><Link href="/compliance" className="hover:text-lea-platinum-white transition-colors">Compliance</Link></li>
                 </ul>
               </div>
 
@@ -63,10 +64,10 @@ export default function Footer({
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-lea-platinum-white">Support</h3>
                 <ul className="text-sm text-lea-pearl-white space-y-2">
-                  <li><a href="/help" className="hover:text-lea-platinum-white transition-colors">Help Center</a></li>
-                  <li><a href="/contact" className="hover:text-lea-platinum-white transition-colors">Contact Us</a></li>
-                  <li><a href="/faq" className="hover:text-lea-platinum-white transition-colors">FAQ</a></li>
-                  <li><a href="/documentation" className="hover:text-lea-platinum-white transition-colors">Documentation</a></li>
+                  <li><span className="hover:text-lea-platinum-white transition-colors cursor-pointer">Help Center</span></li>
+                  <li><span className="hover:text-lea-platinum-white transition-colors cursor-pointer">Contact Us</span></li>
+                  <li><span className="hover:text-lea-platinum-white transition-colors cursor-pointer">FAQ</span></li>
+                  <li><span className="hover:text-lea-platinum-white transition-colors cursor-pointer">Documentation</span></li>
                 </ul>
               </div>
 
@@ -114,15 +115,15 @@ export default function Footer({
               </p>
               {showLegalLinks && (
                 <div className={`${isMobile ? 'flex flex-col space-y-2' : 'flex space-x-6'} text-sm`}>
-                  <a href="/privacy" className="text-lea-pearl-white hover:text-lea-platinum-white transition-colors">
+                  <span className="text-lea-pearl-white hover:text-lea-platinum-white transition-colors cursor-pointer">
                     Privacy Policy
-                  </a>
-                  <a href="/terms" className="text-lea-pearl-white hover:text-lea-platinum-white transition-colors">
+                  </span>
+                  <span className="text-lea-pearl-white hover:text-lea-platinum-white transition-colors cursor-pointer">
                     Terms of Service
-                  </a>
-                  <a href="/cookies" className="text-lea-pearl-white hover:text-lea-platinum-white transition-colors">
+                  </span>
+                  <span className="text-lea-pearl-white hover:text-lea-platinum-white transition-colors cursor-pointer">
                     Cookie Policy
-                  </a>
+                  </span>
                 </div>
               )}
             </div>
@@ -172,15 +173,15 @@ export default function Footer({
               </p>
               {showLegalLinks && (
                 <div className={`${isMobile ? 'flex flex-col space-y-2' : 'flex space-x-6'} text-sm`}>
-                  <a href="/privacy" className="text-lea-charcoal-grey hover:text-lea-deep-charcoal transition-colors">
+                  <span className="text-lea-charcoal-grey hover:text-lea-deep-charcoal transition-colors cursor-pointer">
                     Privacy Policy
-                  </a>
-                  <a href="/terms" className="text-lea-charcoal-grey hover:text-lea-deep-charcoal transition-colors">
+                  </span>
+                  <span className="text-lea-charcoal-grey hover:text-lea-deep-charcoal transition-colors cursor-pointer">
                     Terms of Service
-                  </a>
-                  <a href="/cookies" className="text-lea-charcoal-grey hover:text-lea-deep-charcoal transition-colors">
+                  </span>
+                  <span className="text-lea-charcoal-grey hover:text-lea-deep-charcoal transition-colors cursor-pointer">
                     Cookie Policy
-                  </a>
+                  </span>
                 </div>
               )}
             </div>

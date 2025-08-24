@@ -1,4 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -8,12 +12,35 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Plus, Pencil, Trash2, DollarSign, Clock, Users, Award } from "lucide-react";
-import { useAuth } from "@/hooks/useAuth";
 import { apiRequest } from "@/lib/queryClient";
+import { format, parseISO } from "date-fns";
+import {
+  Plus,
+  Pencil,
+  Trash2,
+  DollarSign,
+  Clock,
+  Users,
+  Award,
+  Search,
+  Filter,
+  Eye,
+  Edit,
+  RefreshCw,
+  Download,
+  Star,
+  TrendingUp,
+  Activity,
+  FileText,
+  Heart,
+  Shield
+} from "lucide-react";
 
 const treatmentSchema = z.object({
   name: z.string().min(1, "Treatment name is required"),
@@ -59,12 +86,73 @@ const categories = [
 ];
 
 export default function Treatments() {
-  const { user, isAuthenticated } = useAuth();
-  const [treatments, setTreatments] = useState<Treatment[]>([]);
+  const { user, isAuthenticated, isLoading: authLoading } = useAuth();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const isMobile = useIsMobile();
+  
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingTreatment, setEditingTreatment] = useState<Treatment | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedTreatment, setSelectedTreatment] = useState<Treatment | null>(null);
+  const [showTreatmentDetails, setShowTreatmentDetails] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState<string>("all");
+  const [audienceFilter, setAudienceFilter] = useState<string>("all");
+  const [activeView, setActiveView] = useState<"grid" | "table">("grid");
+  
+  // Fetch treatments
+  const { data: treatments = [], isLoading, refetch: refetchTreatments } = useQuery<Treatment[]>({
+    queryKey: ["/api/treatments"],
+    enabled: isAuthenticated,
+  });
+  
+  // Create/Update mutations
+  const createTreatmentMutation = useMutation({
+    mutationFn: async (data: TreatmentFormData) => {
+      const response = await apiRequest('POST', '/api/treatments', data);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/treatments"] });
+      toast({ title: "Success", description: "Treatment created successfully" });
+      setIsDialogOpen(false);
+      reset();
+    },
+    onError: (error: Error) => {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    },
+  });
+  
+  const updateTreatmentMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: TreatmentFormData }) => {
+      const response = await apiRequest('PUT', `/api/treatments/${id}`, data);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/treatments"] });
+      toast({ title: "Success", description: "Treatment updated successfully" });
+      setIsDialogOpen(false);
+      setEditingTreatment(null);
+      reset();
+    },
+    onError: (error: Error) => {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    },
+  });
+  
+  const deleteTreatmentMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const response = await apiRequest('DELETE', `/api/treatments/${id}`);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/treatments"] });
+      toast({ title: "Success", description: "Treatment deleted successfully" });
+    },
+    onError: (error: Error) => {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    },
+  });
 
   const {
     register,
@@ -82,77 +170,60 @@ export default function Treatments() {
     },
   });
 
-  // Load treatments from API
-  useEffect(() => {
-    const fetchTreatments = async () => {
-      try {
-        const response = await fetch('/api/treatments');
-        const data = await response.json();
-        setTreatments(data.treatments || []);
-      } catch (error) {
-        console.error('Error fetching treatments:', error);
-        setTreatments([]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  // Filter treatments
+  const filteredTreatments = treatments.filter(treatment => {
+    const matchesSearch = !searchTerm || 
+      treatment.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      treatment.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      treatment.category.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesCategory = categoryFilter === "all" || treatment.category === categoryFilter;
+    const matchesAudience = audienceFilter === "all" || treatment.targetAudience === audienceFilter;
+    
+    return matchesSearch && matchesCategory && matchesAudience;
+  });
 
-    fetchTreatments();
-  }, []);
-
-  const onSubmit = async (data: TreatmentFormData) => {
-    setIsSubmitting(true);
-    try {
-      if (editingTreatment) {
-        // Update existing treatment
-        const updatedTreatment = {
-          ...editingTreatment,
-          ...data,
-          updatedAt: new Date().toISOString(),
-        };
-        setTreatments(prev => prev.map(t => t.id === editingTreatment.id ? updatedTreatment : t));
-      } else {
-        // Add new treatment
-        const newTreatment: Treatment = {
-          id: Date.now().toString(),
-          ...data,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        };
-        setTreatments(prev => [...prev, newTreatment]);
-      }
-      
-      setIsDialogOpen(false);
-      setEditingTreatment(null);
-      reset();
-    } catch (error) {
-      console.error("Error saving treatment:", error);
-    } finally {
-      setIsSubmitting(false);
+  const onSubmit = (data: TreatmentFormData) => {
+    if (editingTreatment) {
+      updateTreatmentMutation.mutate({ id: editingTreatment.id, data });
+    } else {
+      createTreatmentMutation.mutate(data);
     }
   };
 
   const handleEdit = (treatment: Treatment) => {
     setEditingTreatment(treatment);
-    reset(treatment);
+    // Set form values for editing
+    Object.entries(treatment).forEach(([key, value]) => {
+      if (key !== 'id' && key !== 'createdAt' && key !== 'updatedAt') {
+        setValue(key as keyof TreatmentFormData, value);
+      }
+    });
     setIsDialogOpen(true);
   };
 
   const handleDelete = (id: string) => {
     if (confirm("Are you sure you want to delete this treatment?")) {
-      setTreatments(prev => prev.filter(t => t.id !== id));
+      deleteTreatmentMutation.mutate(id);
     }
   };
 
-  const handleAddNew = () => {
+  const handleAddNew = useCallback(() => {
     setEditingTreatment(null);
     reset({
+      name: "",
+      category: "",
+      description: "",
       targetAudience: "client",
       price: 0,
       duration: 60,
+      requirements: "",
+      aftercare: "",
+      contraindications: "",
+      equipment: "",
     });
     setIsDialogOpen(true);
-  };
+  }, [reset]);
 
   if (!isAuthenticated || user?.role !== 'admin') {
     return (
@@ -443,10 +514,10 @@ export default function Treatments() {
               </Button>
               <Button 
                 type="submit" 
-                disabled={isSubmitting}
+                disabled={createTreatmentMutation.isPending || updateTreatmentMutation.isPending}
                 className="bg-lea-deep-charcoal hover:bg-lea-elegant-charcoal"
               >
-                {isSubmitting ? "Saving..." : editingTreatment ? "Update" : "Create"}
+                {(createTreatmentMutation.isPending || updateTreatmentMutation.isPending) ? "Saving..." : editingTreatment ? "Update" : "Create"}
               </Button>
             </div>
           </form>

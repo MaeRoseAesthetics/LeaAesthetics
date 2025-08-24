@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -17,6 +18,11 @@ import QuickActions from "@/components/dashboard/quick-actions";
 import ClientManagement from "@/components/practitioner/client-management";
 import TreatmentsManagement from "@/components/practitioner/treatments-management";
 import PaymentsManagement from "@/components/practitioner/payments-management";
+import ComplianceDashboard from "@/components/compliance/compliance-dashboard";
+import AuditTrailManagement from "@/components/audit/audit-trail-management";
+import DbsBackgroundManagement from "@/components/compliance/dbs-background-management";
+import OfqualCompliance from "@/components/compliance/ofqual-compliance";
+import TrainingManagement from "@/components/training/training-management";
 
 // Tab Content Components
 const BookingsContent = () => {
@@ -376,29 +382,13 @@ const ComplianceContent = () => (
 
 const AuditContent = () => (
   <div className="p-4 lg:p-6">
-    <div className="mb-6">
-      <h2 className="text-2xl font-serif font-bold text-lea-deep-charcoal mb-2">CQC Audit Trail</h2>
-      <p className="text-lea-charcoal-grey">Track and manage your CQC audit requirements</p>
-    </div>
-    <div className="bg-lea-platinum-white rounded-xl border border-lea-silver-grey p-6 text-center">
-      <i className="fas fa-clipboard-check text-4xl text-lea-charcoal-grey mb-4"></i>
-      <h3 className="text-lg font-medium text-lea-deep-charcoal mb-2">Audit Management</h3>
-      <p className="text-lea-charcoal-grey">CQC audit trail system coming soon</p>
-    </div>
+    <AuditTrailManagement />
   </div>
 );
 
 const BackgroundContent = () => (
   <div className="p-4 lg:p-6">
-    <div className="mb-6">
-      <h2 className="text-2xl font-serif font-bold text-lea-deep-charcoal mb-2">DBS & Background</h2>
-      <p className="text-lea-charcoal-grey">Manage background checks and certifications</p>
-    </div>
-    <div className="bg-lea-platinum-white rounded-xl border border-lea-silver-grey p-6 text-center">
-      <i className="fas fa-user-shield text-4xl text-lea-charcoal-grey mb-4"></i>
-      <h3 className="text-lg font-medium text-lea-deep-charcoal mb-2">Background Verification</h3>
-      <p className="text-lea-charcoal-grey">Background check management coming soon</p>
-    </div>
+    <DbsBackgroundManagement />
   </div>
 );
 
@@ -406,6 +396,7 @@ export default function Dashboard() {
   const { toast } = useToast();
   const { isAuthenticated, isLoading } = useAuth();
   const isMobile = useIsMobile();
+  const [, setLocation] = useLocation();
   
   // Navigation state
   const [activeSection, setActiveSection] = useState<'treatments' | 'training'>('treatments');
@@ -433,19 +424,8 @@ export default function Dashboard() {
     setActiveTab(tab);
   }, []);
 
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      toast({
-        title: "Unauthorized",
-        description: "You are logged out. Logging in again...",
-        variant: "destructive",
-      });
-      setTimeout(() => {
-        window.location.href = "/api/login";
-      }, 500);
-      return;
-    }
-  }, [isAuthenticated, isLoading, toast]);
+  // This is now handled by the ProtectedRoute component in App.tsx
+  // No need for manual redirect logic here
 
   if (isLoading) {
     return (
@@ -500,12 +480,12 @@ export default function Dashboard() {
               <i className="fas fa-boxes text-4xl text-lea-charcoal-grey mb-4"></i>
               <h3 className="text-lg font-medium text-lea-deep-charcoal mb-2">Inventory Management</h3>
               <p className="text-lea-charcoal-grey mb-4">Access comprehensive inventory and equipment management</p>
-              <button 
-                onClick={() => window.location.href = '/inventory'}
-                className="px-4 py-2 bg-lea-deep-charcoal text-lea-platinum-white rounded-lg hover:bg-lea-elegant-charcoal transition-all duration-300"
+              <Button 
+                onClick={() => setLocation('/inventory')}
+                className="bg-lea-deep-charcoal text-lea-platinum-white hover:bg-lea-elegant-charcoal"
               >
                 Go to Inventory
-              </button>
+              </Button>
             </div>
           </div>
         );
@@ -519,73 +499,18 @@ export default function Dashboard() {
         return <BackgroundContent />;
       // Training section tabs
       case 'courses':
-        return (
-          <div className="p-4 lg:p-6">
-            <div className="mb-6">
-              <h2 className="text-2xl font-serif font-bold text-lea-deep-charcoal mb-2">Course Dashboard</h2>
-              <p className="text-lea-charcoal-grey">Manage your training courses and programs</p>
-            </div>
-            <div className="bg-lea-platinum-white rounded-xl border border-lea-silver-grey p-6 text-center">
-              <i className="fas fa-graduation-cap text-4xl text-lea-charcoal-grey mb-4"></i>
-              <h3 className="text-lg font-medium text-lea-deep-charcoal mb-2">Course Management</h3>
-              <p className="text-lea-charcoal-grey">Training course system coming soon</p>
-            </div>
-          </div>
-        );
       case 'students':
-        return (
-          <div className="p-4 lg:p-6">
-            <div className="mb-6">
-              <h2 className="text-2xl font-serif font-bold text-lea-deep-charcoal mb-2">Student Management</h2>
-              <p className="text-lea-charcoal-grey">Track student progress and enrollment</p>
-            </div>
-            <div className="bg-lea-platinum-white rounded-xl border border-lea-silver-grey p-6 text-center">
-              <i className="fas fa-user-graduate text-4xl text-lea-charcoal-grey mb-4"></i>
-              <h3 className="text-lg font-medium text-lea-deep-charcoal mb-2">Student Database</h3>
-              <p className="text-lea-charcoal-grey">Student management system coming soon</p>
-            </div>
-          </div>
-        );
       case 'content':
-        return (
-          <div className="p-4 lg:p-6">
-            <div className="mb-6">
-              <h2 className="text-2xl font-serif font-bold text-lea-deep-charcoal mb-2">Course Content</h2>
-              <p className="text-lea-charcoal-grey">Manage training materials and resources</p>
-            </div>
-            <div className="bg-lea-platinum-white rounded-xl border border-lea-silver-grey p-6 text-center">
-              <i className="fas fa-book-open text-4xl text-lea-charcoal-grey mb-4"></i>
-              <h3 className="text-lg font-medium text-lea-deep-charcoal mb-2">Content Management</h3>
-              <p className="text-lea-charcoal-grey">Content management system coming soon</p>
-            </div>
-          </div>
-        );
       case 'assessments':
         return (
           <div className="p-4 lg:p-6">
-            <div className="mb-6">
-              <h2 className="text-2xl font-serif font-bold text-lea-deep-charcoal mb-2">Assessments</h2>
-              <p className="text-lea-charcoal-grey">Create and manage student assessments</p>
-            </div>
-            <div className="bg-lea-platinum-white rounded-xl border border-lea-silver-grey p-6 text-center">
-              <i className="fas fa-tasks text-4xl text-lea-charcoal-grey mb-4"></i>
-              <h3 className="text-lg font-medium text-lea-deep-charcoal mb-2">Assessment Tools</h3>
-              <p className="text-lea-charcoal-grey">Assessment system coming soon</p>
-            </div>
+            <TrainingManagement />
           </div>
         );
       case 'ofqual':
         return (
           <div className="p-4 lg:p-6">
-            <div className="mb-6">
-              <h2 className="text-2xl font-serif font-bold text-lea-deep-charcoal mb-2">Ofqual Compliance</h2>
-              <p className="text-lea-charcoal-grey">Monitor your Ofqual compliance status</p>
-            </div>
-            <div className="bg-lea-platinum-white rounded-xl border border-lea-silver-grey p-6 text-center">
-              <i className="fas fa-certificate text-4xl text-lea-charcoal-grey mb-4"></i>
-              <h3 className="text-lg font-medium text-lea-deep-charcoal mb-2">Ofqual Management</h3>
-              <p className="text-lea-charcoal-grey">Ofqual compliance system coming soon</p>
-            </div>
+            <OfqualCompliance />
           </div>
         );
       case 'cpd':
@@ -630,8 +555,6 @@ export default function Dashboard() {
         {!isMobile && (
           <Sidebar 
             activeSection={activeSection}
-            activeTab={activeTab}
-            onTabChange={handleTabChange}
           />
         )}
         
@@ -639,8 +562,6 @@ export default function Dashboard() {
         {isMobile && (
           <Sidebar 
             activeSection={activeSection}
-            activeTab={activeTab}
-            onTabChange={handleTabChange}
             isOpen={isMobileMenuOpen}
             onClose={closeMobileMenu}
           />

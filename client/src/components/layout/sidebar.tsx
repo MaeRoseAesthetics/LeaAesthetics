@@ -2,34 +2,31 @@ import { useState, useEffect } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { Link, useLocation } from "wouter";
 
 interface SidebarProps {
   activeSection?: 'treatments' | 'training';
-  activeTab?: string;
-  onTabChange?: (tab: string) => void;
   isOpen?: boolean;
   onClose?: () => void;
 }
 
 export default function Sidebar({ 
-  activeSection = 'treatments', 
-  activeTab = 'dashboard',
-  onTabChange,
+  activeSection = 'treatments',
   isOpen = false,
   onClose 
 }: SidebarProps) {
   const isMobile = useIsMobile();
-  const [localActiveTab, setLocalActiveTab] = useState('dashboard');
+  const [location] = useLocation();
   
-  const currentTab = activeTab || localActiveTab;
+  // Determine current active tab from URL
+  const getCurrentTab = () => {
+    const path = location.replace('/', '');
+    return path || 'dashboard';
+  };
+  
+  const currentTab = getCurrentTab();
 
-  const handleTabClick = (tabId: string) => {
-    if (onTabChange) {
-      onTabChange(tabId);
-    } else {
-      setLocalActiveTab(tabId);
-    }
-    
+  const handleTabClick = () => {
     // Close mobile menu after selection
     if (isMobile && onClose) {
       onClose();
@@ -73,36 +70,42 @@ export default function Sidebar({
   const treatmentNavItems = [
     {
       id: "dashboard",
+      path: "/dashboard",
       icon: "fas fa-tachometer-alt",
       label: "Dashboard",
       badge: null
     },
     {
       id: "bookings",
+      path: "/bookings",
       icon: "fas fa-calendar-alt",
       label: "Bookings",
       badge: "12"
     },
     {
       id: "clients",
+      path: "/clients",
       icon: "fas fa-users",
       label: "Clients",
       badge: null
     },
     {
       id: "treatments",
+      path: "/treatments",
       icon: "fas fa-file-medical",
       label: "Treatments",
       badge: null
     },
     {
       id: "inventory",
+      path: "/inventory",
       icon: "fas fa-boxes",
       label: "Inventory",
       badge: null
     },
     {
       id: "payments",
+      path: "/payments",
       icon: "fas fa-credit-card",
       label: "Payments",
       badge: null
@@ -112,6 +115,7 @@ export default function Sidebar({
   const complianceNavItems = [
     {
       id: "compliance",
+      path: "/compliance",
       icon: "fas fa-shield-alt",
       label: "JCCP Compliance",
       badge: null,
@@ -119,12 +123,14 @@ export default function Sidebar({
     },
     {
       id: "audit",
+      path: "/audit",
       icon: "fas fa-clipboard-check",
       label: "CQC Audit Trail",
       badge: null
     },
     {
       id: "background",
+      path: "/background",
       icon: "fas fa-user-shield",
       label: "DBS & Background",
       badge: null
@@ -134,24 +140,28 @@ export default function Sidebar({
   const trainingNavItems = [
     {
       id: "courses",
+      path: "/courses",
       icon: "fas fa-graduation-cap",
       label: "Course Dashboard",
       badge: null
     },
     {
       id: "students",
+      path: "/students",
       icon: "fas fa-user-graduate",
       label: "Students",
       badge: null
     },
     {
       id: "content",
+      path: "/courses", // Content is managed within courses
       icon: "fas fa-book-open",
       label: "Course Content",
       badge: null
     },
     {
       id: "assessments",
+      path: "/courses", // Assessments are managed within courses
       icon: "fas fa-tasks",
       label: "Assessments",
       badge: null
@@ -198,8 +208,9 @@ export default function Sidebar({
                   <ul className="space-y-2">
                     {treatmentNavItems.map((item) => (
                       <li key={item.id}>
-                        <button
-                          onClick={() => handleTabClick(item.id)}
+                        <Link
+                          href={item.path}
+                          onClick={handleTabClick}
                           className={cn(
                             "group flex items-center w-full px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 min-h-[48px]",
                             isTabActive(item.id)
@@ -215,7 +226,7 @@ export default function Sidebar({
                               {item.badge}
                             </Badge>
                           )}
-                        </button>
+                        </Link>
                       </li>
                     ))}
                   </ul>
@@ -226,8 +237,9 @@ export default function Sidebar({
                   <ul className="space-y-2">
                     {complianceNavItems.map((item) => (
                       <li key={item.id}>
-                        <button
-                          onClick={() => handleTabClick(item.id)}
+                        <Link
+                          href={item.path}
+                          onClick={handleTabClick}
                           className={cn(
                             "group flex items-center w-full px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 min-h-[48px]",
                             isTabActive(item.id)
@@ -243,7 +255,7 @@ export default function Sidebar({
                               <i className={item.statusIcon}></i>
                             </span>
                           )}
-                        </button>
+                        </Link>
                       </li>
                     ))}
                   </ul>
@@ -256,8 +268,9 @@ export default function Sidebar({
                   <ul className="space-y-2">
                     {trainingNavItems.map((item) => (
                       <li key={item.id}>
-                        <button
-                          onClick={() => handleTabClick(item.id)}
+                        <Link
+                          href={item.path}
+                          onClick={handleTabClick}
                           className={cn(
                             "group flex items-center w-full px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 min-h-[48px]",
                             isTabActive(item.id)
@@ -268,7 +281,7 @@ export default function Sidebar({
                         >
                           <i className={`${item.icon} mr-3 text-base`}></i>
                           <span className="flex-1 text-left">{item.label}</span>
-                        </button>
+                        </Link>
                       </li>
                     ))}
                   </ul>
@@ -279,8 +292,9 @@ export default function Sidebar({
                   <ul className="space-y-2">
                     {accreditationNavItems.map((item) => (
                       <li key={item.id}>
-                        <button
-                          onClick={() => handleTabClick(item.id)}
+                        <Link
+                          href="/dashboard" 
+                          onClick={handleTabClick}
                           className={cn(
                             "group flex items-center w-full px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 min-h-[48px]",
                             isTabActive(item.id)
@@ -291,7 +305,7 @@ export default function Sidebar({
                         >
                           <i className={`${item.icon} mr-3 text-base`}></i>
                           <span className="flex-1 text-left">{item.label}</span>
-                        </button>
+                        </Link>
                       </li>
                     ))}
                   </ul>
@@ -316,8 +330,9 @@ export default function Sidebar({
             <ul className="space-y-1">
               {treatmentNavItems.map((item) => (
                 <li key={item.id}>
-                  <button
-                    onClick={() => handleTabClick(item.id)}
+                  <Link
+                    href={item.path}
+                    onClick={handleTabClick}
                     className={cn(
                       "group flex items-center w-full px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 min-h-[40px]",
                       isTabActive(item.id)
@@ -333,7 +348,7 @@ export default function Sidebar({
                         {item.badge}
                       </Badge>
                     )}
-                  </button>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -344,8 +359,9 @@ export default function Sidebar({
             <ul className="space-y-1">
               {complianceNavItems.map((item) => (
                 <li key={item.id}>
-                  <button
-                    onClick={() => handleTabClick(item.id)}
+                  <Link
+                    href={item.path}
+                    onClick={handleTabClick}
                     className={cn(
                       "group flex items-center w-full px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 min-h-[40px]",
                       isTabActive(item.id)
@@ -361,7 +377,7 @@ export default function Sidebar({
                         <i className={item.statusIcon}></i>
                       </span>
                     )}
-                  </button>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -374,8 +390,9 @@ export default function Sidebar({
             <ul className="space-y-1">
               {trainingNavItems.map((item) => (
                 <li key={item.id}>
-                  <button
-                    onClick={() => handleTabClick(item.id)}
+                  <Link
+                    href={item.path}
+                    onClick={handleTabClick}
                     className={cn(
                       "group flex items-center w-full px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 min-h-[40px]",
                       isTabActive(item.id)
@@ -386,7 +403,7 @@ export default function Sidebar({
                   >
                     <i className={`${item.icon} mr-3`}></i>
                     <span className="flex-1 text-left">{item.label}</span>
-                  </button>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -397,8 +414,9 @@ export default function Sidebar({
             <ul className="space-y-1">
               {accreditationNavItems.map((item) => (
                 <li key={item.id}>
-                  <button
-                    onClick={() => handleTabClick(item.id)}
+                  <Link
+                    href="/dashboard"
+                    onClick={handleTabClick}
                     className={cn(
                       "group flex items-center w-full px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 min-h-[40px]",
                       isTabActive(item.id)
@@ -409,7 +427,7 @@ export default function Sidebar({
                   >
                     <i className={`${item.icon} mr-3`}></i>
                     <span className="flex-1 text-left">{item.label}</span>
-                  </button>
+                  </Link>
                 </li>
               ))}
             </ul>

@@ -1,10 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useIsMobile } from "@/hooks/use-mobile";
 import type { Client } from "@shared/schema";
-import Header from "@/components/layout/header";
-import Sidebar from "@/components/layout/sidebar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -16,50 +15,145 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Calendar } from "@/components/ui/calendar";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import { format, addDays, parseISO, differenceInYears } from "date-fns";
+import {
+  User,
+  Users,
+  Phone,
+  Mail,
+  Calendar as CalendarIcon,
+  MapPin,
+  Shield,
+  FileText,
+  Camera,
+  MessageSquare,
+  Plus,
+  Search,
+  Filter,
+  Edit,
+  Trash2,
+  Eye,
+  RefreshCw,
+  Download,
+  Activity,
+  Clock,
+  TrendingUp,
+  AlertTriangle,
+  CheckCircle,
+  Heart,
+  Star,
+  UserCheck
+} from "lucide-react";
 
 const clientSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
   email: z.string().email("Valid email is required"),
-  phone: z.string().optional(),
-  dateOfBirth: z.string().optional(),
-  address: z.string().optional(),
-  emergencyContact: z.string().optional(),
-  emergencyPhone: z.string().optional(),
+  phone: z.string().min(1, "Phone number is required"),
+  dateOfBirth: z.string().min(1, "Date of birth is required"),
+  address: z.string().min(1, "Address is required"),
+  emergencyContact: z.string().min(1, "Emergency contact is required"),
+  emergencyPhone: z.string().min(1, "Emergency phone is required"),
   medicalHistory: z.string().optional(),
   allergies: z.string().optional(),
   currentMedications: z.string().optional(),
-  skinType: z.string().optional(),
+  skinType: z.enum(["dry", "oily", "combination", "sensitive", "normal"]).optional(),
   skinConcerns: z.string().optional(),
   previousTreatments: z.string().optional(),
   contraindications: z.string().optional(),
   preferredPractitioner: z.string().optional(),
-  communicationPreferences: z.string().optional(),
+  communicationPreferences: z.array(z.enum(["email", "sms", "phone", "post"])).optional(),
+  marketingConsent: z.boolean().optional(),
   notes: z.string().optional(),
 });
+
+interface ExtendedClient extends Client {
+  age?: number;
+  totalTreatments?: number;
+  lastTreatment?: string;
+  nextAppointment?: string;
+  totalSpent?: number;
+  riskLevel?: "low" | "medium" | "high";
+  tags?: string[];
+}
+
+interface TreatmentHistory {
+  id: string;
+  clientId: string;
+  treatmentName: string;
+  date: string;
+  practitioner: string;
+  notes?: string;
+  beforePhotos?: string[];
+  afterPhotos?: string[];
+  amount: number;
+  status: "completed" | "scheduled" | "cancelled";
+}
+
+interface Communication {
+  id: string;
+  clientId: string;
+  type: "email" | "sms" | "call" | "appointment" | "note";
+  subject: string;
+  message: string;
+  date: string;
+  sentBy: string;
+  status?: "sent" | "delivered" | "read" | "failed";
+}
 
 type ClientFormData = z.infer<typeof clientSchema>;
 
 export default function Clients() {
   const { toast } = useToast();
   const { isAuthenticated, isLoading } = useAuth();
-  const [showClientDialog, setShowClientDialog] = useState(false);
-  const [selectedClient, setSelectedClient] = useState<Client | null>(null);
-  const [showClientDetails, setShowClientDetails] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filterStatus, setFilterStatus] = useState("all");
+  const isMobile = useIsMobile();
   const queryClient = useQueryClient();
 
-  const { data: clients = [], isLoading: clientsLoading } = useQuery<Client[]>({
+  const [activeView, setActiveView] = useState<"grid" | "table">("grid");
+  const [showClientDialog, setShowClientDialog] = useState(false);
+  const [selectedClient, setSelectedClient] = useState<ExtendedClient | null>(null);
+  const [showClientDetails, setShowClientDetails] = useState(false);
+  const [editingClient, setEditingClient] = useState<ExtendedClient | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [riskFilter, setRiskFilter] = useState<string>("all");
+
+  // Fetch data
+  const { data: clients = [], isLoading: clientsLoading, refetch: refetchClients } = useQuery<ExtendedClient[]>({
     queryKey: ["/api/clients"],
     enabled: isAuthenticated,
   });
 
+  const { data: treatmentHistory = [], isLoading: treatmentHistoryLoading } = useQuery<TreatmentHistory[]>({
+    queryKey: ["/api/treatment-history"],
+    enabled: isAuthenticated,
+  });
+
+  const { data: communications = [], isLoading: communicationsLoading } = useQuery<Communication[]>({
+    queryKey: ["/api/client-communications"],
+    enabled: isAuthenticated,
+  });
+
+  // Form handling
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    watch,
+    formState: { errors, isSubmitting },
+  } = useForm<ClientFormData>({
+    resolver: zodResolver(clientSchema),
+  });
+
+  // Mutations
   const createClientMutation = useMutation({
     mutationFn: async (data: ClientFormData) => {
       const response = await apiRequest("POST", "/api/clients", data);
@@ -83,14 +177,42 @@ export default function Clients() {
     },
   });
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<ClientFormData>({
-    resolver: zodResolver(clientSchema),
+  // Filter clients
+  const filteredClients = clients.filter(client => {
+    const matchesSearch = !searchTerm || 
+      `${client.firstName} ${client.lastName}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      client.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      client.phone?.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesStatus = statusFilter === "all" || 
+      (statusFilter === "verified" && client.ageVerified) ||
+      (statusFilter === "consented" && client.consentStatus === "signed") ||
+      (statusFilter === "new" && new Date(client.createdAt || '').getTime() > Date.now() - 7 * 24 * 60 * 60 * 1000);
+    
+    const matchesRisk = riskFilter === "all" || client.riskLevel === riskFilter;
+    
+    return matchesSearch && matchesStatus && matchesRisk;
   });
+
+  const getRiskColor = (risk?: string) => {
+    switch (risk) {
+      case 'high': return 'bg-red-100 text-red-800 border-red-200';
+      case 'medium': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case 'low': return 'bg-green-100 text-green-800 border-green-200';
+      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+    }
+  };
+
+  const getAge = (dateOfBirth?: string) => {
+    if (!dateOfBirth) return null;
+    return differenceInYears(new Date(), parseISO(dateOfBirth));
+  };
+
+  const handleAddClient = useCallback(() => {
+    setEditingClient(null);
+    reset();
+    setShowClientDialog(true);
+  }, [reset]);
 
   const onSubmit = (data: ClientFormData) => {
     createClientMutation.mutate(data);
@@ -112,35 +234,438 @@ export default function Clients() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" />
+      <div className="min-h-screen flex items-center justify-center bg-lea-pearl-white">
+        <div className="flex flex-col items-center space-y-4">
+          <div className="animate-spin w-8 h-8 border-4 border-lea-elegant-silver border-t-lea-deep-charcoal rounded-full" />
+          <p className="text-lea-charcoal-grey font-medium">Loading clients...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-maerose-cream">
-      <Header />
-      <div className="flex">
-        <Sidebar />
-        <main className="flex-1 overflow-y-auto">
-          <div className="bg-white border-b border-gray-200">
-            <div className="px-4 sm:px-6 lg:px-8 py-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-2xl font-serif font-bold text-maerose-forest" data-testid="text-page-title">
-                    Client Management
-                  </h2>
-                  <p className="text-sm text-maerose-forest/60 mt-1">
-                    Manage client profiles, medical history, and treatment records
-                  </p>
+    <div className="min-h-screen bg-lea-pearl-white">
+      {/* Header */}
+      <div className="bg-lea-platinum-white border-b border-lea-silver-grey">
+        <div className="px-4 sm:px-6 lg:px-8 py-6">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div>
+              <h1 className="text-2xl font-serif font-bold text-lea-deep-charcoal">
+                Client Management
+              </h1>
+              <p className="text-lea-charcoal-grey mt-1">
+                Complete CRM for managing client profiles, medical history, and treatments
+              </p>
+            </div>
+            
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Button
+                variant="outline"
+                onClick={() => refetchClients()}
+                className="border-lea-silver-grey text-lea-charcoal-grey hover:bg-lea-pearl-white"
+              >
+                <RefreshCw className="w-4 h-4 mr-2" />
+                Refresh
+              </Button>
+              <Button
+                variant="outline"
+                className="border-lea-silver-grey text-lea-charcoal-grey hover:bg-lea-pearl-white"
+              >
+                <Download className="w-4 h-4 mr-2" />
+                Export Clients
+              </Button>
+              <Button
+                onClick={handleAddClient}
+                className="bg-lea-deep-charcoal text-lea-platinum-white hover:bg-lea-elegant-charcoal"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                New Client
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="px-4 sm:px-6 lg:px-8 py-6">
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <Card className="border border-lea-silver-grey shadow-lea-card bg-lea-platinum-white">
+            <CardContent className="p-6">
+              <div className="flex items-center">
+                <div className="flex-shrink-0">
+                  <div className="w-10 h-10 bg-lea-clinical-blue rounded-lg flex items-center justify-center">
+                    <Users className="w-5 h-5 text-lea-platinum-white" />
+                  </div>
                 </div>
-                <Dialog open={showClientDialog} onOpenChange={setShowClientDialog}>
-                  <DialogTrigger asChild>
-                    <Button className="bg-maerose-forest text-maerose-cream hover:bg-maerose-forest/90" data-testid="button-new-client">
-                      <i className="fas fa-plus mr-2"></i>New Client
+                <div className="ml-4">
+                  <p className="text-sm font-medium text-lea-charcoal-grey">Total Clients</p>
+                  <p className="text-2xl font-bold text-lea-deep-charcoal">{clients.length}</p>
+                  <p className="text-xs text-lea-slate-grey">Active profiles</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border border-lea-silver-grey shadow-lea-card bg-lea-platinum-white">
+            <CardContent className="p-6">
+              <div className="flex items-center">
+                <div className="flex-shrink-0">
+                  <div className="w-10 h-10 bg-lea-elegant-silver rounded-lg flex items-center justify-center">
+                    <UserCheck className="w-5 h-5 text-lea-deep-charcoal" />
+                  </div>
+                </div>
+                <div className="ml-4">
+                  <p className="text-sm font-medium text-lea-charcoal-grey">Verified</p>
+                  <p className="text-2xl font-bold text-lea-deep-charcoal">
+                    {clients.filter(c => c.ageVerified).length}
+                  </p>
+                  <p className="text-xs text-lea-slate-grey">Age verified</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border border-lea-silver-grey shadow-lea-card bg-lea-platinum-white">
+            <CardContent className="p-6">
+              <div className="flex items-center">
+                <div className="flex-shrink-0">
+                  <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                    <Shield className="w-5 h-5 text-green-600" />
+                  </div>
+                </div>
+                <div className="ml-4">
+                  <p className="text-sm font-medium text-lea-charcoal-grey">Consented</p>
+                  <p className="text-2xl font-bold text-lea-deep-charcoal">
+                    {clients.filter(c => c.consentStatus === 'signed').length}
+                  </p>
+                  <p className="text-xs text-lea-slate-grey">Signed consent</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border border-lea-silver-grey shadow-lea-card bg-lea-platinum-white">
+            <CardContent className="p-6">
+              <div className="flex items-center">
+                <div className="flex-shrink-0">
+                  <div className="w-10 h-10 bg-lea-deep-charcoal rounded-lg flex items-center justify-center">
+                    <TrendingUp className="w-5 h-5 text-lea-platinum-white" />
+                  </div>
+                </div>
+                <div className="ml-4">
+                  <p className="text-sm font-medium text-lea-charcoal-grey">New This Month</p>
+                  <p className="text-2xl font-bold text-lea-deep-charcoal">
+                    {clients.filter(c => new Date(c.createdAt || '').getMonth() === new Date().getMonth()).length}
+                  </p>
+                  <p className="text-xs text-lea-slate-grey">Recent additions</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Search and Filter Controls */}
+        <Card className="border border-lea-silver-grey shadow-lea-card bg-lea-platinum-white mb-6">
+          <CardContent className="p-6">
+            <div className="flex flex-col lg:flex-row lg:items-center gap-4">
+              <div className="flex-1">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-lea-charcoal-grey w-4 h-4" />
+                  <Input
+                    placeholder="Search clients by name, email, or phone..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+              </div>
+              
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger className="w-full sm:w-40">
+                    <SelectValue placeholder="Status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Status</SelectItem>
+                    <SelectItem value="verified">Age Verified</SelectItem>
+                    <SelectItem value="consented">Consented</SelectItem>
+                    <SelectItem value="new">New Clients</SelectItem>
+                  </SelectContent>
+                </Select>
+                
+                <Select value={riskFilter} onValueChange={setRiskFilter}>
+                  <SelectTrigger className="w-full sm:w-40">
+                    <SelectValue placeholder="Risk Level" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Risk Levels</SelectItem>
+                    <SelectItem value="low">Low Risk</SelectItem>
+                    <SelectItem value="medium">Medium Risk</SelectItem>
+                    <SelectItem value="high">High Risk</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                <div className="flex bg-lea-platinum-white rounded-lg p-1 border border-lea-silver-grey">
+                  <button
+                    onClick={() => setActiveView('grid')}
+                    className={`px-3 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
+                      activeView === 'grid' 
+                        ? 'bg-lea-elegant-silver text-lea-deep-charcoal shadow-sm' 
+                        : 'text-lea-charcoal-grey hover:text-lea-deep-charcoal'
+                    }`}
+                  >
+                    Grid
+                  </button>
+                  <button
+                    onClick={() => setActiveView('table')}
+                    className={`px-3 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
+                      activeView === 'table' 
+                        ? 'bg-lea-elegant-silver text-lea-deep-charcoal shadow-sm' 
+                        : 'text-lea-charcoal-grey hover:text-lea-deep-charcoal'
+                    }`}
+                  >
+                    Table
+                  </button>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Main Content */}
+        {clientsLoading ? (
+          <div className="flex items-center justify-center h-64">
+            <div className="animate-spin w-8 h-8 border-4 border-lea-elegant-silver border-t-lea-deep-charcoal rounded-full" />
+          </div>
+        ) : filteredClients.length === 0 ? (
+          <Card className="border border-lea-silver-grey shadow-lea-card bg-lea-platinum-white">
+            <CardContent className="p-12 text-center">
+              <Users className="w-16 h-16 text-lea-charcoal-grey mx-auto mb-4" />
+              <h3 className="text-xl font-serif font-medium text-lea-deep-charcoal mb-2">
+                {clients.length === 0 ? "No clients yet" : "No clients found"}
+              </h3>
+              <p className="text-lea-charcoal-grey mb-6">
+                {clients.length === 0 
+                  ? "Start building your client base by adding your first client profile"
+                  : "Try adjusting your search criteria or filters"
+                }
+              </p>
+              {clients.length === 0 && (
+                <Button onClick={handleAddClient} className="bg-lea-deep-charcoal text-lea-platinum-white hover:bg-lea-elegant-charcoal">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add First Client
+                </Button>
+              )}
+            </CardContent>
+          </Card>
+        ) : activeView === "grid" ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredClients.map((client) => (
+              <Card key={client.id} className="border border-lea-silver-grey shadow-lea-card hover:shadow-lea-card-hover transition-all duration-300 bg-lea-platinum-white">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-lg font-serif text-lea-deep-charcoal">
+                      {client.firstName} {client.lastName}
+                    </CardTitle>
+                    <div className="flex items-center space-x-1">
+                      {client.ageVerified && (
+                        <Badge className="bg-green-100 text-green-800 border-green-200 text-xs">
+                          <CheckCircle className="w-3 h-3 mr-1" />
+                          Verified
+                        </Badge>
+                      )}
+                      {client.riskLevel && (
+                        <Badge className={`${getRiskColor(client.riskLevel)} text-xs`}>
+                          {client.riskLevel} risk
+                        </Badge>
+                      )}
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3 text-sm">
+                    <div className="flex items-center text-lea-charcoal-grey">
+                      <Mail className="w-4 h-4 mr-2 text-lea-slate-grey" />
+                      {client.email}
+                    </div>
+                    {client.phone && (
+                      <div className="flex items-center text-lea-charcoal-grey">
+                        <Phone className="w-4 h-4 mr-2 text-lea-slate-grey" />
+                        {client.phone}
+                      </div>
+                    )}
+                    {client.dateOfBirth && (
+                      <div className="flex items-center text-lea-charcoal-grey">
+                        <CalendarIcon className="w-4 h-4 mr-2 text-lea-slate-grey" />
+                        Age: {getAge(client.dateOfBirth)} years
+                      </div>
+                    )}
+                    <div className="flex items-center text-lea-charcoal-grey">
+                      <User className="w-4 h-4 mr-2 text-lea-slate-grey" />
+                      Client since {format(parseISO(client.createdAt || new Date().toISOString()), "MMM yyyy")}
+                    </div>
+                  </div>
+                  
+                  {/* Medical Alerts */}
+                  {(client.medicalHistory || client.allergies) && (
+                    <div className="mt-4 space-y-2">
+                      {client.medicalHistory && (
+                        <div className="p-2 bg-red-50 rounded-md border border-red-200">
+                          <div className="flex items-center">
+                            <AlertTriangle className="w-3 h-3 text-red-600 mr-1" />
+                            <span className="text-xs font-medium text-red-800">Medical History</span>
+                          </div>
+                          <p className="text-xs text-red-700 mt-1 truncate">{client.medicalHistory}</p>
+                        </div>
+                      )}
+                      {client.allergies && (
+                        <div className="p-2 bg-yellow-50 rounded-md border border-yellow-200">
+                          <div className="flex items-center">
+                            <AlertTriangle className="w-3 h-3 text-yellow-600 mr-1" />
+                            <span className="text-xs font-medium text-yellow-800">Allergies</span>
+                          </div>
+                          <p className="text-xs text-yellow-700 mt-1 truncate">{client.allergies}</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  <div className="flex justify-between mt-6 pt-4 border-t border-lea-silver-grey">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setSelectedClient(client);
+                        setShowClientDetails(true);
+                      }}
+                      className="border-lea-silver-grey text-lea-charcoal-grey hover:bg-lea-pearl-white"
+                    >
+                      <Eye className="w-4 h-4 mr-1" />
+                      View Details
                     </Button>
-                  </DialogTrigger>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="border-lea-silver-grey text-lea-charcoal-grey hover:bg-lea-pearl-white"
+                    >
+                      <CalendarIcon className="w-4 h-4 mr-1" />
+                      Book Treatment
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : (
+          <Card className="border border-lea-silver-grey shadow-lea-card bg-lea-platinum-white">
+            <CardHeader>
+              <CardTitle className="text-lea-deep-charcoal font-serif">Client Database</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ScrollArea className="h-[600px]">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Contact</TableHead>
+                      <TableHead>Age</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Risk</TableHead>
+                      <TableHead>Joined</TableHead>
+                      <TableHead>Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredClients.map((client) => (
+                      <TableRow key={client.id}>
+                        <TableCell>
+                          <div>
+                            <p className="font-medium text-lea-deep-charcoal">
+                              {client.firstName} {client.lastName}
+                            </p>
+                            <p className="text-sm text-lea-charcoal-grey">
+                              ID: {client.id.slice(-8)}
+                            </p>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div>
+                            <p className="text-sm text-lea-deep-charcoal">{client.email}</p>
+                            <p className="text-sm text-lea-charcoal-grey">{client.phone}</p>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          {client.dateOfBirth ? `${getAge(client.dateOfBirth)} years` : 'N/A'}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex flex-col space-y-1">
+                            {client.ageVerified && (
+                              <Badge className="bg-green-100 text-green-800 border-green-200 text-xs w-fit">
+                                Verified
+                              </Badge>
+                            )}
+                            <Badge className={`${client.consentStatus === 'signed' ? 'bg-blue-100 text-blue-800 border-blue-200' : 'bg-gray-100 text-gray-800 border-gray-200'} text-xs w-fit`}>
+                              {client.consentStatus || 'pending'}
+                            </Badge>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          {client.riskLevel && (
+                            <Badge className={getRiskColor(client.riskLevel)}>
+                              {client.riskLevel}
+                            </Badge>
+                          )}
+                        </TableCell>
+                        <TableCell className="text-lea-charcoal-grey">
+                          {format(parseISO(client.createdAt || new Date().toISOString()), "MMM d, yyyy")}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center space-x-2">
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              onClick={() => {
+                                setSelectedClient(client);
+                                setShowClientDetails(true);
+                              }}
+                            >
+                              <Eye className="w-4 h-4" />
+                            </Button>
+                            <Button variant="ghost" size="sm">
+                              <Edit className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </ScrollArea>
+            </CardContent>
+          </Card>
+        )}
+      </div>
+
+      {/* Client Form Dialog */}
+      <Dialog open={showClientDialog} onOpenChange={setShowClientDialog}>
+        <DialogContent className="max-w-4xl max-h-[90vh]">
+          <DialogHeader>
+            <DialogTitle className="text-lea-deep-charcoal font-serif">
+              {editingClient ? "Edit Client" : "Add New Client"}
+            </DialogTitle>
+            <DialogDescription>
+              Complete client profile with comprehensive medical and treatment history
+            </DialogDescription>
+          </DialogHeader>
+          <ScrollArea className="h-[70vh] pr-4">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+              <Tabs defaultValue="personal" className="w-full">
+                <TabsList className="grid w-full grid-cols-4">
+                  <TabsTrigger value="personal">Personal</TabsTrigger>
+                  <TabsTrigger value="medical">Medical</TabsTrigger>
+                  <TabsTrigger value="skin">Skin Profile</TabsTrigger>
+                  <TabsTrigger value="preferences">Preferences</TabsTrigger>
+                </TabsList>
                   <DialogContent className="max-w-4xl max-h-[90vh]">
                     <DialogHeader>
                       <DialogTitle>Add New Client</DialogTitle>

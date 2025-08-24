@@ -56,16 +56,16 @@ export default function Landing() {
       // Handle redirect based on user type and role
       if (loginDialog === 'practitioner' || result.user.role === 'admin') {
         // Redirect to dashboard for practitioners/admins
-        window.location.href = '/dashboard';
+        navigate('/dashboard');
       } else if (loginDialog === 'client') {
         // Redirect to client portal
-        window.location.href = '/client-portal';
+        navigate('/client-portal');
       } else if (loginDialog === 'student') {
         // Redirect to student portal
-        window.location.href = '/student-portal';
+        navigate('/student-portal');
       } else {
         // Fallback redirect
-        window.location.href = '/dashboard';
+        navigate('/dashboard');
       }
     } catch (error: any) {
       console.error('Login error:', error);
