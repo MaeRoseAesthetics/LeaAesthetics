@@ -14,6 +14,9 @@ import ClientActivity from "@/components/dashboard/client-activity";
 import ComplianceWidget from "@/components/dashboard/compliance-widget";
 import CPDTracker from "@/components/dashboard/cpd-tracker";
 import QuickActions from "@/components/dashboard/quick-actions";
+import ClientManagement from "@/components/practitioner/client-management";
+import TreatmentsManagement from "@/components/practitioner/treatments-management";
+import PaymentsManagement from "@/components/practitioner/payments-management";
 
 // Tab Content Components
 const BookingsContent = () => {
@@ -330,43 +333,19 @@ const BookingsContent = () => {
 
 const ClientsContent = () => (
   <div className="p-4 lg:p-6">
-    <div className="mb-6">
-      <h2 className="text-2xl font-serif font-bold text-lea-deep-charcoal mb-2">Client Management</h2>
-      <p className="text-lea-charcoal-grey">Manage your client relationships and records</p>
-    </div>
-    <div className="bg-lea-platinum-white rounded-xl border border-lea-silver-grey p-6 text-center">
-      <i className="fas fa-users text-4xl text-lea-charcoal-grey mb-4"></i>
-      <h3 className="text-lg font-medium text-lea-deep-charcoal mb-2">Client Database</h3>
-      <p className="text-lea-charcoal-grey">Client management system coming soon</p>
-    </div>
+    <ClientManagement />
   </div>
 );
 
 const TreatmentsContent = () => (
   <div className="p-4 lg:p-6">
-    <div className="mb-6">
-      <h2 className="text-2xl font-serif font-bold text-lea-deep-charcoal mb-2">Treatments</h2>
-      <p className="text-lea-charcoal-grey">Manage your treatment protocols and procedures</p>
-    </div>
-    <div className="bg-lea-platinum-white rounded-xl border border-lea-silver-grey p-6 text-center">
-      <i className="fas fa-file-medical text-4xl text-lea-charcoal-grey mb-4"></i>
-      <h3 className="text-lg font-medium text-lea-deep-charcoal mb-2">Treatment Protocols</h3>
-      <p className="text-lea-charcoal-grey">Treatment management system coming soon</p>
-    </div>
+    <TreatmentsManagement />
   </div>
 );
 
 const PaymentsContent = () => (
   <div className="p-4 lg:p-6">
-    <div className="mb-6">
-      <h2 className="text-2xl font-serif font-bold text-lea-deep-charcoal mb-2">Payments</h2>
-      <p className="text-lea-charcoal-grey">Track payments and financial reports</p>
-    </div>
-    <div className="bg-lea-platinum-white rounded-xl border border-lea-silver-grey p-6 text-center">
-      <i className="fas fa-credit-card text-4xl text-lea-charcoal-grey mb-4"></i>
-      <h3 className="text-lg font-medium text-lea-deep-charcoal mb-2">Payment Processing</h3>
-      <p className="text-lea-charcoal-grey">Payment management system coming soon</p>
-    </div>
+    <PaymentsManagement />
   </div>
 );
 
@@ -510,6 +489,26 @@ export default function Dashboard() {
         return <ClientsContent />;
       case 'treatments':
         return <TreatmentsContent />;
+      case 'inventory':
+        return (
+          <div className="p-4 lg:p-6">
+            <div className="mb-6">
+              <h2 className="text-2xl font-serif font-bold text-lea-deep-charcoal mb-2">Inventory & Equipment</h2>
+              <p className="text-lea-charcoal-grey">Manage stock levels, equipment, and maintenance</p>
+            </div>
+            <div className="bg-lea-platinum-white rounded-xl border border-lea-silver-grey p-6 text-center">
+              <i className="fas fa-boxes text-4xl text-lea-charcoal-grey mb-4"></i>
+              <h3 className="text-lg font-medium text-lea-deep-charcoal mb-2">Inventory Management</h3>
+              <p className="text-lea-charcoal-grey mb-4">Access comprehensive inventory and equipment management</p>
+              <button 
+                onClick={() => window.location.href = '/inventory'}
+                className="px-4 py-2 bg-lea-deep-charcoal text-lea-platinum-white rounded-lg hover:bg-lea-elegant-charcoal transition-all duration-300"
+              >
+                Go to Inventory
+              </button>
+            </div>
+          </div>
+        );
       case 'payments':
         return <PaymentsContent />;
       case 'compliance':

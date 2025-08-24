@@ -14,6 +14,7 @@ import {
   insertCourseContentSchema,
   insertAssessmentSchema
 } from "@shared/schema";
+import { registerInventoryRoutes } from "./inventory-routes";
 import Stripe from "stripe";
 
 if (!process.env.STRIPE_SECRET_KEY) {
@@ -27,6 +28,9 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
   await setupAuth(app);
+  
+  // Register inventory management routes
+  registerInventoryRoutes(app);
 
   // Auth routes
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {

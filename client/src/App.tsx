@@ -21,6 +21,7 @@ import Courses from "@/pages/courses";
 import Students from "@/pages/students";
 import Compliance from "@/pages/compliance";
 import Treatments from "@/pages/treatments";
+import Inventory from "@/pages/inventory";
 import Audit from "@/pages/audit";
 import Background from "@/pages/background";
 
@@ -57,6 +58,7 @@ function Router() {
           <Route path="/students" component={Students} />
           <Route path="/compliance" component={Compliance} />
           <Route path="/treatments" component={Treatments} />
+          <Route path="/inventory" component={Inventory} />
           <Route path="/audit" component={Audit} />
         </>
       ) : null}

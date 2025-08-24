@@ -10,6 +10,14 @@ import {
   payments,
   courseContent,
   assessments,
+  inventory,
+  equipment,
+  stockMovements,
+  maintenanceRecords,
+  inventoryAlerts,
+  suppliers,
+  purchaseOrders,
+  purchaseOrderItems,
   type User,
   type UpsertUser,
   type InsertClient,
@@ -32,6 +40,22 @@ import {
   type CourseContent,
   type InsertAssessment,
   type Assessment,
+  type InsertInventory,
+  type Inventory,
+  type InsertEquipment,
+  type Equipment,
+  type InsertStockMovement,
+  type StockMovement,
+  type InsertMaintenanceRecord,
+  type MaintenanceRecord,
+  type InsertInventoryAlert,
+  type InventoryAlert,
+  type InsertSupplier,
+  type Supplier,
+  type InsertPurchaseOrder,
+  type PurchaseOrder,
+  type InsertPurchaseOrderItem,
+  type PurchaseOrderItem,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, or } from "drizzle-orm";
@@ -104,6 +128,43 @@ export interface IStorage {
   getAssessmentsByStudent(studentId: string): Promise<Assessment[]>;
   getAssessmentsByCourse(courseId: string): Promise<Assessment[]>;
   updateAssessment(id: string, assessment: Partial<InsertAssessment>): Promise<Assessment | undefined>;
+  
+  // Inventory operations
+  createInventory(inventory: InsertInventory): Promise<Inventory>;
+  getInventory(id: string): Promise<Inventory | undefined>;
+  getAllInventory(): Promise<Inventory[]>;
+  updateInventory(id: string, inventory: Partial<InsertInventory>): Promise<Inventory | undefined>;
+  deleteInventory(id: string): Promise<void>;
+  
+  // Equipment operations
+  createEquipment(equipment: InsertEquipment): Promise<Equipment>;
+  getEquipment(id: string): Promise<Equipment | undefined>;
+  getAllEquipment(): Promise<Equipment[]>;
+  updateEquipment(id: string, equipment: Partial<InsertEquipment>): Promise<Equipment | undefined>;
+  
+  // Stock movement operations
+  createStockMovement(movement: InsertStockMovement): Promise<StockMovement>;
+  getStockMovementsByInventory(inventoryId: string): Promise<StockMovement[]>;
+  
+  // Maintenance record operations
+  createMaintenanceRecord(record: InsertMaintenanceRecord): Promise<MaintenanceRecord>;
+  getMaintenanceRecordsByEquipment(equipmentId: string): Promise<MaintenanceRecord[]>;
+  getAllMaintenanceRecords(): Promise<MaintenanceRecord[]>;
+  updateMaintenanceRecord(id: string, record: Partial<InsertMaintenanceRecord>): Promise<MaintenanceRecord | undefined>;
+  
+  // Inventory alert operations
+  createInventoryAlert(alert: InsertInventoryAlert): Promise<InventoryAlert>;
+  getAllInventoryAlerts(): Promise<InventoryAlert[]>;
+  updateInventoryAlert(id: string, alert: Partial<InsertInventoryAlert>): Promise<InventoryAlert | undefined>;
+  
+  // Supplier operations
+  createSupplier(supplier: InsertSupplier): Promise<Supplier>;
+  getAllSuppliers(): Promise<Supplier[]>;
+  
+  // Purchase order operations
+  createPurchaseOrder(order: InsertPurchaseOrder): Promise<PurchaseOrder>;
+  getAllPurchaseOrders(): Promise<PurchaseOrder[]>;
+  createPurchaseOrderItem(item: InsertPurchaseOrderItem): Promise<PurchaseOrderItem>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -399,6 +460,147 @@ export class DatabaseStorage implements IStorage {
       .where(eq(assessments.id, id))
       .returning();
     return updated;
+  }
+
+  // Inventory operations
+  async createInventory(inventoryData: InsertInventory): Promise<Inventory> {
+    const [newInventory] = await db.insert(inventory).values(inventoryData).returning();
+    return newInventory;
+  }
+
+  async getInventory(id: string): Promise<Inventory | undefined> {
+    const [inventoryItem] = await db.select().from(inventory).where(eq(inventory.id, id));
+    return inventoryItem;
+  }
+
+  async getAllInventory(): Promise<Inventory[]> {
+    return await db.select().from(inventory).where(eq(inventory.active, true));
+  }
+
+  async updateInventory(id: string, inventoryData: Partial<InsertInventory>): Promise<Inventory | undefined> {
+    const [updated] = await db
+      .update(inventory)
+      .set({ ...inventoryData, updatedAt: new Date() })
+      .where(eq(inventory.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteInventory(id: string): Promise<void> {
+    await db.update(inventory).set({ active: false }).where(eq(inventory.id, id));
+  }
+
+  // Equipment operations
+  async createEquipment(equipmentData: InsertEquipment): Promise<Equipment> {
+    const [newEquipment] = await db.insert(equipment).values(equipmentData).returning();
+    return newEquipment;
+  }
+
+  async getEquipment(id: string): Promise<Equipment | undefined> {
+    const [equipmentItem] = await db.select().from(equipment).where(eq(equipment.id, id));
+    return equipmentItem;
+  }
+
+  async getAllEquipment(): Promise<Equipment[]> {
+    return await db.select().from(equipment).where(eq(equipment.active, true));
+  }
+
+  async updateEquipment(id: string, equipmentData: Partial<InsertEquipment>): Promise<Equipment | undefined> {
+    const [updated] = await db
+      .update(equipment)
+      .set({ ...equipmentData, updatedAt: new Date() })
+      .where(eq(equipment.id, id))
+      .returning();
+    return updated;
+  }
+
+  // Stock movement operations
+  async createStockMovement(movementData: InsertStockMovement): Promise<StockMovement> {
+    const [newMovement] = await db.insert(stockMovements).values(movementData).returning();
+    return newMovement;
+  }
+
+  async getStockMovementsByInventory(inventoryId: string): Promise<StockMovement[]> {
+    return await db
+      .select()
+      .from(stockMovements)
+      .where(eq(stockMovements.inventoryId, inventoryId))
+      .orderBy(desc(stockMovements.createdAt));
+  }
+
+  // Maintenance record operations
+  async createMaintenanceRecord(recordData: InsertMaintenanceRecord): Promise<MaintenanceRecord> {
+    const [newRecord] = await db.insert(maintenanceRecords).values(recordData).returning();
+    return newRecord;
+  }
+
+  async getMaintenanceRecordsByEquipment(equipmentId: string): Promise<MaintenanceRecord[]> {
+    return await db
+      .select()
+      .from(maintenanceRecords)
+      .where(eq(maintenanceRecords.equipmentId, equipmentId))
+      .orderBy(desc(maintenanceRecords.createdAt));
+  }
+
+  async getAllMaintenanceRecords(): Promise<MaintenanceRecord[]> {
+    return await db.select().from(maintenanceRecords).orderBy(desc(maintenanceRecords.createdAt));
+  }
+
+  async updateMaintenanceRecord(id: string, recordData: Partial<InsertMaintenanceRecord>): Promise<MaintenanceRecord | undefined> {
+    const [updated] = await db
+      .update(maintenanceRecords)
+      .set({ ...recordData, updatedAt: new Date() })
+      .where(eq(maintenanceRecords.id, id))
+      .returning();
+    return updated;
+  }
+
+  // Inventory alert operations
+  async createInventoryAlert(alertData: InsertInventoryAlert): Promise<InventoryAlert> {
+    const [newAlert] = await db.insert(inventoryAlerts).values(alertData).returning();
+    return newAlert;
+  }
+
+  async getAllInventoryAlerts(): Promise<InventoryAlert[]> {
+    return await db
+      .select()
+      .from(inventoryAlerts)
+      .where(eq(inventoryAlerts.isDismissed, false))
+      .orderBy(desc(inventoryAlerts.createdAt));
+  }
+
+  async updateInventoryAlert(id: string, alertData: Partial<InsertInventoryAlert>): Promise<InventoryAlert | undefined> {
+    const [updated] = await db
+      .update(inventoryAlerts)
+      .set(alertData)
+      .where(eq(inventoryAlerts.id, id))
+      .returning();
+    return updated;
+  }
+
+  // Supplier operations
+  async createSupplier(supplierData: InsertSupplier): Promise<Supplier> {
+    const [newSupplier] = await db.insert(suppliers).values(supplierData).returning();
+    return newSupplier;
+  }
+
+  async getAllSuppliers(): Promise<Supplier[]> {
+    return await db.select().from(suppliers).where(eq(suppliers.active, true));
+  }
+
+  // Purchase order operations
+  async createPurchaseOrder(orderData: InsertPurchaseOrder): Promise<PurchaseOrder> {
+    const [newOrder] = await db.insert(purchaseOrders).values(orderData).returning();
+    return newOrder;
+  }
+
+  async getAllPurchaseOrders(): Promise<PurchaseOrder[]> {
+    return await db.select().from(purchaseOrders).orderBy(desc(purchaseOrders.createdAt));
+  }
+
+  async createPurchaseOrderItem(itemData: InsertPurchaseOrderItem): Promise<PurchaseOrderItem> {
+    const [newItem] = await db.insert(purchaseOrderItems).values(itemData).returning();
+    return newItem;
   }
 }
 

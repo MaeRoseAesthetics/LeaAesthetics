@@ -96,6 +96,12 @@ export default function Sidebar({
       badge: null
     },
     {
+      id: "inventory",
+      icon: "fas fa-boxes",
+      label: "Inventory",
+      badge: null
+    },
+    {
       id: "payments",
       icon: "fas fa-credit-card",
       label: "Payments",
